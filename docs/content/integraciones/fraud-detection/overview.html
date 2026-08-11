@@ -9,7 +9,7 @@
 
   <section class="lab-section">
     <h2 class="cds--productive-heading-04">Mi número de participante</h2>
-    <p>Usa el mismo número en el pipeline, consumer group, tópico, tabla, toolkit y agente. IBM reserva el número <code>0</code> como referencia.</p>
+    <p>Usa el mismo número en el pipeline, consumer group, tópico, tabla y agente. El toolkit <code>workshop_fraud_mcp</code> es compartido. IBM reserva el número <code>0</code> como referencia.</p>
     <div class="participant-context">
       <div>
         <label class="participant-context__label" for="participant-number">Mi número N</label>
@@ -37,6 +37,21 @@
           <code class="participant-preview__value" data-template="fraud-workshop-{N}">fraud-workshop-N</code>
         </li>
       </ul>
+    </div>
+    <div class="participant-download" data-participant-download hidden>
+      <p class="participant-download__title">Descarga la spec de tu agente</p>
+      <p class="participant-download__body">
+        Descarga <code>agent-spec-<span data-template="{N}">N</span>.yaml</code> e impórtalo con la CLI.
+        Las credenciales te llegarán por correo — no van en la descarga.
+        El toolkit <code>workshop_fraud_mcp</code> ya está registrado por IBM — no necesitas importarlo.
+      </p>
+      <a
+        class="participant-download__btn"
+        data-participant-download-link
+        href="./assets/downloads/fraud-workshop/agent-spec-1.yaml"
+        download
+      >Descargar <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code></a>
+      <p class="participant-download__hint" data-participant-download-hint hidden>N=0 es solo referencia IBM. Usa el paso de Orchestrate sin descarga propia.</p>
     </div>
   </section>
 
@@ -106,7 +121,8 @@
       <li>Puedo iniciar sesión en Confluent Cloud y abrir el clúster <code>BeeTech</code>.</li>
       <li>Puedo abrir el proyecto de watsonx.data integration y visualizar <code>Pipeline_0</code>.</li>
       <li>Mi instancia de watsonx Orchestrate está activa.</li>
-      <li>Tengo el paquete <code data-template="fraud-workshop-{N}.zip">fraud-workshop-N.zip</code> y la API key de Orchestrate entregadas por IBM.</li>
+      <li>Descargué <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code> desde la sección de descarga en esta página.</li>
+      <li>Recibí mis credenciales por correo y las tengo a mano.</li>
       <li>Conozco mi número N y lo seleccioné arriba.</li>
     </ul>
     <div class="callout" data-tone="warning">
@@ -152,7 +168,7 @@
               <tr><td>Subject</td><td><code data-template="TransaccionesEvaluadas-{N}-value">TransaccionesEvaluadas-N-value</code></td><td>Serialización Avro</td></tr>
               <tr><td>Tabla JDBC</td><td><code data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code></td><td>Último estado geográfico</td></tr>
               <tr><td>Agente</td><td><code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code></td><td>Consultas en lenguaje natural</td></tr>
-              <tr><td>Toolkit MCP</td><td><code data-template="N{N}_fraud_mcp">N{N}_fraud_mcp</code></td><td>Individual — cada uno importa el suyo</td></tr>
+              <tr><td>Toolkit MCP</td><td><code>workshop_fraud_mcp</code></td><td>Compartido — IBM lo registra una vez</td></tr>
             </tbody>
           </table>
         </div>

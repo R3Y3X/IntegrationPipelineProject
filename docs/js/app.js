@@ -823,6 +823,35 @@ function updateParticipantPreview(container, number) {
   });
 }
 
+function updateParticipantDownload(container, number) {
+  const block = container.querySelector('[data-participant-download]');
+  const link = container.querySelector('[data-participant-download-link]');
+  const hint = container.querySelector('[data-participant-download-hint]');
+  if (!block || !link) return;
+
+  if (number === null) {
+    block.hidden = true;
+    return;
+  }
+
+  block.hidden = false;
+  block.querySelectorAll('[data-template]').forEach((element) => {
+    element.textContent = element.dataset.template.replaceAll('{N}', String(number));
+  });
+
+  if (number === 0) {
+    link.hidden = true;
+    if (hint) hint.hidden = false;
+    return;
+  }
+
+  link.hidden = false;
+  if (hint) hint.hidden = true;
+  const fileName = `agent-spec-${number}.yaml`;
+  link.href = `./assets/downloads/fraud-workshop/${fileName}`;
+  link.setAttribute('download', fileName);
+}
+
 function applyParticipantTemplates(container, number = readParticipantNumber()) {
   const replacement = number === null ? 'N' : String(number);
   container.querySelectorAll('[data-template]').forEach((element) => {
@@ -836,15 +865,7 @@ function applyParticipantTemplates(container, number = readParticipantNumber()) 
         : `Usando N=${number} · participante ${number}`;
   });
   updateParticipantPreview(container, number);
-
-  // ── ZIP download button — update if already built ─────────────────
-  container.querySelectorAll('[data-zip-download]').forEach((btn) => {
-    const hintEl = btn.parentElement
-      ? btn.parentElement.querySelector('[data-zip-download-hint]')
-      : null;
-    if (hintEl) _updateZipBtn(btn, hintEl, number);
-  });
-
+  updateParticipantDownload(container, number);
   if (number === null) delete document.body.dataset.participantNumber;
   else document.body.dataset.participantNumber = String(number);
 }
@@ -951,76 +972,6 @@ function enhanceLabContent(container, category) {
       }
     });
   });
-
-  // ── ZIP download button ────────────────────────────────────────────
-  // Built entirely with createElement so no Carbon CDN class interference.
-  container.querySelectorAll('[data-zip-download-host]').forEach((host) => {
-    // Avoid duplicating on re-renders
-    if (host.querySelector('[data-zip-download]')) return;
-
-    const wrap = document.createElement('div');
-    wrap.style.cssText = 'margin-top:.75rem;display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;';
-
-    // Download link styled as a button
-    const btn = document.createElement('a');
-    btn.setAttribute('data-zip-download', '');
-    btn.href = '#';
-    btn.style.cssText = [
-      'display:inline-flex',
-      'align-items:center',
-      'gap:.5rem',
-      'padding:.625rem 1rem',
-      'background:var(--dynamic-primary,#8a3ffc)',
-      'color:#fff',
-      'font-size:.875rem',
-      'font-weight:600',
-      'font-family:inherit',
-      'text-decoration:none',
-      'border-radius:0',
-      'border:2px solid transparent',
-      'cursor:not-allowed',
-      'opacity:.5',
-      'line-height:1',
-    ].join(';');
-
-    // Download SVG icon
-    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M26 24v2H6v-2h20zM16 20.586l-6.293-6.293-1.414 1.414L16 23.414l7.707-7.707-1.414-1.414L16 20.586zM15 4h2v16h-2z"/></svg><span data-zip-download-label>Selecciona tu número primero</span>`;
-
-    // Hint paragraph
-    const hint = document.createElement('p');
-    hint.setAttribute('data-zip-download-hint', '');
-    hint.style.cssText = 'margin:0;font-size:.8125rem;color:var(--cds-text-helper,#6f6f6f);';
-    hint.innerHTML = 'Selecciona tu número N en <a href="#/lab/fraud-detection/overview" style="color:var(--dynamic-primary,#8a3ffc);">Inicio</a> para activar la descarga.';
-
-    wrap.appendChild(btn);
-    wrap.appendChild(hint);
-    host.appendChild(wrap);
-
-    // Wire up the update function immediately with current N
-    _updateZipBtn(btn, hint, readParticipantNumber());
-  });
-}
-
-// Called by applyParticipantTemplates AND by the initial build above.
-function _updateZipBtn(btn, hint, number) {
-  const labelEl = btn.querySelector('[data-zip-download-label]');
-  const isReady = number !== null && number > 0;
-  if (isReady) {
-    const filename = `fraud-workshop-${number}.zip`;
-    btn.href = `./assets/downloads/${filename}`;
-    btn.setAttribute('download', filename);
-    btn.style.opacity = '1';
-    btn.style.cursor = 'pointer';
-    if (labelEl) labelEl.textContent = filename;
-    hint.hidden = true;
-  } else {
-    btn.href = '#';
-    btn.removeAttribute('download');
-    btn.style.opacity = '0.5';
-    btn.style.cursor = 'not-allowed';
-    if (labelEl) labelEl.textContent = number === 0 ? 'N=0 es referencia IBM — sin paquete' : 'Selecciona tu número primero';
-    hint.hidden = false;
-  }
 }
 
 // ── Step navigation bar (prev / next) ────────────────────────────
