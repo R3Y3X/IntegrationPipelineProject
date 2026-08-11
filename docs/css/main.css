@@ -2701,6 +2701,13 @@ kbd {
   width: fit-content;
 }
 
+.participant-download__btn code {
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+
 .participant-download__btn[hidden] {
   display: none;
 }
