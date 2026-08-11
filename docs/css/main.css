@@ -2699,13 +2699,14 @@ kbd {
 
 .participant-download__btn {
   width: fit-content;
+  gap: 0.5rem;
 }
 
-.participant-download__btn code {
-  background: transparent;
-  color: inherit;
-  font-size: inherit;
-  padding: 0;
+.participant-download__filename {
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.8125rem;
+  opacity: 0.85;
+  margin-left: 0.25rem;
 }
 
 .participant-download__btn[hidden] {
