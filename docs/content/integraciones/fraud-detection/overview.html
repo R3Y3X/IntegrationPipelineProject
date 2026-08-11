@@ -39,19 +39,36 @@
       </ul>
     </div>
     <div class="participant-download" data-participant-download hidden>
-      <p class="participant-download__title">Descarga la spec de tu agente</p>
-      <p class="participant-download__body">
-        Descarga <code>agent-spec-<span data-template="{N}">N</span>.yaml</code> e impórtalo con la CLI.
-        Las credenciales te llegarán por correo — no van en la descarga.
-        El toolkit <code>workshop_fraud_mcp</code> ya está registrado por IBM — no necesitas importarlo.
-      </p>
+      <div class="participant-download__header">
+        <div class="participant-download__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" fill="currentColor"><path d="M26 24v4H6v-4H4v4a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-4zm0-10-1.41-1.41L17 20.17V2h-2v18.17l-7.59-7.58L6 14l10 10 10-10z"/></svg>
+        </div>
+        <p class="participant-download__title">Archivo listo para descarga</p>
+      </div>
+      <div class="participant-download__meta">
+        <span class="participant-download__tag">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M28 10H22V4h-2v6a2 2 0 0 0 2 2h6z"/><path d="M25.414 8 20 2.586A2 2 0 0 0 18.586 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9.414A2 2 0 0 0 25.414 8ZM24 28H8V4h10v6a2 2 0 0 0 2 2h4z"/></svg>
+          <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code>
+        </span>
+        <span class="participant-download__tag participant-download__tag--mail">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M28 6H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h24a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-2.2 2L16 14.78 6.2 8zM4 24V9.44l11.43 7.62a1 1 0 0 0 1.14 0L28 9.44V24z"/></svg>
+          Credenciales por correo
+        </span>
+        <span class="participant-download__tag participant-download__tag--shared">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M28 20a4 4 0 1 0-5.31 3.78L20 28h-2l-2-6H8l-2 6H4l2.54-7.61A4 4 0 1 0 3 16a3.9 3.9 0 0 0 .67 2.17L1 26H0v2h4l2-6h8l2 6h4l2.67-5.33A4 4 0 0 0 28 20zM7 16a2 2 0 1 1-2-2 2 2 0 0 1 2 2zm18 6a2 2 0 1 1 2-2 2 2 0 0 1-2 2z"/></svg>
+          Toolkit compartido por IBM
+        </span>
+      </div>
       <a
         class="participant-download__btn"
         data-participant-download-link
         href="./assets/downloads/fraud-workshop/agent-spec-1.yaml"
         download
-      >Descargar <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code></a>
-      <p class="participant-download__hint" data-participant-download-hint hidden>N=0 es solo referencia IBM. Usa el paso de Orchestrate sin descarga propia.</p>
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M26 24v4H6v-4H4v4a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-4zm0-10-1.41-1.41L17 20.17V2h-2v18.17l-7.59-7.58L6 14l10 10 10-10z"/></svg>
+        Descargar <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code>
+      </a>
+      <p class="participant-download__hint" data-participant-download-hint hidden>N=0 es referencia IBM — no tiene descarga propia.</p>
     </div>
   </section>
 
