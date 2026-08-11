@@ -2647,9 +2647,9 @@ kbd {
   gap: 1rem;
   margin-top: 1.25rem;
   padding: 1.25rem 1.5rem;
-  border: 1px solid var(--cds-border-subtle-01, #c6c6c6);
-  border-radius: 8px;
-  background: var(--cds-layer-01, #f4f4f4);
+  border: 1px solid var(--hub-border);
+  border-left: 4px solid #0f62fe;
+  background: var(--hub-layer);
 }
 
 .participant-download[hidden] {
@@ -2665,13 +2665,8 @@ kbd {
 .participant-download__icon {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: #0f62fe;
-  color: #fff;
+  color: #0f62fe;
 }
 
 .participant-download__title {
@@ -2687,32 +2682,13 @@ kbd {
   gap: 0.5rem;
 }
 
-.participant-download__tag {
-  display: inline-flex;
-  align-items: center;
+.participant-download__meta .cds--tag {
   gap: 0.3rem;
-  padding: 0.25rem 0.625rem;
-  border-radius: 999px;
-  border: 1px solid var(--cds-border-subtle-01, #c6c6c6);
-  background: var(--cds-background, #fff);
+}
+
+.participant-download__meta .cds--tag code {
   font-size: 0.75rem;
-  color: var(--cds-text-secondary, #525252);
-}
-
-.participant-download__tag code {
-  font-size: 0.75rem;
-}
-
-.participant-download__tag--mail {
-  border-color: #bae6ff;
-  background: #e5f6ff;
-  color: #0043ce;
-}
-
-.participant-download__tag--shared {
-  border-color: #a7f0ba;
-  background: #defbe6;
-  color: #198038;
+  color: inherit;
 }
 
 .participant-download__hint {
@@ -2722,32 +2698,21 @@ kbd {
 }
 
 .participant-download__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
   width: fit-content;
-  padding: 0.75rem 1.25rem;
-  border-radius: 6px;
-  background: #0f62fe;
-  color: #fff;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.15s ease;
-}
-
-.participant-download__btn code {
-  color: #fff;
-  font-size: 0.875rem;
-}
-
-.participant-download__btn:hover {
-  background: #0353e9;
-  color: #fff;
 }
 
 .participant-download__btn[hidden] {
   display: none;
+}
+
+body.cds--g100 .participant-download {
+  background: var(--hub-layer);
+  border-color: var(--hub-border);
+  border-left-color: #4589ff;
+}
+
+body.cds--g100 .participant-download__icon {
+  color: #4589ff;
 }
 
 /* Collapsible reference sections */
