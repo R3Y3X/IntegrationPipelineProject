@@ -1,0 +1,15 @@
+services:
+  workshop-dirty-producer:
+    build: /home/vpcuser/workshop
+    container_name: workshop-dirty-producer
+    restart: "no"
+    env_file:
+      - /home/vpcuser/workshop/.env
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PRODUCER_TOPIC: TransaccionesSucias-0
+      PRODUCER_SUBJECT: TransaccionesSucias-0-value
+      PRODUCER_INTERVAL_SECONDS: "2"
+    command: ["python", "/app/dirty_transaction_producer.py"]
+    volumes:
+      - /home/vpcuser/workshop/dirty_transaction_producer.py:/app/dirty_transaction_producer.py:ro

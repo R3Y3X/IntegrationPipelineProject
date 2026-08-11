@@ -1,0 +1,12 @@
+spec_version: v1
+kind: mcp
+name: N0_fraud_mcp
+description: >-
+  Toolkit MCP de referencia (N0). El agente fija topic_number="0" en cada tool.
+command: python workshop_mcp_server.py
+package_root: ./tools
+tools:
+  - get_fraud_summary
+  - get_suspicious_transactions
+  - get_transaction_detail
+  - get_customer_activity

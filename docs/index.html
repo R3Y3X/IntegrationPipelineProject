@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Bootcamps prácticos de integración de datos con Confluent, watsonx.data integration y watsonx Orchestrate." />
+    <title>Data Integration Workshops · IBM</title>
+
+    <!-- IBM Plex fonts — served from IBM CDN -->
+    <link rel="stylesheet" href="https://1.www.s81c.com/common/fonts/ibm-plex.css" />
+
+    <!-- Carbon Design System v11 — served from IBM CDN -->
+    <link rel="stylesheet" href="https://1.www.s81c.com/common/carbon/web-components/version/v2.26.0/themes.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@carbon/styles@1/css/styles.min.css" />
+
+    <!-- Project overrides (applied on top of Carbon) -->
+    <link rel="stylesheet" href="./css/variables.css?v=5" />
+    <link rel="stylesheet" href="./css/shim.css?v=4" />
+    <link rel="stylesheet" href="./css/main.css?v=22" />
+    <link rel="stylesheet" href="./css/components.css?v=6" />
+    <link rel="stylesheet" href="./css/responsive.css?v=5" />
+    <link rel="stylesheet" href="./css/carbon-overrides.css?v=29" />
+    <link rel="stylesheet" href="./css/confluent-enablement.css?v=3" />
+    <link rel="stylesheet" href="./css/wxdi-enablement.css?v=1" />
+    <link rel="stylesheet" href="./css/dynamic-theme.css?v=2" />
+  </head>
+  <body class="hub-view--home">
+    <a class="hub-skip-link" href="#main-content">Saltar al contenido principal</a>
+    <!-- ── Carbon UI Shell ───────────────────────────────────────── -->
+    <header class="cds--header hub-header" role="banner">
+
+      <!-- IBM 8-bar logo + product name (LEFT anchor) -->
+      <a class="cds--header__name" href="#/" aria-label="Data Integration Workshops – inicio">
+        <img src="./assets/icons/ibm-logo-white.png" alt="IBM" class="hub-header__ibm-logo" />
+        <span class="hub-header__product-name">Data Integration Workshops</span>
+      </a>
+
+      <!-- Primary navigation links (populated by renderPlatformNav) -->
+      <nav class="cds--header__nav" aria-label="Navegación principal">
+        <ul class="cds--header__menu-bar" id="site-nav-items"></ul>
+      </nav>
+
+      <!-- Spacer pushes global actions to the right -->
+      <div class="hub-header__spacer" aria-hidden="true"></div>
+
+      <!-- Global actions: theme + hamburger (mobile) -->
+      <div class="cds--header__global">
+
+        <!-- Theme toggle -->
+        <button id="theme-toggle" class="cds--header__action" type="button" aria-label="Cambiar a tema oscuro" aria-pressed="false" title="Cambiar a tema oscuro">
+          <!-- Moon: visible in light mode -->
+          <svg class="hub-theme-icon hub-theme-icon--moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false" fill="currentColor">
+            <path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/>
+          </svg>
+          <!-- Sun: visible in dark mode -->
+          <svg class="hub-theme-icon hub-theme-icon--sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false" fill="currentColor">
+            <path d="M16,12a4,4,0,1,1-4,4,4.0045,4.0045,0,0,1,4-4m0-2a6,6,0,1,0,6,6,6,6,0,0,0-6-6Z" transform="translate(0 0.0049)"/>
+            <rect x="6.8536" y="5.3745" width="2" height="4.958" transform="translate(-3.253 7.8584) rotate(-45)"/>
+            <rect x="2" y="15.0049" width="5" height="2"/>
+            <rect x="5.3745" y="23.1466" width="4.958" height="2" transform="translate(-14.7739 12.6305) rotate(-45)"/>
+            <rect x="15" y="25.0049" width="2" height="5"/>
+            <rect x="23.1466" y="21.6675" width="2" height="4.958" transform="translate(-10.0018 24.1514) rotate(-45)"/>
+            <rect x="25" y="15.0049" width="5" height="2"/>
+            <rect x="21.6675" y="6.8536" width="4.958" height="2" transform="translate(1.5191 19.3793) rotate(-45)"/>
+            <rect x="15" y="2.0049" width="2" height="5"/>
+          </svg>
+        </button>
+
+        <!-- Hamburger — mobile / tablet only -->
+        <button
+          id="hamburger-btn"
+          class="cds--header__action cds--header__menu-toggle"
+          type="button"
+          aria-label="Abrir menú de navegación"
+          aria-expanded="false"
+          aria-controls="side-nav"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false">
+            <rect x="2" y="8"  width="28" height="2" fill="currentColor"/>
+            <rect x="2" y="15" width="28" height="2" fill="currentColor"/>
+            <rect x="2" y="22" width="28" height="2" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Side navigation (overlay panel) ──────────────────────── -->
+    <nav id="side-nav" class="cds--side-nav" aria-label="Navegación lateral" aria-hidden="true">
+      <div class="hub-side-nav__header">
+        <span class="hub-side-nav__title">Data Integration Workshops</span>
+      </div>
+      <ul class="cds--side-nav__items" id="side-nav-items-mobile"></ul>
+    </nav>
+    <div id="side-nav-overlay" aria-hidden="true"></div>
+
+    <!-- ── Lab step sub-navigation ── -->
+    <nav class="cds--tabs hub-subnav" aria-label="Navegación del laboratorio" id="subnav-region" hidden>
+      <ul class="cds--tabs__nav" id="subnav-items"></ul>
+    </nav>
+
+    <!-- ── Main content ──────────────────────────────────────────── -->
+    <main id="main-content" class="hub-page-content">
+      <section id="home-view" class="view"></section>
+      <section id="lab-view" class="view" hidden>
+        <div id="lab-shell" class="lab-shell"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./js/app.js?v=13"></script>
+  </body>
+</html>

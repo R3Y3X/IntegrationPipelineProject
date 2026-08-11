@@ -1,0 +1,145 @@
+/*
+ * responsive.css — Breakpoints Carbon estándar (sm/md/lg/xlg/max).
+ */
+
+/* ── sm  < 672px  ───────────────────────────────────────────────── */
+@media (max-width: 671px) {
+  /* Header: ocultar nav de escritorio, mostrar solo logo + acciones */
+  .cds--header__nav {
+    display: none;
+  }
+
+  .hub-header__search-wrap {
+    display: none;  /* ocultar búsqueda en móvil */
+  }
+
+  .hub-header__spacer {
+    display: none;
+  }
+
+  /* Hero: una columna */
+  .hub-hero__inner {
+    flex-direction: column;
+    gap: 32px;
+    padding: 48px 1rem 40px;
+  }
+
+  .hub-hero__visual {
+    display: none;
+  }
+
+  .hub-hero__title {
+    font-size: 2rem;
+  }
+
+  /* Metrics: columna */
+  .hub-metrics {
+    flex-direction: column;
+  }
+
+  .hub-metric-tile {
+    border-right: 0;
+    border-bottom: 1px solid var(--cds-border-subtle-01, #c6c6c6);
+    padding: 20px 1rem;
+  }
+
+  .hub-metric-tile:last-child {
+    border-bottom: 0;
+  }
+
+  /* Sections: sin padding lateral */
+  .hub-section__inner,
+  .hub-sections-stack,
+  .hub-workshops__header,
+  .hub-mode-tabs {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .hub-section--layer .hub-workshop-section:nth-child(even),
+  .hub-section--surface .hub-workshop-section:nth-child(even) {
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Cards: 1 columna */
+  .hub-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Lab shell */
+  .lab-shell {
+    padding: 24px 1rem 48px;
+  }
+}
+
+/* ── md  672px–1055px  ──────────────────────────────────────────── */
+@media (min-width: 672px) and (max-width: 1055px) {
+  .hub-hero__inner {
+    padding: 56px 1.5rem 48px;
+    gap: 40px;
+  }
+
+  .hub-hero__visual {
+    flex: 0 0 300px;
+  }
+
+  .hub-hero__visual img {
+    max-width: 300px;
+  }
+
+  .hub-metrics {
+    flex-wrap: wrap;
+  }
+
+  .hub-metric-tile {
+    flex: 1 1 33%;
+    padding: 24px 1.5rem;
+  }
+
+  .hub-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hub-sections-stack,
+  .hub-workshops__header,
+  .hub-mode-tabs {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .hub-workshop-section:nth-child(even) {
+    margin: 0 -1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* ── lg  1056px–1311px  ─────────────────────────────────────────── */
+@media (min-width: 1056px) {
+  .hub-hero__visual {
+    display: flex;
+  }
+
+  .hub-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Ocultar nav de escritorio en tamaños pequeños; show hamburger ─ */
+@media (max-width: 1055px) {
+  .cds--header__nav {
+    display: none;
+  }
+
+  .cds--header__menu-toggle {
+    display: inline-flex !important;
+  }
+}
+
+@media (min-width: 1056px) {
+  .cds--header__menu-toggle {
+    display: none !important;
+  }
+}

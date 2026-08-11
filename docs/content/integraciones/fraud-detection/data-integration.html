@@ -1,0 +1,560 @@
+<div class="content-panel lab-template prose--full">
+  <header class="lab-banner">
+    <div class="lab-banner__tags"></div>
+    <h1 class="cds--productive-heading-05 lab-banner__title">Construcción de <span data-template="Pipeline_{N}">Pipeline_N</span></h1>
+    <p class="lab-banner__summary">
+      Construye el pipeline individual de detección, aplica PII masking y publica eventos Avro en <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>.
+    </p>
+  </header>
+
+  <div class="callout">
+    <p class="callout__title">Contexto activo</p>
+    <p data-participant-status>Selecciona tu número en Inicio antes de copiar configuraciones.</p>
+  </div>
+
+  <div class="callout" data-tone="success">
+    <p class="callout__title">Ritmo del workshop</p>
+    <p>Configura todos los stages, <strong>guarda</strong> y <strong>valida una sola vez</strong> al final. No uses preview por etapa: en un entorno compartido se demora demasiado. Si la validación pasa, <strong>enciende el pipeline</strong> y verifica el resultado en Confluent.</p>
+  </div>
+
+  <div class="callout" data-tone="info">
+    <p class="callout__title">Conexiones ya preparadas</p>
+    <p>Las conexiones de <strong>Confluent</strong> y <strong>PostgreSQL</strong> ya están creadas en watsonx.data integration. <strong>No crees conexiones nuevas ni edites las compartidas.</strong> Tú añades los stages de Kafka y JDBC al canvas; en cada uno selecciona la conexión existente del proyecto (la misma que usa <code>Pipeline_0</code> como referencia).</p>
+  </div>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Objetivo</h2>
+    <div class="lab-task-grid">
+      <article class="lab-task-card">
+        <h3 class="cds--productive-heading-03">Preparado por IBM</h3>
+        <p><code>Pipeline_0</code>, conexiones de Confluent y PostgreSQL, tópicos, subjects y tablas JDBC del 0 al 30.</p>
+      </article>
+      <article class="lab-task-card">
+        <h3 class="cds--productive-heading-03">Tu tarea</h3>
+        <p>Crear <code data-template="Pipeline_{N}">Pipeline_N</code>, arrastrar los stages al canvas y configurar cada bloque. Reutiliza las conexiones existentes; el tópico de <strong>entrada</strong> es común para todos y el de <strong>salida</strong> es el tuyo.</p>
+      </article>
+    </div>
+    <div class="callout" data-tone="tip">
+      <p class="callout__title">Regla de oro</p>
+      <p>Mantén <code>Pipeline_0</code> abierto en otra pestaña. Para cada stage, replica la misma conexión y los mismos campos; solo cambia recursos con tu <code>N</code> (consumer group, tópico de salida, tabla JDBC y subject).</p>
+    </div>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Bloque 1 — Crear el pipeline</h2>
+
+    <h3 class="cds--productive-heading-03">Paso 1 — Crear el pipeline individual</h3>
+    <ol class="cds--list--ordered">
+      <li class="cds--list__item">Abre el proyecto de watsonx.data integration.</li>
+      <li class="cds--list__item">Abre <code>Pipeline_0</code> en otra pestaña como referencia visual. No lo edites.</li>
+      <li class="cds--list__item">Crea un pipeline de StreamSets vacío.</li>
+      <li class="cds--list__item">Asigna el nombre <code data-template="Pipeline_{N}">Pipeline_N</code>.</li>
+      <li class="cds--list__item">Guarda antes de añadir stages.</li>
+    </ol>
+
+    <h3 class="cds--productive-heading-03">Paso 2 — Construir el canvas</h3>
+    <p>Desde el panel de stages, arrastra y conecta los componentes en este orden. Los cuadros de <strong>Kafka</strong> y <strong>JDBC</strong> los creas tú; las conexiones las eliges del proyecto en cada stage:</p>
+    <ol class="cds--list--ordered">
+      <li class="cds--list__item"><strong>Rama principal:</strong> Consumidor multitemático → Búsqueda de JDBC → Evaluador de JavaScript → Enmascarador de campos → Productor de Kafka.</li>
+      <li class="cds--list__item"><strong>Segunda salida del Evaluador:</strong> conecta la salida adicional del Evaluador al Productor de JDBC (actualización de estado en PostgreSQL).</li>
+      <li class="cds--list__item">Verifica que el flujo coincida con <code>Pipeline_0</code> antes de configurar cada stage.</li>
+    </ol>
+    <div class="lab-flow-diagram lab-flow-diagram--pipeline" aria-label="Stages del pipeline">
+      <div class="lab-flow-diagram__lane">
+        <span class="lab-flow-diagram__lane-label">Rama principal (Kafka)</span>
+        <div class="lab-flow-diagram__track">
+          <div class="lab-flow-diagram__node">Kafka Consumer</div>
+          <div class="lab-flow-diagram__node">JDBC Lookup</div>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--process">JS Evaluator</div>
+          <div class="lab-flow-diagram__node">Field Masker</div>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--individual">Kafka Producer</div>
+        </div>
+      </div>
+      <div class="lab-flow-diagram__branch">
+        <span class="lab-flow-diagram__branch-label">Segunda salida desde JS Evaluator</span>
+        <div class="lab-flow-diagram__track">
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--process">JS Evaluator</div>
+          <div class="lab-flow-diagram__node">JDBC Producer</div>
+        </div>
+      </div>
+    </div>
+    <figure class="lab-figure lab-figure--screenshot">
+      <img
+        src="./assets/images/labs/fraud-detection/screenshots/wxdi-pipeline-canvas.png"
+        alt="Canvas de Pipeline_N con stages conectados y bifurcación JDBC"
+        class="lab-figure__img"
+        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/wxdi-pipeline-canvas.png"
+        loading="lazy"
+      />
+      <figcaption class="lab-figure__caption">Canvas esperado: Consumer → Lookup → Evaluator → Field Masker → Kafka Producer, con Evaluator → JDBC Producer como segunda salida.</figcaption>
+    </figure>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Bloque 2 — Configurar stages</h2>
+
+    <div class="callout" data-tone="tip">
+      <p class="callout__title">Edición en masa</p>
+      <p>Cuando un stage pida <strong>correlaciones de columnas</strong> o reglas de masking, activa <strong>modo de edición en masa</strong> y pega el JSON completo de esta guía o de <code>Pipeline_0</code>. No mapees fila por fila.</p>
+    </div>
+
+    <p>Abre cada stage en el orden del canvas. Replica <code>Pipeline_0</code> y cambia solo lo indicado en el hint.</p>
+
+    <div class="lab-stage-stack">
+
+      <details class="lab-stage-panel">
+        <summary class="lab-stage-panel__summary">
+          <img
+            class="lab-stage-panel__chip"
+            src="./assets/images/labs/wxdi/stages/stage-kafka-consumer.png"
+            alt="Consumidor multitemático de Kafka"
+            width="220"
+            height="48"
+            loading="lazy"
+          />
+          <span class="lab-stage-panel__hint">Grupo <code class="lab-resource" data-template="fraud-workshop-{N}">fraud-workshop-N</code> · entrada compartida</span>
+        </summary>
+        <div class="lab-stage-panel__body">
+          <div class="lab-stage-focus">
+            <span class="lab-stage-focus__label">Solo cambias</span>
+            Grupo de consumidores → <code class="lab-resource" data-template="fraud-workshop-{N}">fraud-workshop-N</code>
+            <span class="lab-config-hint">En <code>Pipeline_0</code>: <code>fraud-demo-0</code></span>
+          </div>
+          <p class="lab-stage-note">El resto igual que <code>Pipeline_0</code>.</p>
+          <table class="lab-config-table">
+            <tbody>
+              <tr><th>Conexión</th><td><strong>Confluent Cloud</strong> (del proyecto)</td></tr>
+              <tr><th>Tipo de suscripción</th><td><code>Lista de temas</code></td></tr>
+              <tr><th>Lista de temas</th><td><code class="lab-resource">TransaccionesEnriquecidas-0</code> (compartida)</td></tr>
+              <tr><th>Hebras / lote / offset</th><td><code>1</code> · <code>1000</code> · <code>2000</code> ms · <code>Primero</code></td></tr>
+              <tr><th>Deserializadores</th><td>Clave <code>Serie</code> · valor <code>Confluent</code> · tombstones <code>Ignore</code></td></tr>
+              <tr><th>Formato</th><td><code>Avro</code> · Schema Registry</td></tr>
+              <tr><th>Subject</th><td><code class="lab-resource">TransaccionesEnriquecidas-0-value</code></td></tr>
+            </tbody>
+          </table>
+          <p class="lab-stage-note">Campos esperados: <code>transaction_id</code>, <code>amount</code>, <code>lat</code>, <code>lon</code>, <code>customer_risk_score</code>.</p>
+        </div>
+      </details>
+
+      <details class="lab-stage-panel">
+        <summary class="lab-stage-panel__summary">
+          <img
+            class="lab-stage-panel__chip"
+            src="./assets/images/labs/wxdi/stages/stage-jdbc-lookup.png"
+            alt="Búsqueda de JDBC"
+            width="180"
+            height="48"
+            loading="lazy"
+          />
+          <span class="lab-stage-panel__hint">Tabla <code class="lab-resource" data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code></span>
+        </summary>
+        <div class="lab-stage-panel__body">
+          <div class="lab-stage-focus">
+            <span class="lab-stage-focus__label">Solo cambias</span>
+            Tabla en la consulta SQL → <code class="lab-resource" data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code>
+            <span class="lab-config-hint">En <code>Pipeline_0</code>: <code>fraud_customer_gps_0</code></span>
+          </div>
+          <p class="lab-stage-note">Conexión PostgreSQL del proyecto. Opciones igual que <code>Pipeline_0</code>.</p>
+          <table class="lab-config-table">
+            <tbody>
+              <tr><th>Conexión</th><td><strong>PostgreSQL</strong></td></tr>
+              <tr><th>Valores múltiples</th><td><code>Solo el primer valor</code></td></tr>
+              <tr><th>Sin coincidencia</th><td><code>Pasar el registro sin cambios</code></td></tr>
+              <tr><th>Validaciones</th><td>Correlaciones y consulta <strong>activadas</strong> · caché <strong>desactivada</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="lab-paste-block">
+            <p class="lab-paste-block__title">1 · Consulta SQL</p>
+            <pre><code>SELECT
+  lat AS prev_lat,
+  lon AS prev_lon,
+  event_time AS prev_event_time
+FROM fraud_customer_gps_N
+WHERE customer_id =
+'${record:value("/customer_id")}'</code></pre>
+          </div>
+          <div class="lab-paste-block">
+            <p class="lab-paste-block__title">2 · Correlaciones (edición en masa)</p>
+            <p class="lab-paste-block__hint">Activa <strong>modo de edición en masa</strong> y pega:</p>
+            <pre><code>[
+  {
+    "defaultValue": null,
+    "columnName": "prev_lat",
+    "field": "/prev_lat",
+    "dataType": "USE_COLUMN_TYPE"
+  },
+  {
+    "defaultValue": null,
+    "columnName": "prev_lon",
+    "field": "/prev_lon",
+    "dataType": "USE_COLUMN_TYPE"
+  },
+  {
+    "defaultValue": null,
+    "columnName": "prev_event_time",
+    "field": "/prev_event_time",
+    "dataType": "USE_COLUMN_TYPE"
+  }
+]</code></pre>
+          </div>
+          <p class="lab-stage-note">Si no hay historial previo, los campos <code>prev_*</code> llegan vacíos.</p>
+        </div>
+      </details>
+
+      <details class="lab-stage-panel">
+        <summary class="lab-stage-panel__summary">
+          <img
+            class="lab-stage-panel__chip"
+            src="./assets/images/labs/wxdi/stages/stage-js-evaluator.png"
+            alt="Evaluador de JavaScript"
+            width="200"
+            height="48"
+            loading="lazy"
+          />
+          <span class="lab-stage-panel__hint">Script completo abajo · <code>Lote por lote</code></span>
+        </summary>
+        <div class="lab-stage-panel__body">
+          <div class="lab-stage-focus">
+            <span class="lab-stage-focus__label">Solo cambias</span>
+            Nada — pega el script completo de abajo (igual que <code>Pipeline_0</code>)
+          </div>
+          <table class="lab-config-table">
+            <tbody>
+              <tr><th>Modo</th><td><code>Lote por lote</code></td></tr>
+              <tr><th>Salida</th><td><code>fraud_score</code> (0–100) · <code>fraud_category</code> · <code>sdc.operation.type</code></td></tr>
+            </tbody>
+          </table>
+          <div class="lab-paste-block">
+            <p class="lab-paste-block__title">Script del Evaluador</p>
+            <p class="lab-paste-block__hint">Copia desde <code>workshop/streamsets/fraud-evaluator.js</code> o desde <code>Pipeline_0</code>.</p>
+            <pre><code>function epochMillis(value) {
+  if (value == null) {
+    throw new Error('timestamp requerido');
+  }
+  if (value instanceof java.util.Date) {
+    return value.getTime();
+  }
+
+  var raw = String(value).trim();
+  try {
+    return java.time.Instant.parse(raw).toEpochMilli();
+  } catch (ignored) {
+    return java.time.LocalDateTime
+      .parse(raw.replace(' ', 'T'))
+      .toInstant(java.time.ZoneOffset.UTC)
+      .toEpochMilli();
+  }
+}
+
+for (var i = 0; i &lt; records.length; i++) {
+  var record = records[i];
+  try {
+    var lat2 = Number(record.value['lat']);
+    var lon2 = Number(record.value['lon']);
+    var currentMs = epochMillis(record.value['event_time']);
+    var hasPrevious = record.value['prev_lat'] != null &amp;&amp;
+      record.value['prev_lon'] != null &amp;&amp;
+      record.value['prev_event_time'] != null;
+
+    var speedKmh = 0.0;
+
+    if (hasPrevious) {
+      var lat1 = Number(record.value['prev_lat']);
+      var lon1 = Number(record.value['prev_lon']);
+      var previousMs = epochMillis(record.value['prev_event_time']);
+      var deltaHours = (currentMs - previousMs) / 3600000.0;
+      if (deltaHours &lt;= 0.0) {
+        throw new Error('event_time debe ser posterior a prev_event_time');
+      }
+
+      var dLat = lat2 - lat1;
+      var dLon = lon2 - lon1;
+      var meanLat = (lat1 + lat2) / 2.0 * Math.PI / 180.0;
+      var distanceKm = 111.195 * Math.sqrt(
+        dLat * dLat + Math.pow(dLon * Math.cos(meanLat), 2.0)
+      );
+      speedKmh = distanceKm &lt; 0.05 ? 0.0 : distanceKm / deltaHours;
+    }
+
+    var amount = Math.max(0.0, Number(record.value['amount']));
+
+    var speedComponent = speedKmh &lt;= 0.0
+      ? 0.0
+      : 100.0 * speedKmh / (speedKmh + 80.0);
+    var amountComponent = amount &lt;= 0.0
+      ? 0.0
+      : 80.0 * amount / (amount + 1700000.0);
+    var dominant = Math.max(speedComponent, amountComponent);
+    var secondary = Math.min(speedComponent, amountComponent);
+    var continuousRisk = dominant +
+      0.25 * secondary * (1.0 - dominant / 100.0);
+    continuousRisk = Math.max(0.0, Math.min(100.0, continuousRisk));
+
+    record.value['fraud_score'] = Math.round(continuousRisk);
+    record.value['fraud_category'] =
+      speedKmh &gt; 268.224 || continuousRisk &gt;= 70 ? 'FRAUDULENTA' :
+      continuousRisk &gt;= 40 ? 'SOSPECHOSA' :
+      'NORMAL';
+
+    record.attributes['sdc.operation.type'] = hasPrevious ? '3' : '1';
+
+    output.write(record);
+  } catch (exception) {
+    error.write(record, String(exception));
+  }
+}</code></pre>
+          </div>
+          <table class="lab-config-table">
+            <tbody>
+              <tr><th><code>fraud_category</code></th><td><code>NORMAL</code> &lt; 40 · <code>SOSPECHOSA</code> ≥ 40 · <code>FRAUDULENTA</code> si velocidad &gt; 268 km/h o score ≥ 70</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="lab-stage-panel">
+        <summary class="lab-stage-panel__summary">
+          <img
+            class="lab-stage-panel__chip"
+            src="./assets/images/labs/wxdi/stages/stage-field-masker.png"
+            alt="Enmascarador de campos"
+            width="220"
+            height="48"
+            loading="lazy"
+          />
+          <span class="lab-stage-panel__hint">JSON de masking · rama principal</span>
+        </summary>
+        <div class="lab-stage-panel__body">
+          <div class="lab-stage-focus">
+            <span class="lab-stage-focus__label">Solo cambias</span>
+            Nada — pega el JSON de masking de <code>Pipeline_0</code>
+          </div>
+          <table class="lab-config-table">
+            <tbody>
+              <tr><th>Campos</th><td><code>/customer_name</code> · <code>/customer_email</code> · <code>/card_id</code></td></tr>
+              <tr><th>Error</th><td><code>Enviar a error</code></td></tr>
+            </tbody>
+          </table>
+          <div class="lab-paste-block">
+            <p class="lab-paste-block__title">Reglas de masking (edición en masa)</p>
+            <pre><code>[
+  {
+    "fields": ["/customer_name"],
+    "maskType": "VARIABLE_LENGTH",
+    "mask": null,
+    "regex": "(.*)",
+    "groupsToShow": "1"
+  },
+  {
+    "fields": ["/customer_email"],
+    "maskType": "REGEX",
+    "mask": null,
+    "regex": "([^@]+)(@.*)",
+    "groupsToShow": "2"
+  },
+  {
+    "fields": ["/card_id"],
+    "maskType": "REGEX",
+    "mask": null,
+    "regex": "(.*)(.{4})",
+    "groupsToShow": "2"
+  }
+]</code></pre>
+          </div>
+        </div>
+      </details>
+
+      <details class="lab-stage-panel">
+        <summary class="lab-stage-panel__summary">
+          <img
+            class="lab-stage-panel__chip"
+            src="./assets/images/labs/wxdi/stages/stage-kafka-producer.png"
+            alt="Productor de Kafka"
+            width="180"
+            height="48"
+            loading="lazy"
+          />
+          <span class="lab-stage-panel__hint">Salida <code class="lab-resource" data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code> · sin incluir esquema</span>
+        </summary>
+        <div class="lab-stage-panel__body">
+          <div class="lab-stage-focus">
+            <span class="lab-stage-focus__label">Solo cambias</span>
+            Tópico → <code class="lab-resource" data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>
+            · Subject → <code class="lab-resource" data-template="TransaccionesEvaluadas-{N}-value">TransaccionesEvaluadas-N-value</code>
+          </div>
+          <table class="lab-config-table">
+            <tbody>
+              <tr><th>Conexión</th><td><strong>Confluent Cloud</strong></td></tr>
+              <tr><th>Partición</th><td><code>Iteración cíclica</code> · cabeceras <strong>activadas</strong></td></tr>
+              <tr><th>Clave</th><td><code>${record:value('/customer_id')}</code></td></tr>
+              <tr><th>Serializadores</th><td>Clave <code>Serie</code> · valor <code>Confluent</code> · <code>Avro</code></td></tr>
+              <tr><th>Incluir esquema</th><td><strong>Desactivado</strong> · compresión <code>Ninguna</code></td></tr>
+            </tbody>
+          </table>
+          <div class="callout" data-tone="warning">
+            <p class="callout__title">No publiques un Avro Object Container File</p>
+            <p>Si Confluent muestra <code>Obj</code>, revisa <strong>Incluir esquema</strong> desactivado.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="lab-stage-panel">
+        <summary class="lab-stage-panel__summary">
+          <img
+            class="lab-stage-panel__chip"
+            src="./assets/images/labs/wxdi/stages/stage-jdbc-producer.png"
+            alt="Productor de JDBC"
+            width="200"
+            height="48"
+            loading="lazy"
+          />
+          <span class="lab-stage-panel__hint">UPDATE en <code class="lab-resource" data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code> · segunda salida del Evaluador</span>
+        </summary>
+        <div class="lab-stage-panel__body">
+          <div class="lab-stage-focus">
+            <span class="lab-stage-focus__label">Solo cambias</span>
+            Tabla → <code class="lab-resource" data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code>
+            · conecta desde la <strong>segunda salida del Evaluador</strong>
+          </div>
+          <table class="lab-config-table">
+            <tbody>
+              <tr><th>Conexión</th><td><strong>PostgreSQL</strong></td></tr>
+              <tr><th>Esquema / tabla</th><td><code>public</code> · <code class="lab-resource" data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code></td></tr>
+              <tr><th>Operación</th><td><code>UPDATE</code> · cambios <code>Ninguno</code> · no admitidas <code>Descartar</code></td></tr>
+            </tbody>
+          </table>
+          <div class="lab-paste-block">
+            <p class="lab-paste-block__title">Correlaciones (edición en masa)</p>
+            <p class="lab-paste-block__hint">No uses <code>INSERT</code>. El Evaluator marca <code>sdc.operation.type</code>.</p>
+            <pre><code>[
+  {
+    "paramValue": "?",
+    "columnName": "customer_id",
+    "field": "/customer_id",
+    "dataType": "USE_COLUMN_TYPE"
+  },
+  {
+    "paramValue": "?",
+    "columnName": "lat",
+    "field": "/lat",
+    "dataType": "USE_COLUMN_TYPE"
+  },
+  {
+    "paramValue": "?",
+    "columnName": "lon",
+    "field": "/lon",
+    "dataType": "USE_COLUMN_TYPE"
+  },
+  {
+    "paramValue": "?",
+    "columnName": "event_time",
+    "field": "/event_time",
+    "dataType": "USE_COLUMN_TYPE"
+  },
+  {
+    "paramValue": "?",
+    "columnName": "fraud_score",
+    "field": "/fraud_score",
+    "dataType": "USE_COLUMN_TYPE"
+  },
+  {
+    "paramValue": "?",
+    "columnName": "fraud_category",
+    "field": "/fraud_category",
+    "dataType": "USE_COLUMN_TYPE"
+  }
+]</code></pre>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Bloque 3 — Validar y comprobar</h2>
+
+    <p>Antes de validar, repasa este checklist rápido:</p>
+    <ul class="lab-checklist">
+      <li>Consumer: Confluent Cloud + entrada <code class="lab-resource">TransaccionesEnriquecidas-0</code> + grupo <code class="lab-resource" data-template="fraud-workshop-{N}">fraud-workshop-N</code>.</li>
+      <li>Lookup: SQL sobre <code class="lab-resource" data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code> + JSON de correlaciones.</li>
+      <li>Evaluator: script de <code>Pipeline_0</code> + <code>Lote por lote</code>.</li>
+      <li>Masker: JSON de masking pegado en bulk.</li>
+      <li>Producer: salida <code class="lab-resource" data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code> + subject individual + sin incluir esquema.</li>
+      <li>JDBC Producer: tabla <code class="lab-resource" data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code> + JSON de correlaciones + <code>UPDATE</code>.</li>
+    </ul>
+    <ol class="cds--list--ordered">
+      <li class="cds--list__item">Guarda el pipeline completo.</li>
+      <li class="cds--list__item">Haz clic en <strong>Validar</strong>. Corrige cualquier error de conexión o configuración antes de continuar.</li>
+      <li class="cds--list__item">Si la validación pasa, inicia <code data-template="Pipeline_{N}">Pipeline_N</code>.</li>
+      <li class="cds--list__item">En Confluent abre <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code> y usa <strong>Consume latest</strong> para ver mensajes recientes.</li>
+    </ol>
+    <ul class="lab-checklist">
+      <li>Los mensajes se decodifican como campos Avro.</li>
+      <li><code>fraud_score</code> está entre 0 y 100.</li>
+      <li>Nombre, correo y tarjeta están enmascarados.</li>
+      <li>La tabla JDBC se actualiza sin errores de primary key.</li>
+    </ul>
+    <figure class="lab-figure lab-figure--screenshot">
+      <img
+        src="./assets/images/labs/fraud-detection/screenshots/wxdi-producer-avro.png"
+        alt="Mensaje Avro decodificado en Confluent desde TransaccionesEvaluadas-N con fraud_score y PII enmascarada"
+        class="lab-figure__img"
+        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/wxdi-producer-avro.png"
+        loading="lazy"
+      />
+      <figcaption class="lab-figure__caption">Verificación en Confluent: panel <strong>Value</strong> con Avro decodificado (<code>fraud_score</code>, <code>fraud_category</code>, PII enmascarada). No debe aparecer <code>Obj</code>.</figcaption>
+    </figure>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Problemas frecuentes</h2>
+    <div class="lab-table-wrap">
+      <table class="lab-table">
+        <thead><tr><th>Síntoma</th><th>Qué revisar</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Sin datos en el tópico de entrada</td>
+            <td>Revisa <a href="#/lab/fraud-detection/confluent">Confluent + Flink</a>. Avisa al facilitador si el generador no está activo.</td>
+          </tr>
+          <tr>
+            <td>Selector de campos vacío en un stage</td>
+            <td>Activa <strong>edición en masa</strong> y pega el JSON completo de esta guía o de <code>Pipeline_0</code>.</td>
+          </tr>
+          <tr>
+            <td>Validación muy lenta</td>
+            <td>Es normal en el workshop. Configura todos los stages y valida <strong>una sola vez</strong> al final.</td>
+          </tr>
+          <tr>
+            <td>Error de conexión JDBC o Kafka</td>
+            <td>Usa la conexión del proyecto. No crees una nueva. Compara con <code>Pipeline_0</code>.</td>
+          </tr>
+          <tr>
+            <td>Tópico incorrecto</td>
+            <td>Entrada: <code>TransaccionesEnriquecidas-0</code>. Salida: <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>.</td>
+          </tr>
+          <tr>
+            <td>Segunda salida del Evaluador sin conectar</td>
+            <td>La rama JDBC sale del <strong>Evaluador</strong>, no del Enmascarador.</td>
+          </tr>
+          <tr>
+            <td>Lookup sin <code>prev_*</code></td>
+            <td>Revisa la tabla en el SQL y el JSON de correlaciones. Sin historial previo, los campos llegan vacíos (es normal la primera vez).</td>
+          </tr>
+          <tr>
+            <td>Mensaje <code>Obj</code> en Confluent</td>
+            <td>En el Productor: <strong>Incluir esquema</strong> desactivado. Subject: <code data-template="TransaccionesEvaluadas-{N}-value">TransaccionesEvaluadas-N-value</code>.</td>
+          </tr>
+          <tr>
+            <td>Pipeline en <code>Canceling</code> o engine caído</td>
+            <td>Renueva estado <strong>una vez</strong> y avisa al facilitador. No lances ejecuciones repetidas.</td>
+          </tr>
+          <tr>
+            <td>Error JDBC duplicado</td>
+            <td>Operación <code>UPDATE</code> con <code>customer_id</code> como clave en el Productor de JDBC.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

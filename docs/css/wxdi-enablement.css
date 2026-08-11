@@ -1,0 +1,105 @@
+/* wxDI enablement — extends confluent enablement patterns */
+
+.wxdi-pillar-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  margin: 1.5rem 0;
+}
+
+.wxdi-pillar-card {
+  padding: 1.25rem;
+  border: 1px solid var(--cds-border-subtle-01, #c6c6c6);
+  border-radius: 4px;
+  background: var(--cds-layer-01, #f4f4f4);
+  border-top: 3px solid #6929c4;
+}
+
+.wxdi-pillar-card .ce-triada-card__list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+  font-size: 0.8125rem;
+}
+
+.wxdi-pillar-card--streamsets { border-top-color: #6929c4; }
+.wxdi-pillar-card--datastage { border-top-color: #0f62fe; }
+.wxdi-pillar-card--replication { border-top-color: #1192e8; }
+.wxdi-pillar-card--udi { border-top-color: #009d9a; }
+.wxdi-pillar-card--databand { border-top-color: #198038; }
+
+.wxdi-pillar-card__name {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.wxdi-pillar-card__tag {
+  margin: 0 0 0.75rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cds-text-secondary, #525252);
+}
+
+.wxdi-stage-sim__track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  min-height: 3rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--cds-border-subtle-01, #c6c6c6);
+  border-radius: 4px;
+  background: var(--cds-layer-02, #fff);
+}
+
+/* Legacy simulator styles — kept if reused in lab steps */
+
+.wxdi-stage-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--cds-border-subtle-01, #c6c6c6);
+  border-radius: 4px;
+  background: var(--cds-layer-01, #f4f4f4);
+  cursor: grab;
+  user-select: none;
+  font-size: 0.8125rem;
+}
+
+.wxdi-stage-chip--dragging {
+  opacity: 0.5;
+}
+
+.wxdi-stage-chip__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: #6929c4;
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.wxdi-stage-chip__label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+}
+
+.wxdi-stage-sim__btn {
+  margin-top: 0.75rem;
+}
+
+.cds--g100 .wxdi-pillar-card,
+.cds--g100 .wxdi-stage-chip {
+  background: var(--cds-layer-01, #262626);
+}
+
+.cds--g100 .wxdi-stage-sim__track {
+  background: var(--cds-layer-02, #393939);
+}

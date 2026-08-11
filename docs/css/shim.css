@@ -1,0 +1,51 @@
+/*
+ * shim.css — Bridges legacy custom properties to Carbon design tokens.
+ * This file is a transitional layer. Each alias is removed as the
+ * consuming component is migrated to use cds--* classes directly.
+ */
+
+:root {
+  /* Typography */
+  --font-sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+
+  /* Colours aliased to Carbon custom properties */
+  --color-primary:        var(--cds-interactive, #0f62fe);
+  --color-primary-hover:  var(--cds-link-primary-hover, #0043ce);
+  --color-secondary:      var(--cds-link-secondary, #0043ce);
+  --color-bg:             var(--cds-background, #ffffff);
+  --color-surface:        var(--cds-layer-02, #ffffff);
+  --color-surface-muted:  var(--cds-layer-01, #f4f4f4);
+  --color-border:         var(--cds-border-subtle-01, #c6c6c6);
+  --color-text:           var(--cds-text-primary, #161616);
+  --color-heading:        var(--cds-text-primary, #161616);
+  --color-muted:          var(--cds-text-helper, #6f6f6f);
+  --color-code-bg:        #161616;
+  --color-code-text:      var(--cds-text-inverse, #ffffff);
+
+  /* Status / support tones */
+  --color-note:    var(--cds-support-info, #0043ce);
+  --color-tip:     var(--cds-support-success, #24a148);
+  --color-warning: var(--cds-support-warning, #f1c21b);
+  --color-danger:  var(--cds-support-error, #da1e28);
+
+  /* Spacing — thin wrapper for remaining legacy uses */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;   /* = $spacing-05 */
+  --space-5: 24px;   /* = $spacing-06 */
+  --space-6: 32px;   /* = $spacing-07 */
+  --space-7: 48px;   /* = $spacing-09 */
+  --space-8: 64px;   /* = $spacing-10 */
+
+  /* Carbon container width */
+  --container-width: 1312px;
+}
+
+/* Keep Carbon's token contract available even when the CDN stylesheet is slow
+   or unavailable during a local static preview. */
+body {
+  --cds-interactive: var(--hub-core, #0f62fe);
+  --cds-focus: var(--hub-focus, #0f62fe);
+}

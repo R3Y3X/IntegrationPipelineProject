@@ -1,0 +1,96 @@
+/* -------------------------------------------------------- */
+/* Dynamic Primary Color based on Lab Category              */
+/* -------------------------------------------------------- */
+body[data-category="basic"] {
+  --dynamic-primary: var(--cds-blue-60, #0f62fe);
+  --dynamic-primary-hover: #0353e9;
+  --dynamic-tint: #edf5ff;
+  --dynamic-tint-dark: #001d6c;
+}
+body[data-category="integraciones"] {
+  --dynamic-primary: var(--cds-purple-60, #8a3ffc);
+  --dynamic-primary-hover: #6f2da8;
+  --dynamic-tint: #f6f2ff;
+  --dynamic-tint-dark: #261a3c;
+}
+body[data-category="premium"] {
+  --dynamic-primary: var(--cds-green-60, #198038);
+  --dynamic-primary-hover: #0e6027;
+  --dynamic-tint: #edf9f0;
+  --dynamic-tint-dark: #0e2e17;
+}
+
+/* Subnav active border & link color */
+body[data-category] .hub-subnav .cds--tabs__nav-item--selected {
+  border-bottom-color: var(--dynamic-primary) !important;
+}
+
+body[data-category] .hub-subnav .cds--tabs__nav-item--selected .cds--tabs__nav-link {
+  color: var(--dynamic-primary) !important;
+}
+
+/* TOC active item (En esta página) */
+body[data-category] .lab-toc__link[aria-current='location'] {
+  border-left-color: var(--dynamic-primary) !important;
+  color: var(--dynamic-primary) !important;
+  font-weight: 600;
+}
+
+/* Buttons primary dynamic accent */
+body[data-category] .cds--btn--primary {
+  background-color: var(--dynamic-primary) !important;
+  border-color: var(--dynamic-primary) !important;
+}
+body[data-category] .cds--btn--primary:hover {
+  background-color: var(--dynamic-primary-hover) !important;
+}
+
+/* -------------------------------------------------------- */
+/* Visual Hierarchy Differentiation: Titles, Subtitles, Callouts */
+/* -------------------------------------------------------- */
+
+/* Main Step Headings (h2) */
+body[data-category] .prose h2,
+body[data-category] .lab-section > h2,
+body[data-category] .cds--productive-heading-04 {
+  border-left: 4px solid var(--dynamic-primary) !important;
+  padding-left: 0.75rem !important;
+  margin-top: 2rem !important;
+  margin-bottom: 1rem !important;
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+  color: var(--cds-text-primary, #161616);
+}
+
+/* Sub-step Headings (h3) */
+body[data-category] .prose h3,
+body[data-category] .lab-section > h3,
+body[data-category] .cds--productive-heading-03 {
+  border-left: none !important;
+  padding-left: 0 !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.75rem !important;
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  color: var(--cds-text-primary, #161616);
+}
+
+/* Callouts - Info tone override for Integraciones (Purple Theme) */
+body[data-category="integraciones"] .callout[data-tone="info"],
+body[data-category="integraciones"] .callout:not([data-tone]) {
+  border-left-color: var(--dynamic-primary) !important;
+  background-color: var(--dynamic-tint) !important;
+}
+body.cds--g100[data-category="integraciones"] .callout[data-tone="info"],
+body.cds--g100[data-category="integraciones"] .callout:not([data-tone]) {
+  border-left-color: #a66efa !important;
+  background-color: var(--dynamic-tint-dark) !important;
+}
+
+/* Ordered list instruction step numbers */
+body[data-category] .cds--list--ordered > .cds--list__item::marker {
+  color: var(--dynamic-primary) !important;
+  font-weight: 700;
+}

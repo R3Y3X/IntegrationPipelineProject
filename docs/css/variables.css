@@ -1,0 +1,23 @@
+/*
+ * variables.css — Project-specific custom properties only.
+ * Carbon design tokens (--cds-*) are loaded from the Carbon CDN stylesheet.
+ * Legacy color/radius/spacing variables have been removed; use --cds-* tokens directly.
+ * Theme switching is handled via the cds--g100 body class (see theme.js).
+ */
+
+:root {
+  --font-sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+
+  /* Project accents mapped to Carbon's accessible color families. */
+  --hub-container: 1312px;
+  --hub-gutter: 2rem;
+  --hub-core: #0f62fe;
+  --hub-core-hover: #0043ce;
+  --hub-integration: #8a3ffc;
+  --hub-premium: #198038;
+  --hub-focus: #0f62fe;
+  --hub-header-height: 48px;
+  --hub-layer-border: var(--cds-border-subtle-01, #c6c6c6);
+  --hub-motion: 160ms ease;
+}

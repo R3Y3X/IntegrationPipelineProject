@@ -1,0 +1,932 @@
+<div class="content-panel lab-template prose--full">
+  <div class="lab-banner">
+    <div class="lab-banner__tags">
+      <span class="cds--tag cds--tag--purple">Fase 1 — Confluent Cloud</span>
+      <span class="cds--tag cds--tag--cool-gray">~60 min</span>
+      <span class="cds--tag cds--tag--teal">Event Streaming · Kafka · Flink · ACLs</span>
+    </div>
+    <h1 class="cds--productive-heading-05 lab-banner__title">Confluent Cloud — Fase 1</h1>
+    <p class="cds--body-02 lab-banner__summary">
+      Configurá los componentes de Confluent necesarios para el bootcamp: explorá el clúster compartido, enviá transacciones sucias desde la VM, observá cómo Flink las limpia y gestioná tus permisos ACL.
+    </p>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       CASO DE USO: FRAUDE EN TIEMPO REAL
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">El caso de uso: detección de fraude en tiempo real</h2>
+
+    <div class="ce-usecase-hero">
+      <div class="ce-usecase-hero__content">
+        <p class="ce-usecase-hero__lead">Cada segundo se procesan miles de transacciones financieras alrededor del mundo. El fraude no avisa — ocurre en milisegundos, y el daño se consolida antes de que cualquier reporte nocturno lo detecte.</p>
+        <p class="ce-usecase-hero__body">En este bootcamp vas a construir la capa de datos en tiempo real que hace posible detectar ese fraude <em>antes</em> de que la transacción sea aprobada. El flujo es el siguiente:</p>
+      </div>
+    </div>
+
+    <!-- Flujo del caso de uso -->
+    <div class="ce-flow">
+      <div class="ce-flow__step">
+        <div class="ce-flow__num">1</div>
+        <div class="ce-flow__body">
+          <p class="ce-flow__title">VM generadora de transacciones sucias</p>
+          <p class="ce-flow__desc">Una VM simuladora publica eventos Avro al tópico <code>TransaccionesSucias-0</code>. Cada mensaje contiene campos con defectos intencionales: montos como texto con símbolos, IDs con espacios, fechas con formatos inconsistentes.</p>
+        </div>
+      </div>
+      <div class="ce-flow__arrow" aria-hidden="true">→</div>
+      <div class="ce-flow__step">
+        <div class="ce-flow__num">2</div>
+        <div class="ce-flow__body">
+          <p class="ce-flow__title">Flink SQL limpia el stream</p>
+          <p class="ce-flow__desc">Apache Flink lee <code>TransaccionesSucias-0</code> en tiempo real, aplica transformaciones SQL (TRIM, UPPER, CAST, REGEXP_REPLACE) y publica transacciones normalizadas en un tópico limpio.</p>
+        </div>
+      </div>
+      <div class="ce-flow__arrow" aria-hidden="true">→</div>
+      <div class="ce-flow__step">
+        <div class="ce-flow__num">3</div>
+        <div class="ce-flow__body">
+          <p class="ce-flow__title">Pipeline de scoring (StreamSets)</p>
+          <p class="ce-flow__desc">Tu pipeline consume las transacciones ya limpias, aplica reglas de scoring y clasifica cada una como NORMAL, SOSPECHOSA o FRAUDULENTA antes de publicar el resultado.</p>
+        </div>
+      </div>
+      <div class="ce-flow__arrow" aria-hidden="true">→</div>
+      <div class="ce-flow__step">
+        <div class="ce-flow__num">4</div>
+        <div class="ce-flow__body">
+          <p class="ce-flow__title">Decisión con IA (Orchestrate)</p>
+          <p class="ce-flow__desc">Un agente de watsonx Orchestrate consulta los resultados en lenguaje natural: "¿Cuántas transacciones fraudulentas hubo en los últimos 5 minutos en Brasil?"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       PASO 1 — EL CLÚSTER
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">
+      <span class="lab-step-badge">Paso 1</span>
+      Exploración del clúster
+    </h2>
+    <p class="cds--body-01">Un <strong>clúster de Kafka</strong> es el conjunto de brokers que almacena y distribuye los eventos. Es la unidad de despliegue fundamental en Confluent Cloud — todo tópico, schema y conector vive dentro de un clúster.</p>
+
+    <div class="callout" data-tone="info">
+      <p class="callout__title">Demostración IBM</p>
+      <p>IBM navega el clúster compartido <strong>Cluster Beetech</strong>. Los participantes observan la configuración preexistente antes de crear sus propios recursos.</p>
+    </div>
+
+    <div class="lab-table-wrap" style="margin-top:1rem;">
+      <table class="lab-table">
+        <thead><tr><th>Parámetro</th><th>Valor</th><th>Qué significa</th></tr></thead>
+        <tbody>
+          <tr><td>Nombre</td><td><code>Beetech</code></td><td>Identificador del clúster en Confluent Cloud</td></tr>
+          <tr><td>Tipo</td><td>Standard</td><td>Multi-zona, Tiered Storage, escalamiento elástico</td></tr>
+          <tr><td>Cloud / Región</td><td>AWS us-east-1</td><td>Proveedor y región donde corren los brokers</td></tr>
+          <tr><td>Bootstrap server</td><td><em>Se envía por correo</em></td><td>URL que usan los clientes para conectarse al clúster</td></tr>
+          <tr><td>Particiones disponibles</td><td>Compartidas entre participantes</td><td>Unidad de paralelismo para lectura/escritura</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">Conceptos clave del clúster</h3>
+    <div class="ce-concepts-grid">
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Broker</p>
+        <p class="ce-concept-card__def">Servidor individual del clúster. Almacena particiones de tópicos y atiende solicitudes de producers y consumers.</p>
+      </div>
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Partición</p>
+        <p class="ce-concept-card__def">Unidad de almacenamiento y paralelismo. Cada tópico tiene N particiones; dentro de cada partición los mensajes están ordenados por offset.</p>
+      </div>
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Offset</p>
+        <p class="ce-concept-card__def">Número secuencial único de cada mensaje dentro de una partición. Los consumers guardan su posición de lectura usando el offset.</p>
+      </div>
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Replication factor</p>
+        <p class="ce-concept-card__def">Cantidad de copias de cada partición distribuidas en distintos brokers. Un factor de 3 garantiza tolerancia a fallos de hasta 2 brokers.</p>
+      </div>
+    </div>
+
+    <figure class="lab-figure" style="margin-top:1.25rem;">
+      
+        <img
+              src="./assets/images/labs/confluent/Cluster.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+      
+    </figure>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       PASO 2 — TÓPICO DE ENTRADA Y VM
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">
+      <span class="lab-step-badge">Paso 2</span>
+      Tópico de entrada y la VM generadora
+    </h2>
+    <p class="cds--body-01">El tópico <code>TransaccionesSucias-0</code> es el punto de entrada de todo el flujo. IBM lo creó y configuró previamente en el clúster compartido. Desde allí, la <strong>VM generadora</strong> publica continuamente transacciones con defectos de calidad intencionales que vas a limpiar con Flink.</p>
+
+    <div class="callout" data-tone="info">
+      <p class="callout__title">Tópico administrado por IBM</p>
+      <p>No necesitás crear este tópico. IBM lo gestiona. Tu acción en este paso es <strong>activar la VM</strong> para que empiece a publicar mensajes y luego verificar que lleguen al tópico.</p>
+    </div>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">Activar la VM generadora de transacciones</h3>
+    <p class="cds--body-01" style="margin-bottom:.875rem;">La VM tiene una interfaz simple. Seguí estos pasos para comenzar a publicar eventos al tópico:</p>
+
+    <ol class="ce-steps-list">
+      <li class="ce-steps-list__item">
+        <span class="ce-steps-list__num">1</span>
+        <div class="ce-steps-list__body">
+          <p class="ce-steps-list__action">Accedé a la VM con las credenciales que IBM te envió por correo y abrí la interfaz del generador.</p>
+        </div>
+      </li>
+      <li class="ce-steps-list__item">
+        <span class="ce-steps-list__num">2</span>
+        <div class="ce-steps-list__body">
+          <p class="ce-steps-list__action">Localizá el botón para agregar el tópico destino e ingresá <strong><code>TransaccionesSucias-0</code></strong> como nombre del tópico.</p>
+          <figure class="lab-figure" style="margin-top:.75rem;">
+            <img
+              src="./assets/images/labs/confluent/topicos.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+            <img
+              src="./assets/images/labs/confluent/generador.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+          </figure>
+        </div>
+      </li>
+      <li class="ce-steps-list__item">
+        <span class="ce-steps-list__num">3</span>
+        <div class="ce-steps-list__body">
+          <p class="ce-steps-list__action">Iniciá la generación. En Confluent Cloud, navegá a <strong>Beetech → Topics → TransaccionesSucias-0 → Messages</strong> para verificar que los eventos estén llegando en tiempo real.</p>
+          <figure class="lab-figure" style="margin-top:.75rem;">
+            <img
+              src="./assets/images/labs/confluent/transaccionessuciasmensajes.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+          </figure>
+        </div>
+      </li>
+    </ol>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.75rem;">Tu tópico de salida personal</h3>
+    <p class="cds--body-01" style="margin-bottom:.75rem;">Además del tópico de entrada, vas a necesitar crear tu <strong>tópico de salida</strong> donde tu pipeline publicará los resultados del scoring después de que Flink limpie los datos.</p>
+
+    <div class="callout" data-tone="tip">
+      <p class="callout__title">Nombre de tu tópico de salida</p>
+      <p>Usá el formato <code>fraud-results-NN</code> donde <strong>NN</strong> es el número que IBM te asignó por correo (ej: <code>fraud-results-07</code>). Este número es único para vos durante todo el bootcamp.</p>
+    </div>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">Pasos para crear tu tópico de salida</h3>
+    <ol class="ce-steps-list">
+      <li class="ce-steps-list__item">
+        <span class="ce-steps-list__num">1</span>
+        <div class="ce-steps-list__body">
+          <p class="ce-steps-list__action">Navegá a <strong>Beetech → Topics → + Add topic</strong></p>
+          <figure class="lab-figure">
+            <img
+              src="./assets/images/labs/confluent/transaccionesevaluadas.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+          </figure>
+        </div>
+      </li>
+      <li class="ce-steps-list__item">
+        <span class="ce-steps-list__num">2</span>
+        <div class="ce-steps-list__body">
+          <p class="ce-steps-list__action">Ingresá el nombre del tópico: <code>TransaccionesEvaluadas-NN</code> y hacé clic en <strong>Create with defaults</strong> para continuar a la configuración avanzada.</p>
+          <figure class="lab-figure">
+            <img
+              src="./assets/images/labs/confluent/transaccionesevaluadas.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+          </figure>
+        </div>
+      </li>
+      <li class="ce-steps-list__item">
+        <span class="ce-steps-list__num">3</span>
+        <div class="ce-steps-list__body">
+          <p class="ce-steps-list__action">Configurá las <strong>opciones avanzadas</strong> según la tabla a continuación y hacé clic en <strong>Save &amp; create</strong>.</p>
+        </div>
+      </li>
+    </ol>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">Configuración avanzada del tópico</h3>
+    <div class="lab-table-wrap">
+      <table class="lab-table">
+        <thead><tr><th>Parámetro</th><th>Valor a configurar</th><th>¿Qué hace?</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>Partitions</code></td>
+            <td><strong>3</strong></td>
+            <td>Permite que 3 instancias de tu pipeline lean en paralelo. Más particiones = más throughput.</td>
+          </tr>
+          <tr>
+            <td><code>Replication factor</code></td>
+            <td><strong>3</strong></td>
+            <td>Cada partición tiene 3 copias en brokers distintos. Garantiza disponibilidad ante fallas.</td>
+          </tr>
+          <tr>
+            <td><code>Cleanup policy</code></td>
+            <td><strong>delete</strong></td>
+            <td>Los mensajes se eliminan al cumplir el tiempo de retención. La alternativa <em>compact</em> mantiene solo el último valor por clave.</td>
+          </tr>
+          <tr>
+            <td><code>Retention time</code></td>
+            <td><strong>7 días</strong> (604800000 ms)</td>
+            <td>Cuánto tiempo Kafka retiene los mensajes antes de eliminarlos automáticamente.</td>
+          </tr>
+          <tr>
+            <td><code>Retention size</code></td>
+            <td><strong>-1</strong> (ilimitado)</td>
+            <td>Sin límite de tamaño en bytes. Si ponés un valor positivo, Kafka elimina los mensajes más viejos al alcanzar el límite.</td>
+          </tr>
+          <tr>
+            <td><code>Max message size</code></td>
+            <td><strong>1 MB</strong> (1048576 bytes)</td>
+            <td>Tamaño máximo de un mensaje individual. Los eventos de transacciones son pequeños (&lt;1KB), este límite es más que suficiente.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure class="lab-figure" style="margin-top:1rem;">
+      <div class="carbon-image-placeholder">
+        <span class="carbon-image-placeholder__label">Screenshot pendiente</span>
+        <code class="carbon-image-placeholder__path">Confluent Cloud → Topics → Create → Advanced settings</code>
+        <p class="carbon-image-placeholder__description">Panel de configuración avanzada del tópico con los valores de retención, particiones y cleanup policy completados.</p>
+      </div>
+    </figure>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       PASO 3 — SCHEMA REGISTRY / DATA CONTRACT
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">
+      <span class="lab-step-badge">Paso 3</span>
+      Schema Registry — Data Contract
+    </h2>
+    <p class="cds--body-01">Los tópicos de Kafka almacenan bytes crudos. Sin un contrato de datos, cualquier productor puede publicar cualquier estructura — rompiendo silenciosamente a todos los consumidores. El <strong>Schema Registry</strong> centraliza y valida los esquemas, garantizando compatibilidad entre versiones.</p>
+
+    <div class="ce-sr-concept">
+      <div class="ce-sr-concept__col">
+        <p class="ce-sr-concept__label">Sin Schema Registry</p>
+        <ul class="ce-sr-concept__list ce-sr-concept__list--bad">
+          <li>Productor cambia un campo → consumidor se rompe en silencio</li>
+          <li>No hay historial de versiones de esquema</li>
+          <li>Bytes sin contexto: el consumidor no sabe qué leer</li>
+          <li>Imposible hacer rolling upgrades seguros</li>
+        </ul>
+      </div>
+      <div class="ce-sr-concept__col">
+        <p class="ce-sr-concept__label">Con Schema Registry</p>
+        <ul class="ce-sr-concept__list ce-sr-concept__list--good">
+          <li>Cambios incompatibles son rechazados automáticamente</li>
+          <li>Historial completo de versiones con lineage</li>
+          <li>Mensajes Avro/Protobuf con ID de schema embebido</li>
+          <li>Evolución controlada con modos BACKWARD / FORWARD / FULL</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">Schema del tópico <code>TransaccionesSucias-0</code></h3>
+    <p class="cds--body-01" style="margin-bottom:.75rem;">Este es el contrato de datos real registrado en el Schema Registry bajo el nombre <code>DirtyTransactionValue</code>. Todos los campos de negocio llegan como texto con defectos intencionales — Flink los normalizará en el siguiente paso:</p>
+
+    <div class="lab-table-wrap">
+      <table class="lab-table">
+        <thead><tr><th>Campo</th><th>Tipo Avro</th><th>Descripción</th><th>Defecto típico</th><th>Req.</th></tr></thead>
+        <tbody>
+          <tr><td><code>source_event_id</code></td><td>string</td><td>Identificador inmutable asignado por el origen antes de la limpieza</td><td>—</td><td class="lab-table__yes">Sí</td></tr>
+          <tr><td><code>transaction_id_raw</code></td><td>["null","string"]</td><td>ID de transacción tal como llega del origen</td><td>Espacios, minúsculas, separadores inconsistentes</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>customer_id_raw</code></td><td>["null","string"]</td><td>ID de cliente tal como llega del origen</td><td>Espacios, minúsculas, separadores inconsistentes</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>card_id_raw</code></td><td>["null","string"]</td><td>ID de tarjeta tal como llega del origen</td><td>Espacios, separadores inconsistentes</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>amount_raw</code></td><td>["null","string"]</td><td>Monto como texto del origen</td><td>Símbolos de moneda, etiquetas, comas decimales (<code>"$1.234,56 USD"</code>)</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>currency_raw</code></td><td>["null","string"]</td><td>Moneda como texto del origen</td><td>Minúsculas, etiquetas, espacios (<code>"  usd  "</code>)</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>location_raw</code></td><td>["null","string"]</td><td>Ubicación de pago con posibles inconsistencias de casing</td><td>Mezcla de mayúsculas/minúsculas</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>lat_raw</code></td><td>["null","string"]</td><td>Latitud como texto del origen</td><td>Separadores decimales variables, prefijos</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>lon_raw</code></td><td>["null","string"]</td><td>Longitud como texto del origen</td><td>Separadores decimales variables, prefijos</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>event_time_raw</code></td><td>["null","string"]</td><td>Tiempo del evento en ISO 8601</td><td>Espacios circundantes, timezone en minúsculas (<code>"2024-01-15t10:30:00z"</code>)</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>customer_name_raw</code></td><td>["null","string"]</td><td>Nombre del cliente</td><td>Espacios duplicados, casing inconsistente</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>customer_email_raw</code></td><td>["null","string"]</td><td>Email del cliente</td><td>Espacios circundantes, mayúsculas (<code>"  USER@DOMAIN.COM  "</code>)</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>customer_country_raw</code></td><td>["null","string"]</td><td>País del cliente como código o nombre localizado</td><td>Nombre completo en lugar de código ISO</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>customer_risk_score_raw</code></td><td>["null","string"]</td><td>Score de riesgo como texto del origen</td><td>Etiquetas o símbolo de porcentaje (<code>"75%"</code>, <code>"score:75"</code>)</td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>account_status_raw</code></td><td>["null","string"]</td><td>Estado de la cuenta con sinónimos del sistema origen</td><td>Valores como <code>"active"</code>, <code>"ACTIVO"</code>, <code>"enabled"</code></td><td class="lab-table__no">No</td></tr>
+          <tr><td><code>source_system</code></td><td>string</td><td>Sistema que produjo el evento crudo</td><td>— (default: <code>workshop-dirty-generator</code>)</td><td class="lab-table__yes">Sí</td></tr>
+          <tr><td><code>source_sequence</code></td><td>long</td><td>Secuencia monotónica del origen para trazabilidad</td><td>—</td><td class="lab-table__yes">Sí</td></tr>
+          <tr><td><code>ingestion_time</code></td><td>string</td><td>Timestamp ISO 8601 de cuando el origen publicó el evento</td><td>—</td><td class="lab-table__yes">Sí</td></tr>
+          <tr><td><code>quality_hints</code></td><td>array&lt;string&gt;</td><td>Etiquetas que describen los defectos de calidad inyectados</td><td>— (default: <code>[]</code>)</td><td class="lab-table__yes">Sí</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Acordeón: schema Avro completo -->
+    <details class="ce-avro-accordion" style="margin-top:1.25rem;">
+      <summary class="ce-avro-accordion__trigger">
+        <span class="ce-avro-accordion__icon" aria-hidden="true">▶</span>
+        Ver schema Avro completo (<code>DirtyTransactionValue</code>)
+      </summary>
+      <div class="ce-avro-accordion__body">
+<pre><code class="language-json">{
+  "type": "record",
+  "name": "DirtyTransactionValue",
+  "namespace": "com.confluentcases.fraud",
+  "doc": "Raw workshop transaction with intentionally inconsistent, schema-valid values that participants clean with Flink SQL.",
+  "fields": [
+    {
+      "name": "source_event_id",
+      "type": "string",
+      "doc": "Immutable identifier assigned by the source before cleaning."
+    },
+    {
+      "name": "transaction_id_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Transaction identifier as received; may contain spaces, lowercase characters, or inconsistent separators."
+    },
+    {
+      "name": "customer_id_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Customer identifier as received; may contain spaces, lowercase characters, or inconsistent separators."
+    },
+    {
+      "name": "card_id_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Card identifier as received; may contain spaces or inconsistent separators."
+    },
+    {
+      "name": "amount_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Amount as source text; may include currency symbols, labels, whitespace, or comma decimals."
+    },
+    {
+      "name": "currency_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Currency as source text; may use lowercase, labels, or surrounding whitespace."
+    },
+    {
+      "name": "location_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Payment location with possible casing and whitespace inconsistencies."
+    },
+    {
+      "name": "lat_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Latitude as source text; decimal separator and prefixes may vary."
+    },
+    {
+      "name": "lon_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Longitude as source text; decimal separator and prefixes may vary."
+    },
+    {
+      "name": "event_time_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "ISO 8601 event time with possible surrounding whitespace or lowercase timezone marker."
+    },
+    {
+      "name": "customer_name_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Customer name with possible duplicated whitespace or inconsistent casing."
+    },
+    {
+      "name": "customer_email_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Customer email with possible surrounding whitespace or uppercase characters."
+    },
+    {
+      "name": "customer_country_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Customer country represented as a code or localized country name."
+    },
+    {
+      "name": "customer_risk_score_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Risk score as source text; may include labels or a percent sign."
+    },
+    {
+      "name": "account_status_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Account status represented by one of several source-system synonyms."
+    },
+    {
+      "name": "source_system",
+      "type": "string",
+      "default": "workshop-dirty-generator",
+      "doc": "System that produced the raw event."
+    },
+    {
+      "name": "source_sequence",
+      "type": "long",
+      "doc": "Monotonically increasing source sequence used for workshop traceability."
+    },
+    {
+      "name": "ingestion_time",
+      "type": "string",
+      "doc": "ISO 8601 timestamp when the source event was published."
+    },
+    {
+      "name": "quality_hints",
+      "type": { "type": "array", "items": "string" },
+      "default": [],
+      "doc": "Labels describing the intentional quality defects injected into this workshop event."
+    }
+  ]
+}</code></pre>
+      </div>
+    </details>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">Modos de compatibilidad</h3>
+    <p class="cds--body-01" style="margin-bottom:.75rem;">El modo <strong>BACKWARD</strong> está configurado en el tópico de entrada. Esto significa que los consumidores nuevos pueden leer mensajes producidos con versiones anteriores del schema:</p>
+
+    <div class="ce-schema-sim">
+      <div class="ce-schema-sim__controls">
+        <label class="ce-schema-sim__label" for="compat-mode">Probá los modos de compatibilidad</label>
+        <select class="ce-schema-sim__select" id="compat-mode">
+          <option value="BACKWARD">BACKWARD — consumidor nuevo lee datos del productor anterior</option>
+          <option value="FORWARD">FORWARD — consumidor anterior lee datos del productor nuevo</option>
+          <option value="FULL">FULL — compatibilidad bidireccional</option>
+          <option value="NONE">NONE — sin validación (no recomendado en producción)</option>
+        </select>
+        <div class="ce-schema-sim__mode-desc" id="mode-desc"></div>
+      </div>
+      <div class="ce-schema-sim__editors">
+        <div class="ce-schema-sim__editor-col">
+          <label class="ce-schema-sim__editor-label">Schema v1 (en producción)</label>
+          <textarea class="ce-schema-sim__textarea" id="schema-v1" spellcheck="false">{
+  "type": "record",
+  "name": "Transaccion",
+  "fields": [
+    { "name": "transaction_id", "type": "string" },
+    { "name": "amount",         "type": "double" },
+    { "name": "customer_id",    "type": "string" }
+  ]
+}</textarea>
+        </div>
+        <div class="ce-schema-sim__editor-col">
+          <label class="ce-schema-sim__editor-label">Schema v2 (versión propuesta)</label>
+          <textarea class="ce-schema-sim__textarea" id="schema-v2" spellcheck="false">{
+  "type": "record",
+  "name": "Transaccion",
+  "fields": [
+    { "name": "transaction_id", "type": "string" },
+    { "name": "amount",         "type": "double" },
+    { "name": "customer_id",    "type": "string" },
+    { "name": "country", "type": ["null","string"], "default": null }
+  ]
+}</textarea>
+        </div>
+      </div>
+      <button class="ce-schema-sim__btn" id="validate-btn" type="button">Validar compatibilidad →</button>
+      <div class="ce-schema-sim__result" id="schema-result" hidden role="alert" aria-live="polite">
+        <div class="ce-schema-sim__result-icon" id="result-icon" aria-hidden="true"></div>
+        <div class="ce-schema-sim__result-body">
+          <p class="ce-schema-sim__result-title" id="result-title"></p>
+          <p class="ce-schema-sim__result-detail" id="result-detail"></p>
+        </div>
+      </div>
+      <div class="ce-schema-rules"><p class="ce-schema-rules__title">Reglas del modo seleccionado</p><div id="rules-content"></div></div>
+    </div>
+
+    <figure class="lab-figure" style="margin-top:1.25rem;">
+      <img
+              src="./assets/images/labs/confluent/schematransaccionesevaluadas.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+    </figure>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       PASO 4 — FLINK SQL: LIMPIEZA DE DATOS
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">
+      <span class="lab-step-badge">Paso 4</span>
+      Limpieza de transacciones con Flink SQL
+    </h2>
+    <p class="cds--body-01">Los mensajes en <code>TransaccionesSucias-0</code> llegan con defectos intencionales. Flink SQL lee el stream en tiempo real y aplica transformaciones declarativas — sin detener el flujo — para producir transacciones normalizadas y listas para el pipeline de scoring.</p>
+
+    <div class="callout" data-tone="tip">
+      <p class="callout__title">Demostración IBM — observá el proceso</p>
+      <p>IBM ejecuta estas consultas en vivo. Tu tarea en esta fase es entender <em>qué</em> limpia Flink y <em>por qué</em> cada transformación es necesaria. En StreamSets vas a consumir el resultado ya limpio.</p>
+    </div>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">¿Qué limpia Flink?</h3>
+    <p class="cds--body-01" style="margin-bottom:.875rem;">Cada campo <code>_raw</code> del schema tiene un defecto distinto. Flink aplica una función específica para normalizar cada uno:</p>
+
+    <div class="lab-table-wrap">
+      <table class="lab-table">
+        <thead><tr><th>Campo origen</th><th>Problema típico</th><th>Función Flink SQL</th><th>Resultado limpio</th></tr></thead>
+        <tbody>
+          <tr><td><code>amount_raw</code></td><td><code>"$1.234,56 USD"</code></td><td><code>CAST(REGEXP_REPLACE(…) AS DECIMAL)</code></td><td><code>1234.56</code></td></tr>
+          <tr><td><code>currency_raw</code></td><td><code>"  usd  "</code></td><td><code>UPPER(TRIM(…))</code></td><td><code>"USD"</code></td></tr>
+          <tr><td><code>transaction_id_raw</code></td><td><code>"txn 00123 abc"</code></td><td><code>UPPER(TRIM(REPLACE(…,' ','')))</code></td><td><code>"TXN00123ABC"</code></td></tr>
+          <tr><td><code>customer_email_raw</code></td><td><code>"  USER@DOMAIN.COM  "</code></td><td><code>LOWER(TRIM(…))</code></td><td><code>"user@domain.com"</code></td></tr>
+          <tr><td><code>event_time_raw</code></td><td><code>"2024-01-15t10:30:00z"</code></td><td><code>TO_TIMESTAMP(UPPER(TRIM(…)))</code></td><td><code>2024-01-15T10:30:00Z</code></td></tr>
+          <tr><td><code>customer_risk_score_raw</code></td><td><code>"75%"</code> / <code>"score:75"</code></td><td><code>CAST(REGEXP_REPLACE(…,'[^0-9]','') AS INT)</code></td><td><code>75</code></td></tr>
+          <tr><td><code>account_status_raw</code></td><td><code>"ACTIVO"</code> / <code>"enabled"</code></td><td><code>CASE UPPER(TRIM(…)) WHEN … END</code></td><td><code>"ACTIVE"</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">Consulta Flink — limpieza completa del stream</h3>
+    <p class="cds--body-01" style="margin-bottom:.5rem;">Esta consulta lee de <code>TransaccionesSucias-0</code> y publica transacciones normalizadas en el tópico limpio que consumirá tu pipeline de StreamSets:</p>
+<pre><code class="language-sql">INSERT INTO TransaccionesLimpias
+SELECT
+  source_event_id,
+  -- IDs: quitar espacios y normalizar a mayúsculas
+  UPPER(TRIM(REPLACE(transaction_id_raw, ' ', '')))   AS transaction_id,
+  UPPER(TRIM(REPLACE(customer_id_raw,    ' ', '')))   AS customer_id,
+  UPPER(TRIM(REPLACE(card_id_raw,        ' ', '')))   AS card_id,
+  -- Monto: eliminar símbolos y convertir a numérico
+  CAST(
+    REGEXP_REPLACE(
+      REPLACE(REPLACE(amount_raw, '$', ''), ',', '.'),
+    '[^0-9.]', '') AS DECIMAL(18,2))                  AS amount,
+  -- Moneda y ubicación: normalizar casing
+  UPPER(TRIM(currency_raw))                           AS currency,
+  INITCAP(TRIM(location_raw))                         AS location,
+  -- Coordenadas: limpiar y convertir a DOUBLE
+  CAST(TRIM(lat_raw) AS DOUBLE)                       AS lat,
+  CAST(TRIM(lon_raw) AS DOUBLE)                       AS lon,
+  -- Tiempo del evento: normalizar a timestamp
+  TO_TIMESTAMP(UPPER(TRIM(event_time_raw)),
+    'yyyy-MM-dd''T''HH:mm:ss''Z''')                   AS event_time,
+  -- Datos del cliente
+  TRIM(REGEXP_REPLACE(customer_name_raw, '\\s+', ' ')) AS customer_name,
+  LOWER(TRIM(customer_email_raw))                     AS customer_email,
+  UPPER(TRIM(customer_country_raw))                   AS customer_country,
+  -- Score: extraer dígitos y convertir a entero
+  CAST(REGEXP_REPLACE(customer_risk_score_raw,
+    '[^0-9]', '') AS INT)                             AS customer_risk_score,
+  -- Estado de cuenta: normalizar sinónimos
+  CASE UPPER(TRIM(account_status_raw))
+    WHEN 'ACTIVE'   THEN 'ACTIVE'
+    WHEN 'ACTIVO'   THEN 'ACTIVE'
+    WHEN 'ENABLED'  THEN 'ACTIVE'
+    WHEN 'INACTIVE' THEN 'INACTIVE'
+    WHEN 'INACTIVO' THEN 'INACTIVE'
+    WHEN 'DISABLED' THEN 'INACTIVE'
+    ELSE 'UNKNOWN'
+  END                                                 AS account_status,
+  -- Metadatos de trazabilidad
+  source_system,
+  source_sequence,
+  ingestion_time,
+  quality_hints
+FROM TransaccionesSucias-0;</code></pre>
+
+    <figure class="lab-figure" style="margin-top:1.25rem;">
+      <img
+              src="./assets/images/labs/confluent/limpiezaflink.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+    </figure>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       PASO 5 — API KEY Y ACLs
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">
+      <span class="lab-step-badge">Paso 5</span>
+      API Key y permisos ACL
+    </h2>
+    <p class="cds--body-01">Para que tu pipeline de StreamSets pueda conectarse a Confluent Cloud, necesita credenciales con los permisos exactos sobre los tópicos que va a consumir y producir. Estos permisos se gestionan con <strong>ACLs (Access Control Lists)</strong> por API Key.</p>
+
+    <div class="callout" data-tone="info">
+      <p class="callout__title">Credenciales por correo</p>
+      <p>IBM enviará las credenciales de cada participante antes del inicio del bootcamp. No hay valores en esta página — todo lo que necesitás llega en el correo con el asunto <strong>"Bootcamp Beetech — Credenciales Confluent"</strong>.</p>
+    </div>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">¿Qué es una ACL en Kafka?</h3>
+    <p class="cds--body-01" style="margin-bottom:.875rem;">Una ACL define qué operaciones puede realizar un <strong>principal</strong> (tu API Key) sobre un <strong>recurso</strong> (tópico, consumer group, clúster). Ejemplo de la estructura:</p>
+
+    <div class="ce-acl-example">
+      <div class="ce-acl-example__row">
+        <span class="ce-acl-example__principal">API Key: <code>ABCD1234...</code></span>
+        <span class="ce-acl-example__arrow">→</span>
+        <span class="ce-acl-example__perm ce-acl-example__perm--read">READ</span>
+        <span class="ce-acl-example__resource">Topic: <code>TransaccionesSucias-0</code></span>
+      </div>
+      <div class="ce-acl-example__row">
+        <span class="ce-acl-example__principal">API Key: <code>ABCD1234...</code></span>
+        <span class="ce-acl-example__arrow">→</span>
+        <span class="ce-acl-example__perm ce-acl-example__perm--write">WRITE</span>
+        <span class="ce-acl-example__resource">Topic: <code>fraud-results-NN</code></span>
+      </div>
+      <div class="ce-acl-example__row">
+        <span class="ce-acl-example__principal">API Key: <code>ABCD1234...</code></span>
+        <span class="ce-acl-example__arrow">→</span>
+        <span class="ce-acl-example__perm ce-acl-example__perm--read">READ</span>
+        <span class="ce-acl-example__resource">Group: <code>streamsets-consumer-NN</code></span>
+      </div>
+    </div>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">Credenciales que recibirás por correo</h3>
+    <div class="lab-table-wrap">
+      <table class="lab-table">
+        <thead><tr><th>Credencial</th><th>Descripción</th><th>Dónde se usa</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Bootstrap server</strong></td><td>URL de conexión al clúster Kafka (host:port)</td><td>StreamSets → Kafka Consumer origin</td></tr>
+          <tr><td><strong>API Key</strong></td><td>Identificador público de tu cuenta de servicio</td><td>Autenticación SASL/PLAIN en Confluent</td></tr>
+          <tr><td><strong>API Secret</strong></td><td>Clave privada del API Key — se muestra <strong>una sola vez</strong></td><td>Password en SASL/PLAIN</td></tr>
+          <tr><td><strong>Tópico de entrada</strong></td><td><code>TransaccionesSucias-0</code> — transacciones crudas de la VM</td><td>Origen del pipeline en StreamSets</td></tr>
+          <tr><td><strong>Tópico de salida</strong></td><td><code>fraud-results-NN</code> — tu número asignado</td><td>Destino del pipeline en StreamSets</td></tr>
+          <tr><td><strong>Schema Registry URL</strong></td><td>Endpoint HTTPS del Schema Registry</td><td>Deserialización Avro en StreamSets</td></tr>
+          <tr><td><strong>SR API Key / Secret</strong></td><td>Credenciales específicas del Schema Registry</td><td>Autenticación al Schema Registry</td></tr>
+          <tr><td><strong>Consumer Group ID</strong></td><td>ID del grupo de consumers asignado a tu pipeline</td><td>ACL READ sobre el grupo en Confluent</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" data-tone="warning" style="margin-top:1.25rem;">
+      <p class="callout__title">El API Secret se muestra una sola vez</p>
+      <p>Copiálo inmediatamente al recibirlo o al crearlo. No lo compartás con otros participantes ni lo incluyas en capturas de pantalla. Si lo perdés, IBM generará un nuevo par de credenciales.</p>
+    </div>
+
+    <h3 class="cds--productive-heading-02" style="margin-top:1.5rem;">Cómo ver los permisos de tu API Key</h3>
+    <ol class="ce-steps-list">
+      <li class="ce-steps-list__item">
+        <span class="ce-steps-list__num">1</span>
+        <div class="ce-steps-list__body">
+          <p class="ce-steps-list__action">Navegá a <strong>Beetech → Data Integration → API Keys</strong></p>
+          <figure class="lab-figure">
+            <img
+              src="./assets/images/labs/confluent/api.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+          </figure>
+        </div>
+      </li>
+      <li class="ce-steps-list__item">
+        <span class="ce-steps-list__num">2</span>
+        <div class="ce-steps-list__body">
+          <p class="ce-steps-list__action">Hacé clic en tu API Key y verificá que tiene los ACLs correspondientes: <strong>READ</strong> sobre <code>TransaccionesSucias-0</code> y <strong>WRITE</strong> sobre <code>fraud-results-NN</code>.</p>
+          <figure class="lab-figure">
+            <img
+              src="./assets/images/labs/confluent/acls.png"
+              alt="Interfaz de la VM mostrando el botón para agregar el tópico TransaccionesSucias-0"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+          </figure>
+        </div>
+      </li>
+    </ol>
+
+    <div class="ce-phase-complete">
+      <div class="ce-phase-complete__icon">✓</div>
+      <div class="ce-phase-complete__body">
+        <p class="ce-phase-complete__title">Fase 1 completa — listo para StreamSets</p>
+        <p class="ce-phase-complete__desc">Tenés el clúster explorado, tu tópico de salida creado, el schema del tópico de entrada entendido, Flink demostrado y tus credenciales listas. Continuá con la <strong>Fase 2 — StreamSets</strong> para construir tu pipeline de detección de fraude.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ESTILOS INLINE
+       ══════════════════════════════════════════════════════════ -->
+  <style>
+    /* ── Step badge ── */
+    .lab-step-badge{display:inline-flex;align-items:center;padding:.125rem .5rem;background:#8a3ffc;color:#fff;font-size:.6875rem;font-family:var(--font-mono);font-weight:700;letter-spacing:.04em;margin-right:.5rem;vertical-align:middle}
+
+    /* ── Use case hero ── */
+    .ce-usecase-hero{padding:1.25rem 1.5rem;background:var(--hub-layer);border-left:4px solid #8a3ffc;margin-bottom:1.25rem}
+    .ce-usecase-hero__lead{font-size:1rem;font-weight:600;color:var(--hub-text);margin:0 0 .5rem;line-height:1.45}
+    .ce-usecase-hero__body{font-size:.875rem;color:var(--hub-text-secondary);margin:0;line-height:1.6}
+
+    /* ── Flow ── */
+    .ce-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:start;gap:.5rem;margin-top:1rem}
+    @media(max-width:900px){.ce-flow{grid-template-columns:1fr;gap:.75rem}.ce-flow__arrow{display:none}}
+    .ce-flow__step{padding:1rem 1.125rem;border:1px solid var(--hub-border);background:var(--hub-surface);display:flex;flex-direction:column;gap:.375rem}
+    .ce-flow__num{width:1.75rem;height:1.75rem;border-radius:50%;background:#8a3ffc;color:#fff;font-size:.8125rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .ce-flow__title{font-weight:600;font-size:.875rem;color:var(--hub-text);margin:0}
+    .ce-flow__desc{font-size:.8rem;color:var(--hub-text-secondary);margin:0;line-height:1.5}
+    .ce-flow__arrow{display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:var(--hub-text-helper);padding-top:.875rem;flex-shrink:0}
+
+    /* ── Info box ── */
+    .ce-info-box{padding:1.25rem 1.5rem;border:1px solid var(--hub-border);border-top:3px solid #8a3ffc;background:var(--hub-surface)}
+    .ce-info-box__title{font-weight:700;font-size:.9375rem;color:var(--hub-text);margin:0 0 .4rem}
+    .ce-info-box__body{font-size:.875rem;color:var(--hub-text-secondary);margin:0;line-height:1.6}
+
+    /* ── Concepts grid ── */
+    .ce-concepts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:.75rem;margin-top:.875rem}
+    .ce-concept-card{padding:.875rem 1rem;border:1px solid var(--hub-border);background:var(--hub-surface)}
+    .ce-concept-card__term{font-weight:700;font-size:.875rem;font-family:var(--font-mono);color:#8a3ffc;margin:0 0 .3rem}
+    .ce-concept-card__def{font-size:.8rem;color:var(--hub-text-secondary);margin:0;line-height:1.5}
+
+    /* ── Steps list (numbered) ── */
+    .ce-steps-list{list-style:none;margin:0;padding:0;display:grid;gap:1rem}
+    .ce-steps-list__item{display:flex;gap:1rem;align-items:flex-start}
+    .ce-steps-list__num{width:1.75rem;height:1.75rem;border-radius:50%;background:#8a3ffc;color:#fff;font-size:.8125rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem}
+    .ce-steps-list__body{flex:1;display:flex;flex-direction:column;gap:.625rem}
+    .ce-steps-list__action{font-size:.9rem;color:var(--hub-text);margin:0;line-height:1.5}
+
+    /* ── SR concept (con/sin) ── */
+    .ce-sr-concept{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1rem}
+    @media(max-width:671px){.ce-sr-concept{grid-template-columns:1fr}}
+    .ce-sr-concept__col{padding:1rem 1.125rem;border:1px solid var(--hub-border)}
+    .ce-sr-concept__label{font-size:.75rem;font-family:var(--font-mono);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin:0 0 .625rem}
+    .ce-sr-concept__list{margin:0;padding-left:1rem;display:grid;gap:.35rem}
+    .ce-sr-concept__list li{font-size:.8125rem;line-height:1.45}
+    .ce-sr-concept__list--bad{border-left:3px solid #da1e28}
+    .ce-sr-concept__list--bad li{color:#da1e28}
+    .ce-sr-concept__list--bad{padding:0 0 0 .75rem;list-style:none}
+    .ce-sr-concept__list--good{border-left:3px solid #24a148}
+    .ce-sr-concept__list--good li{color:#198038}
+    .cds--g100 .ce-sr-concept__list--good li{color:#42be65}
+    .ce-sr-concept__list--good{padding:0 0 0 .75rem;list-style:none}
+    .ce-sr-concept__list--bad li::before,.ce-sr-concept__list--good li::before{content:'';margin-right:.375rem}
+    .ce-sr-concept__list--bad li::before{content:'✗ '}
+    .ce-sr-concept__list--good li::before{content:'✓ '}
+
+    /* ── ACL example ── */
+    .ce-acl-example{display:grid;gap:.5rem;margin-top:.875rem}
+    .ce-acl-example__row{display:flex;align-items:center;gap:.625rem;flex-wrap:wrap;padding:.5rem .75rem;background:var(--hub-layer);border:1px solid var(--hub-border);font-size:.8125rem}
+    .ce-acl-example__principal{color:var(--hub-text-secondary)}
+    .ce-acl-example__arrow{color:var(--hub-text-helper);font-weight:700}
+    .ce-acl-example__perm{padding:.125rem .5rem;font-size:.7rem;font-family:var(--font-mono);font-weight:700}
+    .ce-acl-example__perm--read{background:rgba(15,98,254,.1);color:#0043ce}
+    .cds--g100 .ce-acl-example__perm--read{color:#78a9ff}
+    .ce-acl-example__perm--write{background:rgba(36,161,72,.1);color:#198038}
+    .cds--g100 .ce-acl-example__perm--write{color:#42be65}
+    .ce-acl-example__resource{color:var(--hub-text)}
+
+    /* ── Phase complete ── */
+    .ce-phase-complete{display:flex;gap:1rem;align-items:flex-start;padding:1.25rem 1.5rem;background:#defbe6;border:1px solid #24a148;border-left:4px solid #24a148;margin-top:2rem}
+    .cds--g100 .ce-phase-complete{background:#071908;border-color:#24a148}
+    .ce-phase-complete__icon{font-size:1.5rem;color:#24a148;flex-shrink:0;font-weight:700}
+    .ce-phase-complete__title{font-weight:700;font-size:.9375rem;color:#198038;margin:0 0 .3rem}
+    .cds--g100 .ce-phase-complete__title{color:#42be65}
+    .ce-phase-complete__desc{font-size:.875rem;color:var(--hub-text-secondary);margin:0;line-height:1.6}
+
+    .ce-schema-sim{margin-top:1.25rem;display:grid;gap:1rem}
+    .ce-schema-sim__controls{display:grid;gap:.4rem}
+    .ce-schema-sim__label{font-size:.875rem;font-weight:600;color:var(--hub-text)}
+    .ce-schema-sim__select{width:100%;max-width:36rem;padding:.4rem .625rem;background:var(--hub-surface);border:1px solid var(--hub-border);color:var(--hub-text);font-size:.875rem;font-family:var(--font-sans);cursor:pointer}
+    .ce-schema-sim__mode-desc{padding:.625rem .875rem;background:var(--hub-layer);border-left:3px solid #8a3ffc;font-size:.8rem;color:var(--hub-text-secondary);line-height:1.5;max-width:52rem}
+    .ce-schema-sim__editors{display:grid;grid-template-columns:1fr 1fr;gap:.875rem}
+    @media(max-width:671px){.ce-schema-sim__editors{grid-template-columns:1fr}}
+    .ce-schema-sim__editor-col{display:flex;flex-direction:column;gap:.3rem}
+    .ce-schema-sim__editor-label{font-size:.75rem;font-weight:600;color:var(--hub-text);font-family:var(--font-mono)}
+    .ce-schema-sim__textarea{width:100%;min-height:12rem;padding:.75rem;background:#161616;color:#f4f4f4;border:1px solid #393939;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;resize:vertical;box-sizing:border-box}
+    .ce-schema-sim__textarea:focus{outline:2px solid #8a3ffc;outline-offset:0}
+    .ce-schema-sim__btn{justify-self:start;padding:.5rem 1.25rem;background:#8a3ffc;color:#fff;border:0;font-size:.875rem;font-weight:600;cursor:pointer;transition:background .15s}
+    .ce-schema-sim__btn:hover{background:#6929c4}
+    .ce-schema-sim__result{display:flex;gap:.875rem;align-items:flex-start;padding:1rem;border:1px solid var(--hub-border)}
+    .ce-schema-sim__result--ok{border-left:4px solid #24a148;background:#defbe6}
+    .ce-schema-sim__result--error{border-left:4px solid #da1e28;background:#fff1f1}
+    .ce-schema-sim__result--warn{border-left:4px solid #f1c21b;background:#fdf6dd}
+    .cds--g100 .ce-schema-sim__result--ok,.cds--g100 .ce-schema-sim__result--error,.cds--g100 .ce-schema-sim__result--warn{background:var(--hub-layer)}
+    .ce-schema-sim__result-icon{font-size:1.375rem;flex-shrink:0}
+    .ce-schema-sim__result-title{font-weight:700;font-size:.9375rem;color:var(--hub-text);margin:0 0 .2rem}
+    .ce-schema-sim__result-detail{font-size:.85rem;color:var(--hub-text-secondary);margin:0;line-height:1.5}
+    .ce-schema-rules{padding:.875rem 1rem;background:var(--hub-layer);border:1px solid var(--hub-border)}
+    .ce-schema-rules__title{font-size:.7rem;font-family:var(--font-mono);font-weight:600;letter-spacing:.04em;color:var(--hub-text-helper);margin:0 0 .5rem;text-transform:uppercase}
+    .ce-schema-rules ul{margin:0;padding-left:1.1rem;display:grid;gap:.3rem}
+    .ce-schema-rules li{font-size:.8rem;color:var(--hub-text-secondary);line-height:1.4}
+    .ce-profiles-row__label{font-size:.8125rem;font-family:var(--font-mono);font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--hub-text-helper);margin:0 0 .875rem}
+    .ce-profiles-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:767px){.ce-profiles-grid{grid-template-columns:1fr}}
+    .ce-profile-card{padding:1.5rem;border:1px solid var(--hub-border);background:var(--hub-surface)}
+    .ce-profile-card--business{border-top:4px solid #8a3ffc}
+    .ce-profile-card--tech{border-top:4px solid #3ddbd9}
+    .ce-profile-card__header{margin-bottom:.875rem}
+    .ce-profile-card__badge{display:inline-block;padding:.2rem .625rem;font-size:.6875rem;font-family:var(--font-mono);font-weight:700;letter-spacing:.06em;margin-bottom:.5rem}
+    .ce-profile-card--business .ce-profile-card__badge{background:rgba(138,63,252,.1);color:#8a3ffc}
+    .ce-profile-card--tech .ce-profile-card__badge{background:rgba(61,219,217,.12);color:#007d79}
+    .cds--g100 .ce-profile-card--tech .ce-profile-card__badge{color:#3ddbd9}
+    .ce-profile-card__title{font-size:1rem;font-weight:600;color:var(--hub-text);margin:0;line-height:1.35}
+    .ce-profile-card__body{font-size:.875rem;color:var(--hub-text-secondary);line-height:1.6;margin:0 0 .875rem}
+    .ce-profile-card__cta{font-size:.875rem;font-weight:600;color:var(--hub-text);margin:0;padding:.75rem 1rem;background:var(--hub-layer);border-left:3px solid var(--hub-border);line-height:1.5}
+    .ce-profile-card--business .ce-profile-card__cta{border-left-color:#8a3ffc}
+    .ce-profile-card--tech .ce-profile-card__cta{border-left-color:#3ddbd9}
+    /* ── Tríada v2 ── */
+    .ce-triada-v2{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.25rem}
+    @media(max-width:900px){.ce-triada-v2{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.ce-triada-v2{grid-template-columns:1fr}}
+    .ce-triada-v2__card{display:flex;flex-direction:column;gap:.75rem;padding:1.375rem;border:1px solid var(--hub-border);background:var(--hub-surface);border-top:4px solid var(--hub-border)}
+    .ce-triada-v2__card--kafka{border-top-color:#0f62fe}
+    .ce-triada-v2__card--flink{border-top-color:#8a3ffc}
+    .ce-triada-v2__card--iceberg{border-top-color:#3ddbd9}
+    .ce-triada-v2__top{display:flex;align-items:center;gap:.75rem}
+    .ce-triada-v2__logo{width:2.25rem;height:2.25rem;object-fit:contain;flex-shrink:0}
+    .ce-triada-v2__name{font-weight:700;font-size:1rem;color:var(--hub-text);margin:0 0 .15rem}
+    .ce-triada-v2__tag{font-size:.6875rem;font-family:var(--font-mono);color:var(--hub-text-helper);margin:0;letter-spacing:.04em;text-transform:uppercase}
+    .ce-triada-v2__desc{font-size:.875rem;color:var(--hub-text-secondary);line-height:1.6;margin:0}
+    .ce-triada-v2__desc strong{color:var(--hub-text)}
+    .ce-triada-v2__list{margin:0;padding-left:1.1rem;display:grid;gap:.35rem;flex-grow:1}
+    .ce-triada-v2__list li{font-size:.8125rem;color:var(--hub-text-secondary);line-height:1.45}
+    .ce-triada-v2__list li strong{color:var(--hub-text)}
+    .ce-triada-v2__usecase{margin-top:auto;padding:.625rem .875rem;background:var(--hub-layer);border-left:3px solid var(--hub-border);font-size:.8rem;color:var(--hub-text-secondary);line-height:1.5}
+    .ce-triada-v2__card--kafka .ce-triada-v2__usecase{border-left-color:#0f62fe}
+    .ce-triada-v2__card--flink .ce-triada-v2__usecase{border-left-color:#8a3ffc}
+    .ce-triada-v2__card--iceberg .ce-triada-v2__usecase{border-left-color:#3ddbd9}
+    .ce-triada-v2__usecase-label{display:block;font-size:.65rem;font-family:var(--font-mono);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--hub-text-helper);margin-bottom:.3rem}
+
+    /* ── Avro schema accordion ── */
+    .ce-avro-accordion{border:1px solid var(--hub-border);background:var(--hub-surface)}
+    .ce-avro-accordion__trigger{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;cursor:pointer;list-style:none;font-size:.875rem;font-weight:600;color:var(--hub-text);user-select:none}
+    .ce-avro-accordion__trigger::-webkit-details-marker{display:none}
+    .ce-avro-accordion__trigger:hover{background:var(--hub-layer)}
+    .ce-avro-accordion__icon{font-size:.625rem;color:#8a3ffc;transition:transform .2s;flex-shrink:0}
+    .ce-avro-accordion[open] .ce-avro-accordion__icon{transform:rotate(90deg)}
+    .ce-avro-accordion__body{border-top:1px solid var(--hub-border)}
+    .ce-avro-accordion__body pre{margin:0;border:0;border-radius:0}
+  </style>
+
+  <script>
+  (function(){
+    // Schema simulator
+    var MODES={
+      BACKWARD:{desc:'<strong>BACKWARD:</strong> Actualizá los <em>consumidores</em> primero. Campos nuevos y eliminados deben tener <code>default</code>.',rules:'<ul><li>Campos eliminados: deben tener <code>default</code> en v1 ✓</li><li>Campos nuevos: deben tener <code>default</code> en v2 ✓</li><li>Cambios de tipo: no permitido ✗</li></ul>'},
+      FORWARD:{desc:'<strong>FORWARD:</strong> Actualizá los <em>productores</em> primero. Campos nuevos deben tener <code>default</code>.',rules:'<ul><li>Campos nuevos: deben tener <code>default</code> ✓</li><li>Cambios de tipo: no permitido ✗</li></ul>'},
+      FULL:{desc:'<strong>FULL:</strong> Máxima seguridad. Tanto nuevos como eliminados deben tener <code>default</code>.',rules:'<ul><li>Campos nuevos y eliminados: deben tener <code>default</code> ✓</li><li>Cambios de tipo y nombre: no permitido ✗</li></ul>'},
+      NONE:{desc:'<strong>NONE:</strong> Sin validación. Cualquier cambio es permitido. No recomendado en producción.',rules:'<ul><li>Cualquier cambio es permitido</li><li>No hay validación de compatibilidad</li></ul>'}
+    };
+    var sel=document.getElementById('compat-mode'),mDesc=document.getElementById('mode-desc'),rContent=document.getElementById('rules-content');
+    function updMode(){var m=sel?sel.value:'BACKWARD';if(mDesc)mDesc.innerHTML=MODES[m]?MODES[m].desc:'';if(rContent)rContent.innerHTML=MODES[m]?MODES[m].rules:'';}
+    if(sel)sel.addEventListener('change',updMode);updMode();
+    function parseF(txt){try{return JSON.parse(txt)}catch(e){return null}}
+    function getF(s){if(!s||s.type!=='record'||!Array.isArray(s.fields))return null;var m=new Map();s.fields.forEach(function(f){m.set(f.name,f);});return m;}
+    function hasD(f){return Object.prototype.hasOwnProperty.call(f,'default')}
+    function isNull(f){return Array.isArray(f.type)&&f.type.indexOf('null')>=0}
+    function validate(v1,v2,mode){
+      var f1=getF(v1),f2=getF(v2);
+      if(!f1||!f2)return{ok:false,warn:false,msg:'JSON inválido o no es un schema "record" válido.'};
+      var violations=[];
+      var removed=[];f1.forEach(function(f,n){if(!f2.has(n))removed.push(f);});
+      var added=[];f2.forEach(function(f,n){if(!f1.has(n))added.push(f);});
+      var typeChanged=[];f1.forEach(function(f,n){var f2f=f2.get(n);if(f2f&&JSON.stringify(f.type)!==JSON.stringify(f2f.type))typeChanged.push(n);});
+      if(typeChanged.length)return{ok:false,warn:false,msg:'Cambio de tipo en: '+typeChanged.join(', ')+'. No permitido en ningún modo.'};
+      if(mode==='NONE')return{ok:true,warn:true,msg:'Permitido (modo NONE) — sin validación. No recomendado en producción.'};
+      if(mode==='BACKWARD'||mode==='FULL'){
+        removed.filter(function(f){return!hasD(f);}).forEach(function(f){violations.push('Campo "'+f.name+'" eliminado sin default en v1.');});
+        added.filter(function(f){return!hasD(f)&&!isNull(f);}).forEach(function(f){violations.push('Campo nuevo "'+f.name+'" sin default en v2.');});
+      }
+      if(mode==='FORWARD'||mode==='FULL'){
+        added.filter(function(f){return!hasD(f)&&!isNull(f);}).forEach(function(f){if(!violations.some(function(v){return v.indexOf(f.name)>=0;}))violations.push('Campo nuevo "'+f.name+'" sin default — el consumidor v1 no puede ignorarlo.');});
+      }
+      if(violations.length)return{ok:false,warn:false,msg:violations.join(' | ')};
+      var ch=[];
+      if(removed.length)ch.push(removed.length+' eliminado(s): '+removed.map(function(f){return f.name;}).join(', '));
+      if(added.length)ch.push(added.length+' nuevo(s): '+added.map(function(f){return f.name;}).join(', '));
+      return{ok:true,warn:false,msg:'Compatible en modo '+mode+'. '+(ch.length?ch.join(' · '):'Sin cambios estructurales.')};
+    }
+    var vBtn=document.getElementById('validate-btn');
+    if(vBtn)vBtn.addEventListener('click',function(){
+      var v1=parseF((document.getElementById('schema-v1')||{}).value||'');
+      var v2=parseF((document.getElementById('schema-v2')||{}).value||'');
+      var mode=sel?sel.value:'BACKWARD';
+      if(!v1||!v2){showR(false,false,'JSON inválido','Verificá que ambos schemas sean JSON válido con type "record".');return;}
+      var r=validate(v1,v2,mode);
+      showR(r.ok,r.warn,r.ok?(r.warn?'⚠ Permitido con advertencia':'✓ Evolución compatible'):'✗ Incompatible',r.msg);
+    });
+    function showR(ok,warn,title,detail){
+      var el=document.getElementById('schema-result');if(!el)return;
+      el.className='ce-schema-sim__result '+(ok?(warn?'ce-schema-sim__result--warn':'ce-schema-sim__result--ok'):'ce-schema-sim__result--error');
+      var icon=document.getElementById('result-icon');if(icon)icon.textContent=ok?(warn?'⚠':'✓'):'✗';
+      var t=document.getElementById('result-title');if(t)t.textContent=title;
+      var d=document.getElementById('result-detail');if(d)d.textContent=detail;
+      el.hidden=false;
+    }
+  })();
+  </script>
+</div>

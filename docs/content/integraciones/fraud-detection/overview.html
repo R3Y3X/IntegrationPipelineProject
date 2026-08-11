@@ -1,0 +1,162 @@
+<div class="content-panel lab-template prose--full">
+  <header class="lab-banner">
+    <div class="lab-banner__tags"></div>
+    <h1 class="cds--productive-heading-05 lab-banner__title">Detección de fraude financiero en tiempo real</h1>
+    <p class="lab-banner__summary">
+      Construirás tu pipeline individual de scoring y PII masking, publicarás resultados aislados y los consultarás desde un agente en watsonx Orchestrate.
+    </p>
+  </header>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Mi número de participante</h2>
+    <p>Usa el mismo número en el pipeline, consumer group, tópico, tabla, toolkit y agente. IBM reserva el número <code>0</code> como referencia.</p>
+    <div class="participant-context">
+      <div>
+        <label class="participant-context__label" for="participant-number">Mi número N</label>
+        <select id="participant-number" class="participant-context__select" data-participant-selector></select>
+      </div>
+      <p class="participant-context__status" data-participant-status aria-live="polite"></p>
+    </div>
+    <div class="participant-preview" data-participant-preview hidden>
+      <p class="participant-preview__title">Tus recursos principales</p>
+      <ul class="participant-preview__list">
+        <li class="participant-preview__item">
+          <span class="participant-preview__label">Pipeline</span>
+          <code class="participant-preview__value" data-template="Pipeline_{N}">Pipeline_N</code>
+        </li>
+        <li class="participant-preview__item">
+          <span class="participant-preview__label">Salida</span>
+          <code class="participant-preview__value" data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>
+        </li>
+        <li class="participant-preview__item">
+          <span class="participant-preview__label">Agente</span>
+          <code class="participant-preview__value" data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code>
+        </li>
+        <li class="participant-preview__item">
+          <span class="participant-preview__label">Consumer</span>
+          <code class="participant-preview__value" data-template="fraud-workshop-{N}">fraud-workshop-N</code>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Objetivo y arquitectura</h2>
+    <p>El generador y la limpieza con Flink son compartidos. Tu trabajo comienza al construir <code data-template="Pipeline_{N}">Pipeline_N</code> y termina cuando el agente consulta solamente tu salida.</p>
+    <figure class="lab-figure">
+      <img
+        src="./assets/images/labs/fraud-detection/arquitectura-workshop.png"
+        alt="Arquitectura del workshop desde transacciones sucias, limpieza con Flink, evaluación individual y análisis con watsonx Orchestrate"
+        class="lab-figure__img"
+        data-placeholder-path="./assets/images/labs/fraud-detection/arquitectura-workshop.png"
+      />
+      <figcaption class="lab-figure__caption">Flujo real del workshop. Flink limpia y normaliza el evento; el pipeline individual aplica scoring y masking.</figcaption>
+    </figure>
+    <div class="lab-flow-diagram" aria-label="Flujo técnico del workshop por capas">
+      <div class="lab-flow-diagram__lane lab-flow-diagram__lane--shared">
+        <span class="lab-flow-diagram__lane-label">Compartido IBM</span>
+        <div class="lab-flow-diagram__track">
+          <div class="lab-flow-diagram__node" title="TransaccionesSucias-0">Sucias-0</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--process" title="Flink — limpieza y normalización">Flink</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node" title="TransaccionesEnriquecidas-0">Enriquecidas-0</div>
+        </div>
+      </div>
+      <div class="lab-flow-diagram__lane lab-flow-diagram__lane--individual">
+        <span class="lab-flow-diagram__lane-label">Tu trabajo (N)</span>
+        <div class="lab-flow-diagram__track">
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--individual" title="Pipeline individual de scoring"><span data-template="Pipeline_{N}">Pipeline_N</span></div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--individual" title="TransaccionesEvaluadas-N"><span data-template="TransaccionesEvaluadas-{N}">Evaluadas-N</span></div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--individual" title="Agente de análisis"><span data-template="Agente {N}">Agente N</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Qué está preparado y qué construirás</h2>
+    <div class="lab-task-grid">
+      <article class="lab-task-card">
+        <h3 class="cds--productive-heading-03">Preparado por IBM</h3>
+        <ul class="cds--list--unordered">
+          <li class="cds--list__item">Generador con mezcla aproximada 80% normal, 15% sospechosa y 5% fraudulenta.</li>
+          <li class="cds--list__item">Tópicos, contratos, statement compartido de Flink y conexiones de Confluent y PostgreSQL en wxDI.</li>
+          <li class="cds--list__item"><code>Pipeline_0</code> y artefactos de referencia.</li>
+          <li class="cds--list__item">Tablas, subjects y tópicos de salida del 0 al 30.</li>
+        </ul>
+      </article>
+      <article class="lab-task-card">
+        <h3 class="cds--productive-heading-03">Tu trabajo</h3>
+        <ul class="cds--list--unordered">
+          <li class="cds--list__item">Inspeccionar el flujo compartido en Confluent.</li>
+          <li class="cds--list__item">Construir <code data-template="Pipeline_{N}">Pipeline_N</code> mediante drag and drop.</li>
+          <li class="cds--list__item">Aplicar scoring, clasificación y PII masking.</li>
+          <li class="cds--list__item">Importar y probar <code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code>.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Preflight</h2>
+    <ul class="lab-checklist">
+      <li>Puedo iniciar sesión en Confluent Cloud y abrir el clúster <code>BeeTech</code>.</li>
+      <li>Puedo abrir el proyecto de watsonx.data integration y visualizar <code>Pipeline_0</code>.</li>
+      <li>Mi instancia de watsonx Orchestrate está activa.</li>
+      <li>Tengo el paquete <code data-template="fraud-workshop-{N}.zip">fraud-workshop-N.zip</code> y la API key de Orchestrate entregadas por IBM.</li>
+      <li>Conozco mi número N y lo seleccioné arriba.</li>
+    </ul>
+    <div class="callout" data-tone="warning">
+      <p class="callout__title">Protege las credenciales</p>
+      <p>No copies API keys o secrets en capturas, chats ni archivos del repositorio. Esta guía utiliza placeholders de forma intencional.</p>
+    </div>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Criterios de éxito</h2>
+    <ul class="lab-checklist">
+      <li><code data-template="Pipeline_{N}">Pipeline_N</code> consume, clasifica y publica sin errores.</li>
+      <li>Nombre, correo y tarjeta aparecen enmascarados en la salida.</li>
+      <li>Confluent decodifica los mensajes como Avro, sin encabezados <code>Obj</code>.</li>
+      <li>El agente consulta únicamente <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>.</li>
+    </ul>
+    <details class="lab-details">
+      <summary>Ver checklist completo de validación</summary>
+      <div class="lab-details__body">
+        <ul class="lab-checklist">
+          <li>Identificas la diferencia entre un mensaje sucio y uno normalizado.</li>
+          <li>La tabla <code data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code> se actualiza con cada transacción.</li>
+          <li>El diagnóstico del agente indica el tópico correcto para tu número.</li>
+          <li>No aparece PII en claro en las respuestas del chat.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Referencia de recursos</h2>
+    <details class="lab-details">
+      <summary>Tabla de recursos asignados por participante</summary>
+      <div class="lab-details__body">
+        <div class="lab-table-wrap">
+          <table class="lab-table">
+            <thead><tr><th>Recurso</th><th>Valor para esta sesión</th><th>Uso</th></tr></thead>
+            <tbody>
+              <tr><td>Pipeline</td><td><code data-template="Pipeline_{N}">Pipeline_N</code></td><td>Scoring y masking</td></tr>
+              <tr><td>Tópico de entrada</td><td><code>TransaccionesEnriquecidas-0</code></td><td>Compartido — mismo para todos</td></tr>
+              <tr><td>Consumer group</td><td><code data-template="fraud-workshop-{N}">fraud-workshop-N</code></td><td>Lectura aislada</td></tr>
+              <tr><td>Tópico de salida</td><td><code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code></td><td>Individual — el tuyo</td></tr>
+              <tr><td>Subject</td><td><code data-template="TransaccionesEvaluadas-{N}-value">TransaccionesEvaluadas-N-value</code></td><td>Serialización Avro</td></tr>
+              <tr><td>Tabla JDBC</td><td><code data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code></td><td>Último estado geográfico</td></tr>
+              <tr><td>Agente</td><td><code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code></td><td>Consultas en lenguaje natural</td></tr>
+              <tr><td>Toolkit MCP</td><td><code data-template="N{N}_fraud_mcp">N{N}_fraud_mcp</code></td><td>Individual — cada uno importa el suyo</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+  </section>
+</div>

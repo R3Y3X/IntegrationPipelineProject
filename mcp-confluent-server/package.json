@@ -1,0 +1,17 @@
+{
+  "name": "confluent-enablement-mcp",
+  "version": "1.0.0",
+  "description": "MCP server para responder preguntas sobre Confluent Cloud — tipos de cluster, compatibilidad de esquemas y conceptos de Event Streaming.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

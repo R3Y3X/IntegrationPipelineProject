@@ -1,0 +1,122 @@
+{
+  "type": "record",
+  "name": "DirtyTransactionValue",
+  "namespace": "com.confluentcases.fraud",
+  "doc": "Raw workshop transaction with intentionally inconsistent, schema-valid values that participants clean with Flink SQL.",
+  "fields": [
+    {
+      "name": "source_event_id",
+      "type": "string",
+      "doc": "Immutable identifier assigned by the source before cleaning."
+    },
+    {
+      "name": "transaction_id_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Transaction identifier as received; it may contain spaces, lowercase characters, or inconsistent separators."
+    },
+    {
+      "name": "customer_id_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Customer identifier as received; it may contain spaces, lowercase characters, or inconsistent separators."
+    },
+    {
+      "name": "card_id_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Card identifier as received; it may contain spaces or inconsistent separators."
+    },
+    {
+      "name": "amount_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Amount as source text; it may include currency symbols, labels, whitespace, or comma decimals."
+    },
+    {
+      "name": "currency_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Currency as source text; it may use lowercase, labels, or surrounding whitespace."
+    },
+    {
+      "name": "location_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Payment location with possible casing and whitespace inconsistencies."
+    },
+    {
+      "name": "lat_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Latitude as source text; decimal separator and prefixes may vary."
+    },
+    {
+      "name": "lon_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Longitude as source text; decimal separator and prefixes may vary."
+    },
+    {
+      "name": "event_time_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "ISO 8601 event time with possible surrounding whitespace or lowercase timezone marker."
+    },
+    {
+      "name": "customer_name_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Customer name with possible duplicated whitespace or inconsistent casing."
+    },
+    {
+      "name": "customer_email_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Customer email with possible surrounding whitespace or uppercase characters."
+    },
+    {
+      "name": "customer_country_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Customer country represented as a code or localized country name."
+    },
+    {
+      "name": "customer_risk_score_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Risk score as source text; it may include labels or a percent sign."
+    },
+    {
+      "name": "account_status_raw",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Account status represented by one of several source-system synonyms."
+    },
+    {
+      "name": "source_system",
+      "type": "string",
+      "default": "workshop-dirty-generator",
+      "doc": "System that produced the raw event."
+    },
+    {
+      "name": "source_sequence",
+      "type": "long",
+      "doc": "Monotonically increasing source sequence used for workshop traceability."
+    },
+    {
+      "name": "ingestion_time",
+      "type": "string",
+      "doc": "ISO 8601 timestamp when the source event was published."
+    },
+    {
+      "name": "quality_hints",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [],
+      "doc": "Labels describing the intentional quality defects injected into this workshop event."
+    }
+  ]
+}

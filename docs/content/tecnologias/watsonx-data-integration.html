@@ -1,0 +1,354 @@
+<div class="content-panel lab-template prose--full">
+  <header class="lab-banner">
+    <div class="lab-banner__tags">
+      <span class="cds--tag cds--tag--purple">watsonx.data integration</span>
+      <span class="cds--tag cds--tag--cool-gray">Plataforma unificada</span>
+      <span class="cds--tag cds--tag--teal">Batch · Streaming · CDC · AI</span>
+    </div>
+    <h1 class="cds--productive-heading-05 lab-banner__title">IBM watsonx.data integration</h1>
+    <p class="lab-banner__summary">
+      Plano de control unificado que integra DataStage, StreamSets, Data Replication, Databand y capacidades para datos no estructurados — no es una sola herramienta, es la capa que las orquesta.
+    </p>
+  </header>
+
+  <section class="lab-section" id="wxdi-section-toggle">
+    <h2 class="cds--productive-heading-04">¿Desde dónde ves esto?</h2>
+    <p>El contenido se adapta según tu perfil:</p>
+    <div class="ce-toggle" role="group" aria-label="Selección de perfil">
+      <button class="ce-toggle__btn ce-toggle__btn--active" id="wxdi-btn-negocio" data-target="negocio">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M28 4H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h24a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 22H4V10h24Z"/></svg>
+        Pre-believer de Negocio
+      </button>
+      <button class="ce-toggle__btn" id="wxdi-btn-tecnico" data-target="tecnico">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true"><polygon points="31 16 24 23 22.59 21.59 28.17 16 22.59 10.41 24 9 31 16"/></svg>
+        Pre-believer Técnico
+      </button>
+    </div>
+  </section>
+
+  <section class="lab-section" id="wxdi-section-dilema">
+    <div class="ce-banner-hero">
+      <blockquote class="ce-banner-hero__quote">
+        "¿Por qué tu equipo necesita <em>cinco herramientas distintas</em> para mover el mismo dato?"
+      </blockquote>
+      <p class="ce-banner-hero__sub">
+        La mayoría de las organizaciones acumulan soluciones punto a punto: una para ETL nocturno, otra para streaming, otra para CDC, otra para calidad y otra para documentos. Cada una con su licencia, su curva de aprendizaje y su observabilidad aislada.
+      </p>
+    </div>
+
+    <div class="ce-profile-panel" id="wxdi-panel-negocio">
+      <div class="ce-pain-grid">
+        <div class="ce-pain-card">
+          <span class="ce-pain-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" fill="currentColor"><path d="M16 2C8.3 2 2 8.3 2 16s6.3 14 14 14 14-6.3 14-14S23.7 2 16 2zm0 26C9.4 28 4 22.6 4 16S9.4 4 16 4s12 5.4 12 12-5.4 12-12 12z"/></svg>
+          </span>
+          <p class="ce-pain-card__title">Tool sprawl</p>
+          <p class="ce-pain-card__desc">Licencias, contratos y equipos duplicados para cubrir batch, streaming y replicación por separado.</p>
+        </div>
+        <div class="ce-pain-card">
+          <span class="ce-pain-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" fill="currentColor"><path d="M21.2 23.2L11 17V8h2v8l9.2 5.3z" transform="rotate(180,16,16)"/></svg>
+          </span>
+          <p class="ce-pain-card__title">Datos no listos para AI</p>
+          <p class="ce-pain-card__desc">Los documentos y el contenido no estructurado quedan fuera del alcance de las herramientas batch tradicionales.</p>
+        </div>
+        <div class="ce-pain-card">
+          <span class="ce-pain-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" fill="currentColor"><path d="M15 7h2v9h-2zm0 11h2v2h-2z"/></svg>
+          </span>
+          <p class="ce-pain-card__title">Pipelines que se reescriben</p>
+          <p class="ce-pain-card__desc">Cada cambio de tecnología o destino obliga a reconstruir integraciones desde cero.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ce-profile-panel ce-profile-panel--hidden" id="wxdi-panel-tecnico">
+      <div class="ce-pain-grid">
+        <div class="ce-pain-card ce-pain-card--tech">
+          <p class="ce-pain-card__title">Acoplamiento diseño ↔ engine</p>
+          <p class="ce-pain-card__desc">Cambiar de cloud, lakehouse o motor de ejecución suele implicar reescribir el pipeline completo.</p>
+        </div>
+        <div class="ce-pain-card ce-pain-card--tech">
+          <p class="ce-pain-card__title">Observabilidad en silos</p>
+          <p class="ce-pain-card__desc">DataStage, streaming y CDC se monitorean por separado; el root cause atraviesa varias consolas.</p>
+        </div>
+        <div class="ce-pain-card ce-pain-card--tech">
+          <p class="ce-pain-card__title">Skills gap</p>
+          <p class="ce-pain-card__desc">Cada herramienta exige especialistas distintos: ETL batch, Kafka, CDC, calidad de datos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" id="wxdi-section-what">
+    <h2 class="cds--productive-heading-04">Qué es watsonx.data integration</h2>
+    <p class="cds--body-01">
+      Es la <strong>plataforma unificada de integración de datos</strong> de IBM: un plano de control SaaS que reúne capacidades antes dispersas en productos independientes bajo una experiencia común de diseño, despliegue y observabilidad.
+    </p>
+    <div class="callout" data-tone="info">
+      <p class="callout__title">No confundir con una sola herramienta</p>
+      <p><strong>StreamSets</strong> es el motor de streaming visual <em>dentro</em> de la plataforma. También incluye <strong>DataStage</strong> (batch ETL/ELT), <strong>Data Replication</strong> (CDC), <strong>Databand</strong> (observabilidad) y <strong>UDI</strong> (datos no estructurados para AI).</p>
+    </div>
+    <figure class="lab-figure lab-figure--hero ce-figure">
+      <img src="./assets/images/labs/fraud-detection/leadspace-data-integration.avif" alt="Plano de control unificado de watsonx.data integration" class="lab-figure__img" loading="lazy" />
+      <figcaption class="lab-figure__caption">Un plano de control desacopla el diseño del pipeline del engine y del almacenamiento subyacente.</figcaption>
+    </figure>
+  </section>
+
+  <section class="lab-section" id="wxdi-section-compare">
+    <h2 class="cds--productive-heading-04">Integración fragmentada vs Plataforma unificada</h2>
+    <div class="ce-compare-grid">
+      <div class="ce-compare-col ce-compare-col--bad">
+        <div class="ce-compare-col__header">
+          <span class="ce-compare-col__badge ce-compare-col__badge--bad">Herramientas puntuales</span>
+        </div>
+        <ul class="ce-compare-list">
+          <li>Una herramienta solo para batch, otra solo para streaming</li>
+          <li>CDC y calidad en productos separados</li>
+          <li>Datos no estructurados fuera del flujo principal</li>
+          <li>Reescritura de pipelines ante cada cambio tecnológico</li>
+          <li>Observabilidad fragmentada entre equipos</li>
+        </ul>
+      </div>
+      <div class="ce-compare-col ce-compare-col--good">
+        <div class="ce-compare-col__header">
+          <span class="ce-compare-col__badge ce-compare-col__badge--good">watsonx.data integration</span>
+        </div>
+        <ul class="ce-compare-list">
+          <li>Un plano de control para batch, streaming, CDC y unstructured</li>
+          <li>Portfolio IBM integrado: DataStage, StreamSets, Replication, Databand, UDI</li>
+          <li>Pipelines reutilizables desacoplados del engine</li>
+          <li>Observabilidad embebida con Databand</li>
+          <li>No-code, low-code, pro-code y asistente genAI</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" id="wxdi-section-portfolio">
+    <h2 class="cds--productive-heading-04">El portfolio dentro de la plataforma</h2>
+    <p class="cds--body-01 ce-section-intro">Cada capacidad resuelve un estilo de integración distinto. La plataforma los expone desde el mismo plano de control, con conexiones y gobernanza compartidas:</p>
+
+    <div class="wxdi-pillar-grid">
+      <article class="wxdi-pillar-card wxdi-pillar-card--datastage">
+        <p class="wxdi-pillar-card__name">IBM DataStage</p>
+        <p class="wxdi-pillar-card__tag">Batch ETL / ELT</p>
+        <p>Cargas programadas de alto rendimiento hacia warehouses y lakehouses. Transformaciones complejas sobre datos estructurados con paralelismo masivo.</p>
+        <ul class="ce-triada-card__list">
+          <li>ETL y ELT para volúmenes batch</li>
+          <li>Asistente genAI (Granite) para generar pipelines desde lenguaje natural</li>
+          <li>Disponible como servicio en IBM Cloud y AWS</li>
+        </ul>
+      </article>
+
+      <article class="wxdi-pillar-card wxdi-pillar-card--streamsets">
+        <p class="wxdi-pillar-card__name">IBM StreamSets</p>
+        <p class="wxdi-pillar-card__tag">Streaming en tiempo real</p>
+        <p>Pipelines visuales de datos en movimiento: consumir, transformar, enriquecer y publicar eventos con latencia de segundos.</p>
+        <ul class="ce-triada-card__list">
+          <li>Canvas Origin → Processors → Destinations</li>
+          <li>Preview por stage y manejo de data drift</li>
+          <li>Engines en cloud, híbrido o Kubernetes</li>
+        </ul>
+      </article>
+
+      <article class="wxdi-pillar-card wxdi-pillar-card--replication">
+        <p class="wxdi-pillar-card__name">IBM Data Replication</p>
+        <p class="wxdi-pillar-card__tag">CDC / Replicación</p>
+        <p>Captura y entrega incremental de cambios desde sistemas operacionales (Oracle, DB2, etc.) hacia destinos analíticos.</p>
+        <ul class="ce-triada-card__list">
+          <li>Sincronización de baja latencia sin full reloads</li>
+          <li>Oracle CDC, XStream y conectores enterprise</li>
+          <li>Mantiene aplicaciones y analítica alineadas</li>
+        </ul>
+      </article>
+
+      <article class="wxdi-pillar-card wxdi-pillar-card--udi">
+        <p class="wxdi-pillar-card__name">Unstructured Data Integration</p>
+        <p class="wxdi-pillar-card__tag">Documentos y AI</p>
+        <p>Ingesta y preparación de PDFs, presentaciones y texto para analytics y workflows de AI/RAG.</p>
+        <ul class="ce-triada-card__list">
+          <li>Operadores: PII masking, quality filter, language detection</li>
+          <li>Canvas visual + Python SDK</li>
+          <li>Integración con frameworks de orquestación AI</li>
+        </ul>
+      </article>
+
+      <article class="wxdi-pillar-card wxdi-pillar-card--databand">
+        <p class="wxdi-pillar-card__name">IBM Databand</p>
+        <p class="wxdi-pillar-card__tag">Observabilidad</p>
+        <p>Capa transversal de monitoreo: salud de pipelines, alertas, root cause y detección de anomalías en entregas de datos.</p>
+        <ul class="ce-triada-card__list">
+          <li>Visibilidad unificada sobre batch, streaming y CDC</li>
+          <li>Detección temprana de fallos y degradación</li>
+          <li>Reduce tiempo de remediación manual</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="ce-governance">
+      <p class="ce-governance__label">CAPA TRANSVERSAL — GOBERNANZA Y OPERACIÓN</p>
+      <div class="ce-governance__pills">
+        <span class="ce-governance__pill">Conexiones gestionadas</span>
+        <span class="ce-governance__pill">RBAC</span>
+        <span class="ce-governance__pill">Calidad de datos</span>
+        <span class="ce-governance__pill">Lineage</span>
+        <span class="ce-governance__pill">Despliegue híbrido</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" id="wxdi-section-styles">
+    <h2 class="cds--productive-heading-04">Estilos de integración</h2>
+    <p>Elegís el estilo según el caso de uso; la plataforma no te obliga a un solo patrón:</p>
+    <div class="lab-table-wrap">
+      <table class="lab-table">
+        <thead>
+          <tr><th>Estilo</th><th>Capacidad</th><th>Cuándo usarlo</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Batch ETL/ELT</strong></td>
+            <td>DataStage</td>
+            <td>Cargas programadas, alto volumen, transformaciones complejas</td>
+            <td>Alimentar un warehouse cada noche desde SAP</td>
+          </tr>
+          <tr>
+            <td><strong>Streaming</strong></td>
+            <td>StreamSets</td>
+            <td>Decisiones en segundos, eventos continuos</td>
+            <td>Scoring de fraude, inventario en tiempo real</td>
+          </tr>
+          <tr>
+            <td><strong>Replicación CDC</strong></td>
+            <td>Data Replication</td>
+            <td>Sincronizar OLTP con analítica sin batch completo</td>
+            <td>Réplica de Oracle hacia lakehouse</td>
+          </tr>
+          <tr>
+            <td><strong>No estructurado</strong></td>
+            <td>UDI</td>
+            <td>Documentos, texto, preparación para AI</td>
+            <td>Ingesta de PDFs con masking para RAG</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="lab-section" id="wxdi-section-architecture">
+    <h2 class="cds--productive-heading-04">Arquitectura: plano de control y engines</h2>
+    <p>La plataforma separa <strong>dónde diseñás</strong> el pipeline de <strong>dónde se ejecuta</strong>:</p>
+    <div class="lab-flow-diagram" aria-label="Arquitectura de watsonx.data integration">
+      <div class="lab-flow-diagram__lane lab-flow-diagram__lane--shared">
+        <span class="lab-flow-diagram__lane-label">Plano de control (SaaS)</span>
+        <div class="lab-flow-diagram__track">
+          <div class="lab-flow-diagram__node">Autoría</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node">Conexiones</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--process">Observabilidad</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node">Despliegue</div>
+        </div>
+      </div>
+      <div class="lab-flow-diagram__lane lab-flow-diagram__lane--individual">
+        <span class="lab-flow-diagram__lane-label">Engines de ejecución</span>
+        <div class="lab-flow-diagram__track">
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--individual">DataStage</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--individual">StreamSets</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--individual">Replication</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--individual">UDI</div>
+        </div>
+      </div>
+    </div>
+    <div class="ce-concepts-grid">
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Plano de control</p>
+        <p class="ce-concept-card__def">Interfaz unificada para diseñar pipelines, gestionar conexiones y monitorear ejecuciones.</p>
+      </div>
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Engine</p>
+        <p class="ce-concept-card__def">Runtime que procesa datos cerca del origen: cloud managed, VPC o on-premises.</p>
+      </div>
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Pipeline reutilizable</p>
+        <p class="ce-concept-card__def">Diseño desacoplado del destino; reduce reescritura ante cambios tecnológicos.</p>
+      </div>
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Conexión</p>
+        <p class="ce-concept-card__def">Credencial centralizada reutilizable entre pipelines y equipos.</p>
+      </div>
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Híbrido</p>
+        <p class="ce-concept-card__def">Procesamiento donde residen los datos, incluso si no pueden salir de jurisdicción.</p>
+      </div>
+      <div class="ce-concept-card">
+        <p class="ce-concept-card__term">Asistente genAI</p>
+        <p class="ce-concept-card__def">Describe la integración en lenguaje natural; el asistente sugiere pipelines ejecutables.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-section" id="wxdi-section-streamsets">
+    <h2 class="cds--productive-heading-04">StreamSets dentro de la plataforma</h2>
+    <p>
+      <strong>StreamSets</strong> es la capacidad de streaming visual de wxDI — una pieza del portfolio, no la plataforma completa. Su modelo de pipeline conecta orígenes, procesadores y destinos en un canvas ejecutable:
+    </p>
+    <div class="lab-flow-diagram lab-flow-diagram--pipeline" aria-label="Modelo de pipeline StreamSets">
+      <div class="lab-flow-diagram__lane">
+        <span class="lab-flow-diagram__lane-label">Patrón Origin → Process → Destination</span>
+        <div class="lab-flow-diagram__track">
+          <div class="lab-flow-diagram__node">Origin</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--process">Processors</div>
+          <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--individual">Destinations</div>
+        </div>
+      </div>
+    </div>
+    <ul class="cds--list--unordered ce-list-spaced">
+      <li class="cds--list__item"><strong>Preview por stage:</strong> inspeccionar registros en cada punto sin publicar a destino.</li>
+      <li class="cds--list__item"><strong>Data drift:</strong> stages que detectan y adaptan cambios de schema en origen.</li>
+      <li class="cds--list__item"><strong>Conectividad amplia:</strong> Kafka, JDBC, S3, HTTP, Confluent Schema Registry y más.</li>
+      <li class="cds--list__item"><strong>Bifurcaciones:</strong> un processor puede alimentar múltiples destinos (ej. Kafka + JDBC).</li>
+    </ul>
+    <div class="callout" data-tone="tip">
+      <p class="callout__title">Relación con DataStage y Replication</p>
+      <p>Usá <strong>StreamSets</strong> cuando el dato debe procesarse en movimiento. Usá <strong>DataStage</strong> para cargas batch masivas. Usá <strong>Data Replication</strong> cuando necesitás sincronizar cambios incrementales sin transformación compleja.</p>
+    </div>
+  </section>
+
+  <section class="lab-section" id="wxdi-section-usecases">
+    <h2 class="cds--productive-heading-04">Casos de uso</h2>
+    <div class="lab-task-grid">
+      <article class="lab-task-card">
+        <h3 class="cds--productive-heading-03">Modernización analítica</h3>
+        <p>Migrar datos desde mainframe, SAP u OLTP hacia lakehouses con batch (DataStage) y CDC (Replication).</p>
+      </article>
+      <article class="lab-task-card">
+        <h3 class="cds--productive-heading-03">Decisiones en tiempo real</h3>
+        <p>Procesar eventos de Kafka u otras fuentes con StreamSets para scoring, enriquecimiento o alertas.</p>
+      </article>
+      <article class="lab-task-card">
+        <h3 class="cds--productive-heading-03">Datos listos para AI</h3>
+        <p>Preparar documentos y contenido no estructurado con UDI: masking, filtrado de calidad, chunking para RAG.</p>
+      </article>
+      <article class="lab-task-card">
+        <h3 class="cds--productive-heading-03">Operación confiable</h3>
+        <p>Monitorear todos los estilos de integración con Databand: alertas, root cause y SLA de entrega de datos.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="lab-section" id="wxdi-section-cta">
+    <h2 class="cds--productive-heading-04">Explorar en un bootcamp</h2>
+    <p>En nuestro bootcamp de fraude utilizamos <strong>StreamSets</strong> dentro de wxDI para construir un pipeline de scoring y masking en tiempo real. Es un ejemplo concreto de la capacidad de streaming — no el alcance completo de la plataforma.</p>
+    <div class="lab-section__cta">
+      <a class="cds--btn cds--btn--primary" href="#/lab/fraud-detection/overview">Ver bootcamps disponibles</a>
+    </div>
+  </section>
+</div>

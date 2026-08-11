@@ -1,0 +1,348 @@
+<div class="content-panel lab-template prose--full">
+  <div class="lab-banner">
+    <div class="lab-banner__tags">
+      <span class="cds--tag cds--tag--purple">Plataforma</span>
+      <span class="cds--tag cds--tag--cool-gray">Lectura previa al lab</span>
+      <span class="cds--tag cds--tag--teal">Kafka · Flink · Iceberg · Schema Registry</span>
+    </div>
+    <h1 class="cds--productive-heading-05 lab-banner__title">¿Qué es Confluent Cloud?</h1>
+    <p class="cds--body-02 lab-banner__summary">
+      Antes de entrar al laboratorio, entendé la plataforma que vas a usar: qué es Confluent Cloud, por qué existe, cómo se diferencia del Kafka open source, y cuáles son los tres pilares tecnológicos que la componen.
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECCIÓN 1 — ¿POR QUÉ EVENT STREAMING?
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">¿Por qué Event Streaming?</h2>
+
+    <div class="ci-banner-hero">
+      <blockquote class="ci-banner-hero__quote">"¿Cruzarías una calle transitada basándote en una foto de los autos que pasaron <em>ayer</em>?"</blockquote>
+      <p class="ci-banner-hero__sub">La mayoría de las empresas toman decisiones críticas con reportes nocturnos o batch. El problema no es de volumen — es de <strong>velocidad de reacción</strong>.</p>
+    </div>
+
+    <div class="ci-pain-grid">
+      <div class="ci-pain-card">
+        <p class="ci-pain-card__title">El reporte llega mañana</p>
+        <p class="ci-pain-card__desc">La decisión estratégica se toma cuando la oportunidad ya pasó.</p>
+      </div>
+      <div class="ci-pain-card">
+        <p class="ci-pain-card__title">El fraude no se detectó a tiempo</p>
+        <p class="ci-pain-card__desc">La transacción maliciosa se analiza horas después de procesada.</p>
+      </div>
+      <div class="ci-pain-card">
+        <p class="ci-pain-card__title">El cliente ya se fue</p>
+        <p class="ci-pain-card__desc">La oferta personalizada llega cuando el usuario ya cerró la app.</p>
+      </div>
+    </div>
+
+    <div class="ci-compare-grid">
+      <div class="ci-compare-col ci-compare-col--bad">
+        <div class="ci-compare-col__header">
+          <span class="ci-compare-col__badge ci-compare-col__badge--bad">Batch tradicional</span>
+          <p class="ci-compare-col__sub">Decisiones tardías</p>
+        </div>
+        <ul class="ci-compare-list">
+          <li>Datos procesados cada N horas o 1 vez al día</li>
+          <li>Ventanas de fraude amplias — horas de exposición</li>
+          <li>Inventarios desincronizados entre canales</li>
+          <li>Pipelines ETL frágiles y costosos de mantener</li>
+        </ul>
+      </div>
+      <div class="ci-compare-col ci-compare-col--good">
+        <div class="ci-compare-col__header">
+          <span class="ci-compare-col__badge ci-compare-col__badge--good">Event Streaming con Confluent</span>
+          <p class="ci-compare-col__sub">Tiempo real</p>
+        </div>
+        <ul class="ci-compare-list">
+          <li>Eventos procesados en milisegundos desde el origen</li>
+          <li>Detección de fraude antes de aprobar la transacción</li>
+          <li>Inventarios sincronizados en todos los canales</li>
+          <li>120+ conectores managed sin código ETL</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECCIÓN 2 — ¿A QUIÉN LE HABLA ESTO?
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">¿Con cuál de estos escenarios te identificás?</h2>
+    <div class="ci-profiles-grid">
+
+      <div class="ci-profile-card ci-profile-card--business">
+        <div class="ci-profile-card__header">
+          <span class="ci-profile-card__badge">Perfil A — Negocio / Tecnología</span>
+          <p class="ci-profile-card__title">Tus sistemas no reaccionan a tiempo y los reportes siempre llegan tarde</p>
+        </div>
+        <p class="ci-profile-card__body">
+          No necesariamente sabés qué es Kafka. Lo que sí sabés es que tus procesos tienen lag: los reportes llegan tarde, las alertas de fraude se activan cuando el daño ya está hecho, y tus equipos trabajan con datos del pasado para tomar decisiones del presente.
+        </p>
+        <p class="ci-profile-card__cta">Confluent resuelve el problema de arquitectura que está detrás de todo eso — sin que tengas que cambiar tus aplicaciones de un día para el otro.</p>
+      </div>
+
+      <div class="ci-profile-card ci-profile-card--tech">
+        <div class="ci-profile-card__header">
+          <span class="ci-profile-card__badge">Perfil B — Ingeniería de Datos</span>
+          <p class="ci-profile-card__title">Ya usás Apache Kafka y tu equipo dedica más tiempo a operarlo que a construir valor</p>
+        </div>
+        <p class="ci-profile-card__body">
+          Sabés muy bien qué es Kafka. El problema es lo que lo rodea: parches de versión, rebalanceo de particiones, monitoreo de brokers, ausencia de Schema Registry nativo, sin RBAC centralizado. El equipo de datos terminó siendo el equipo de operaciones de Kafka.
+        </p>
+        <p class="ci-profile-card__cta">Confluent Cloud es la misma base técnica que ya conocés, pero con toda la carga operativa gestionada como SaaS — con SLA 99.99% y gobernanza enterprise incluida.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECCIÓN 3 — LA TRÍADA TECNOLÓGICA
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">La Tríada Tecnológica</h2>
+    <p class="cds--body-01" style="margin-bottom:1.25rem;">Confluent Cloud no es solo "Kafka hospedado". Es una <strong>plataforma SaaS enterprise</strong> que integra tres pilares tecnológicos bajo un framework unificado de gobernanza y seguridad:</p>
+
+    <div class="ci-triada">
+
+      <!-- Kafka -->
+      <div class="ci-triada__card ci-triada__card--kafka">
+        <div class="ci-triada__top">
+          <img src="./assets/images/labs/confluent/kafka.png" alt="Apache Kafka" class="ci-triada__logo" onerror="this.style.display='none'" />
+          <div>
+            <p class="ci-triada__name">Apache Kafka</p>
+            <p class="ci-triada__tag">Event Streaming Core</p>
+          </div>
+        </div>
+        <p class="ci-triada__desc">El motor pub/sub distribuido que actúa como el <strong>sistema nervioso central</strong> de la plataforma. Ingiere y distribuye eventos a escala de Terabytes con latencia de milisegundos, sobre el <strong>Kora Engine</strong> propio de Confluent — optimizado para desacoplar compute de storage con Tiered Storage multinivel.</p>
+        <ul class="ci-triada__list">
+          <li>Tópicos con retención configurable: horas, días o <em>infinita</em></li>
+          <li>Compactación por clave: mantiene el último estado de cada entidad</li>
+          <li>Particionamiento para procesamiento paralelo masivo</li>
+          <li>120+ conectores fully managed: PostgreSQL CDC, Snowflake, S3, Salesforce…</li>
+          <li>SLA 99.99% con balanceo automático de particiones y réplicas</li>
+        </ul>
+        <div class="ci-triada__usecase">
+          <span class="ci-triada__usecase-label">En este bootcamp</span>
+          La VM generadora de transacciones publica eventos en un tópico Kafka. Tu pipeline de StreamSets consume desde ese tópico en tiempo real.
+        </div>
+      </div>
+
+      <!-- Flink -->
+      <div class="ci-triada__card ci-triada__card--flink">
+        <div class="ci-triada__top">
+          <img src="./assets/images/labs/confluent/flink.png" alt="Apache Flink" class="ci-triada__logo" onerror="this.style.display='none'" />
+          <div>
+            <p class="ci-triada__name">Apache Flink</p>
+            <p class="ci-triada__tag">Stream Processing</p>
+          </div>
+        </div>
+        <p class="ci-triada__desc">Motor de procesamiento distribuido <strong>stateful</strong> en tiempo real. Permite filtrar, transformar, agregar y unir datos <em>en movimiento</em> usando <strong>Flink SQL</strong> declarativo — sin necesidad de escribir código Java o Scala. Mantiene estado entre eventos para detectar patrones complejos.</p>
+        <ul class="ci-triada__list">
+          <li><strong>Ventanas TUMBLE:</strong> agregaciones en intervalos fijos (ej: cada 5 min)</li>
+          <li><strong>Ventanas HOP:</strong> ventanas deslizantes solapadas para tendencias</li>
+          <li><strong>Ventanas SESSION:</strong> agrupación dinámica por inactividad del usuario</li>
+          <li><strong>Joins entre streams:</strong> unir transacciones con perfiles de cliente en tiempo real</li>
+          <li>Detección de patrones: N operaciones del mismo cliente en &lt;10 minutos</li>
+        </ul>
+        <div class="ci-triada__usecase">
+          <span class="ci-triada__usecase-label">En este bootcamp</span>
+          IBM demostrará Flink SQL filtrando transacciones sospechosas y calculando totales por cliente en ventanas de tiempo — sin detener el flujo de datos.
+        </div>
+      </div>
+
+      <!-- Iceberg -->
+      <div class="ci-triada__card ci-triada__card--iceberg">
+        <div class="ci-triada__top">
+          <img src="./assets/images/labs/confluent/iceberg.png" alt="Apache Iceberg" class="ci-triada__logo" onerror="this.style.display='none'" />
+          <div>
+            <p class="ci-triada__name">Apache Iceberg</p>
+            <p class="ci-triada__tag">Open Table Lakehouse</p>
+          </div>
+        </div>
+        <p class="ci-triada__desc">Integración nativa vía <strong>Tableflow</strong> que expone los eventos de tópicos directamente como tablas abiertas en formato Iceberg. Une el mundo del streaming en tiempo real con los motores analíticos del Data Lakehouse — <strong>sin duplicar datos ni construir pipelines ETL adicionales</strong>.</p>
+        <ul class="ci-triada__list">
+          <li>El tópico Kafka <em>es</em> la tabla — sin movimiento de datos intermedio</li>
+          <li>Compatible con Snowflake, Databricks, AWS Athena, Apache Spark</li>
+          <li>Schema evolution nativa con compatibilidad hacia atrás</li>
+          <li>Elimina la necesidad de ETL batch nocturno para alimentar el Lakehouse</li>
+          <li>Consultas SQL analíticas sobre datos frescos de segundos de antigüedad</li>
+        </ul>
+        <div class="ci-triada__usecase">
+          <span class="ci-triada__usecase-label">Caso de uso extendido</span>
+          Los resultados de fraude procesados por tu pipeline pueden exponerse directamente a Snowflake o Databricks para análisis histórico — sin ETL adicional.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Governance bar -->
+    <div class="ci-governance">
+      <p class="ci-governance__label">STREAM GOVERNANCE &amp; SECURITY — capa transversal a los 3 pilares</p>
+      <div class="ci-governance__pills">
+        <span class="ci-governance__pill">Schema Registry</span>
+        <span class="ci-governance__pill">Data Contracts</span>
+        <span class="ci-governance__pill">Stream Lineage</span>
+        <span class="ci-governance__pill">ACLs &amp; RBAC</span>
+        <span class="ci-governance__pill">Audit Logs</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECCIÓN 4 — TIPOS DE CLUSTER
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Tipos de Cluster en Confluent Cloud</h2>
+    <p class="cds--body-01" style="margin-bottom:.875rem;">Confluent ofrece cuatro perfiles de clúster según el caso de uso. En este bootcamp usamos un clúster compartido de tipo <strong>Standard</strong>, resaltado a continuación:</p>
+    <div class="ci-cluster-grid">
+      <div class="ci-cluster-card">
+        <p class="ci-cluster-card__name">Basic</p>
+        <p class="ci-cluster-card__use">Dev / POC</p>
+        <ul class="ci-cluster-card__features">
+          <li>Sin costo fijo por hora</li>
+          <li>Sin SLA garantizado</li>
+          <li>Single-zone</li>
+          <li>Ideal para prototipos y pruebas</li>
+        </ul>
+      </div>
+      <div class="ci-cluster-card ci-cluster-card--highlighted">
+        <p class="ci-cluster-card__name">Standard ← <em>este bootcamp</em></p>
+        <p class="ci-cluster-card__use">Producción ligera / media</p>
+        <ul class="ci-cluster-card__features">
+          <li>Storage ilimitado (Tiered Storage)</li>
+          <li>Escalamiento elástico automático</li>
+          <li>Multi-zona, alta disponibilidad</li>
+          <li>Schema Registry incluido</li>
+        </ul>
+      </div>
+      <div class="ci-cluster-card">
+        <p class="ci-cluster-card__name">Enterprise</p>
+        <p class="ci-cluster-card__use">Cargas críticas enterprise</p>
+        <ul class="ci-cluster-card__features">
+          <li>Private Link / VNet peering</li>
+          <li>RBAC avanzado + Audit Logs completos</li>
+          <li>SLA enterprise 99.99%</li>
+          <li>Soporte dedicado</li>
+        </ul>
+      </div>
+      <div class="ci-cluster-card">
+        <p class="ci-cluster-card__name">Dedicated</p>
+        <p class="ci-cluster-card__use">Alto rendimiento / aislamiento total</p>
+        <ul class="ci-cluster-card__features">
+          <li>MB/s dedicados y garantizados</li>
+          <li>VPC Peering / Transit Gateway</li>
+          <li>Aislamiento completo de red y compute</li>
+          <li>Ideal para regulaciones estrictas</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       CTA — CONTINUAR AL LAB
+       ══════════════════════════════════════════════════════════ -->
+  <div class="ci-next-cta">
+    <div class="ci-next-cta__body">
+      <p class="ci-next-cta__title">¿Listo para el laboratorio?</p>
+      <p class="ci-next-cta__desc">Ya tenés el contexto de la plataforma. En la siguiente sección vas a configurar el clúster, crear tu tópico, registrar el schema, observar Flink en acción y configurar tus permisos ACL.</p>
+    </div>
+    <span class="ci-next-cta__arrow" aria-hidden="true">→</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ESTILOS INLINE
+       ══════════════════════════════════════════════════════════ -->
+  <style>
+    /* Banner hero */
+    .ci-banner-hero{padding:1.5rem;background:#1c0f30;border-left:4px solid #8a3ffc;margin-bottom:1.25rem}
+    .ci-banner-hero__quote{margin:0 0 .6rem;font-size:clamp(1.1rem,2.5vw,1.45rem);font-weight:300;color:#f4f4f4;font-style:normal}
+    .ci-banner-hero__quote em{color:#a66efa;font-style:normal}
+    .ci-banner-hero__sub{margin:0;color:#c6c6c6;font-size:.9rem;line-height:1.55}
+    .cds--g100 .ci-banner-hero{background:#261a3c}
+
+    /* Pain grid */
+    .ci-pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.75rem;margin-top:1.25rem}
+    .ci-pain-card{padding:1rem 1.25rem;border:1px solid var(--hub-border);border-top:3px solid #8a3ffc;background:var(--hub-surface)}
+    .ci-pain-card__title{font-weight:600;font-size:.9rem;color:var(--hub-text);margin:0 0 .3rem}
+    .ci-pain-card__desc{font-size:.85rem;color:var(--hub-text-secondary);margin:0;line-height:1.5}
+
+    /* Compare grid */
+    .ci-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1.25rem}
+    @media(max-width:671px){.ci-compare-grid{grid-template-columns:1fr}}
+    .ci-compare-col{padding:1.25rem;border:1px solid var(--hub-border)}
+    .ci-compare-col--bad{border-top:3px solid #da1e28}
+    .ci-compare-col--good{border-top:3px solid #24a148}
+    .ci-compare-col__header{margin-bottom:.75rem}
+    .ci-compare-col__badge{display:inline-block;padding:.2rem .625rem;font-size:.7rem;font-weight:700;font-family:var(--font-mono);letter-spacing:.04em}
+    .ci-compare-col__badge--bad{background:rgba(218,30,40,.1);color:#da1e28}
+    .ci-compare-col__badge--good{background:rgba(36,161,72,.1);color:#198038}
+    .ci-compare-col__sub{margin:.3rem 0 0;font-size:.75rem;color:var(--hub-text-helper)}
+    .ci-compare-list{margin:0;padding-left:1.1rem;display:grid;gap:.4rem}
+    .ci-compare-list li{font-size:.85rem;color:var(--hub-text-secondary);line-height:1.4}
+
+    /* Profiles */
+    .ci-profiles-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:767px){.ci-profiles-grid{grid-template-columns:1fr}}
+    .ci-profile-card{padding:1.5rem;border:1px solid var(--hub-border);background:var(--hub-surface)}
+    .ci-profile-card--business{border-top:4px solid #8a3ffc}
+    .ci-profile-card--tech{border-top:4px solid #3ddbd9}
+    .ci-profile-card__header{margin-bottom:.875rem}
+    .ci-profile-card__badge{display:inline-block;padding:.2rem .625rem;font-size:.6875rem;font-family:var(--font-mono);font-weight:700;letter-spacing:.06em;margin-bottom:.5rem}
+    .ci-profile-card--business .ci-profile-card__badge{background:rgba(138,63,252,.1);color:#8a3ffc}
+    .ci-profile-card--tech .ci-profile-card__badge{background:rgba(61,219,217,.12);color:#007d79}
+    .cds--g100 .ci-profile-card--tech .ci-profile-card__badge{color:#3ddbd9}
+    .ci-profile-card__title{font-size:1rem;font-weight:600;color:var(--hub-text);margin:0;line-height:1.35}
+    .ci-profile-card__body{font-size:.875rem;color:var(--hub-text-secondary);line-height:1.6;margin:.75rem 0 .875rem}
+    .ci-profile-card__cta{font-size:.875rem;font-weight:600;color:var(--hub-text);margin:0;padding:.75rem 1rem;background:var(--hub-layer);border-left:3px solid var(--hub-border);line-height:1.5}
+    .ci-profile-card--business .ci-profile-card__cta{border-left-color:#8a3ffc}
+    .ci-profile-card--tech .ci-profile-card__cta{border-left-color:#3ddbd9}
+
+    /* Tríada */
+    .ci-triada{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:0}
+    @media(max-width:900px){.ci-triada{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.ci-triada{grid-template-columns:1fr}}
+    .ci-triada__card{display:flex;flex-direction:column;gap:.75rem;padding:1.375rem;border:1px solid var(--hub-border);background:var(--hub-surface);border-top:4px solid var(--hub-border)}
+    .ci-triada__card--kafka{border-top-color:#0f62fe}
+    .ci-triada__card--flink{border-top-color:#8a3ffc}
+    .ci-triada__card--iceberg{border-top-color:#3ddbd9}
+    .ci-triada__top{display:flex;align-items:center;gap:.75rem}
+    .ci-triada__logo{width:2.25rem;height:2.25rem;object-fit:contain;flex-shrink:0}
+    .ci-triada__name{font-weight:700;font-size:1rem;color:var(--hub-text);margin:0 0 .15rem}
+    .ci-triada__tag{font-size:.6875rem;font-family:var(--font-mono);color:var(--hub-text-helper);margin:0;letter-spacing:.04em;text-transform:uppercase}
+    .ci-triada__desc{font-size:.875rem;color:var(--hub-text-secondary);line-height:1.6;margin:0}
+    .ci-triada__desc strong{color:var(--hub-text)}
+    .ci-triada__list{margin:0;padding-left:1.1rem;display:grid;gap:.35rem;flex-grow:1}
+    .ci-triada__list li{font-size:.8125rem;color:var(--hub-text-secondary);line-height:1.45}
+    .ci-triada__list li strong{color:var(--hub-text)}
+    .ci-triada__usecase{margin-top:auto;padding:.625rem .875rem;background:var(--hub-layer);border-left:3px solid var(--hub-border);font-size:.8rem;color:var(--hub-text-secondary);line-height:1.5}
+    .ci-triada__card--kafka .ci-triada__usecase{border-left-color:#0f62fe}
+    .ci-triada__card--flink .ci-triada__usecase{border-left-color:#8a3ffc}
+    .ci-triada__card--iceberg .ci-triada__usecase{border-left-color:#3ddbd9}
+    .ci-triada__usecase-label{display:block;font-size:.65rem;font-family:var(--font-mono);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--hub-text-helper);margin-bottom:.3rem}
+
+    /* Governance bar */
+    .ci-governance{margin-top:0;padding:.875rem 1.25rem;background:#161616;color:#f4f4f4;display:flex;flex-wrap:wrap;align-items:center;gap:.625rem}
+    .ci-governance__label{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.06em;color:#8d8d8d;white-space:nowrap}
+    .ci-governance__pills{display:flex;flex-wrap:wrap;gap:.375rem}
+    .ci-governance__pill{padding:.15rem .5rem;background:#262626;color:#c6c6c6;font-size:.7rem;border:1px solid #393939}
+
+    /* Cluster grid */
+    .ci-cluster-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.75rem;margin-top:.75rem}
+    .ci-cluster-card{padding:1.125rem 1.25rem;border:1px solid var(--hub-border);border-top:3px solid #6f6f6f;background:var(--hub-surface)}
+    .ci-cluster-card--highlighted{border-top-color:#8a3ffc;background:var(--hub-layer)}
+    .ci-cluster-card__name{font-weight:700;font-size:.9375rem;color:var(--hub-text);margin:0 0 .2rem}
+    .ci-cluster-card--highlighted .ci-cluster-card__name{color:#8a3ffc}
+    .ci-cluster-card__use{font-size:.7rem;font-family:var(--font-mono);color:var(--hub-text-helper);margin:0 0 .625rem}
+    .ci-cluster-card__features{margin:0;padding-left:.875rem;display:grid;gap:.3rem}
+    .ci-cluster-card__features li{font-size:.8rem;color:var(--hub-text-secondary);line-height:1.4}
+
+    /* Next CTA */
+    .ci-next-cta{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding:1.25rem 1.5rem;background:var(--hub-layer);border:1px solid var(--hub-border);border-left:4px solid #8a3ffc;margin-top:2rem}
+    .ci-next-cta__title{font-weight:700;font-size:.9375rem;color:var(--hub-text);margin:0 0 .25rem}
+    .ci-next-cta__desc{font-size:.875rem;color:var(--hub-text-secondary);margin:0;line-height:1.55}
+    .ci-next-cta__arrow{font-size:1.75rem;color:#8a3ffc;flex-shrink:0;font-weight:300}
+  </style>
+
+</div>
