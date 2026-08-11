@@ -18,8 +18,8 @@
   </div>
 
   <div class="callout" data-tone="info">
-    <p class="callout__title">Credenciales en tu ZIP</p>
-    <p>Abre <code>credenciales.txt</code> del paquete <code data-template="fraud-workshop-{N}.zip">fraud-workshop-N.zip</code>. En los stages Kafka pega el valor de <strong>Schema Registry Basic Auth</strong> en <strong>Información básica del usuario de autenticación</strong> (formato <code>API_KEY:API_SECRET</code>).</p>
+    <p class="callout__title">Credenciales por correo</p>
+    <p>IBM te envió las credenciales por correo antes del workshop. En los stages Kafka pega el valor de <strong>Schema Registry Basic Auth</strong> en <strong>Información básica del usuario de autenticación</strong> (formato <code>API_KEY:API_SECRET</code>).</p>
   </div>
 
   <div class="callout" data-tone="info">
@@ -166,7 +166,7 @@
               <tr><th>Ubicación del esquema de Avro</th><td><code>Confluent Schema Registry</code></td></tr>
               <tr><th>URL de registro de esquemas</th><td><code>https://psrc-383o0j.southamerica-west1.gcp.confluent.cloud</code></td></tr>
               <tr><th>Opción de seguridad del registro de esquemas</th><td><code>Ninguno (Protocolo de seguridad=PLAINTEXT)</code></td></tr>
-              <tr><th>Información básica del usuario de autenticación</th><td><strong>Schema Registry Basic Auth</strong> en <code>credenciales.txt</code> <span class="lab-config-hint">(formato <code>SR_API_KEY:SR_API_SECRET</code>)</span></td></tr>
+              <tr><th>Información básica del usuario de autenticación</th><td><strong>Schema Registry Basic Auth</strong> del correo de credenciales <span class="lab-config-hint">(formato <code>SR_API_KEY:SR_API_SECRET</code>)</span></td></tr>
               <tr><th>Buscar esquema por</th><td><code>Asunto</code></td></tr>
               <tr><th>Asunto de esquema</th><td><code class="lab-resource">TransaccionesEnriquecidas-0-value</code></td></tr>
               <tr><th>Omitir índices de unión</th><td><strong>Desactivado</strong></td></tr>
@@ -448,7 +448,7 @@ for (var i = 0; i &lt; records.length; i++) {
               <tr><th>Ubicación del esquema de Avro</th><td><code>Confluent Schema Registry</code></td></tr>
               <tr><th>URL de registro de esquemas</th><td><code>https://psrc-383o0j.southamerica-west1.gcp.confluent.cloud</code></td></tr>
               <tr><th>Opción de seguridad del registro de esquemas</th><td><code>Ninguno (Protocolo de seguridad=PLAINTEXT)</code></td></tr>
-              <tr><th>Información básica del usuario de autenticación</th><td><strong>Línea 3</strong> de <code>credenciales.txt</code></td></tr>
+              <tr><th>Información básica del usuario de autenticación</th><td><strong>Schema Registry Basic Auth</strong> del correo de credenciales</td></tr>
               <tr><th>Buscar esquema por</th><td><code>Asunto</code></td></tr>
               <tr><th>Asunto de esquema</th><td><code class="lab-resource" data-template="TransaccionesEvaluadas-{N}-value">TransaccionesEvaluadas-N-value</code></td></tr>
               <tr><th>Incluir esquema</th><td><strong>Desactivado</strong> · compresión <code>Ninguna</code></td></tr>
@@ -539,11 +539,11 @@ for (var i = 0; i &lt; records.length; i++) {
 
     <p>Antes de validar, repasa este checklist rápido:</p>
     <ul class="lab-checklist">
-      <li>Consumer: Confluent Cloud + grupo <code class="lab-resource" data-template="fraud-workshop-{N}">fraud-workshop-N</code> + entrada <code class="lab-resource">TransaccionesEnriquecidas-0</code> + subject <code class="lab-resource">TransaccionesEnriquecidas-0-value</code> + línea 3 de <code>credenciales.txt</code> en autenticación SR.</li>
+      <li>Consumer: Confluent Cloud + grupo <code class="lab-resource" data-template="fraud-workshop-{N}">fraud-workshop-N</code> + entrada <code class="lab-resource">TransaccionesEnriquecidas-0</code> + subject <code class="lab-resource">TransaccionesEnriquecidas-0-value</code> + <strong>Schema Registry Basic Auth</strong> del correo en autenticación SR.</li>
       <li>Lookup: SQL sobre <code class="lab-resource" data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code> + JSON de correlaciones.</li>
       <li>Evaluator: script de <code>Pipeline_0</code> + <code>Lote por lote</code>.</li>
       <li>Masker: JSON de masking pegado en bulk.</li>
-      <li>Producer: salida <code class="lab-resource" data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code> + subject individual + línea 3 de <code>credenciales.txt</code> + sin incluir esquema.</li>
+      <li>Producer: salida <code class="lab-resource" data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code> + subject individual + <strong>Schema Registry Basic Auth</strong> del correo + sin incluir esquema.</li>
       <li>JDBC Producer: tabla <code class="lab-resource" data-template="fraud_customer_gps_{N}">fraud_customer_gps_N</code> + JSON de correlaciones + <code>UPDATE</code>.</li>
     </ul>
     <ol class="cds--list--ordered">
