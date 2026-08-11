@@ -38,632 +38,6 @@
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════════════════════════
-       LINAJE COMPLETO DEL PIPELINE
-       ══════════════════════════════════════════════════════════ -->
-  <section class="lab-section">
-    <h2 class="cds--productive-heading-04">Recorrido del dato — linaje completo</h2>
-    <p class="cds--body-01">Antes de comenzar, observá el camino completo que sigue cada transacción a lo largo del workshop. Cada nodo que ves en el diagrama corresponde a un recurso que vas a explorar en los pasos siguientes.</p>
-
-    <figure class="lab-figure lab-figure--lineage" aria-label="Diagrama de linaje completo del pipeline de fraude">
-      <svg class="lab-lineage-svg" viewBox="0 0 920 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Linaje: VM generadora → TransaccionesSucias-0 → Flink → TransaccionesEnriquecidas-0 → Consumer Group → StreamSets">
-        <defs>
-          <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L8,3 z" fill="#8a3ffc"/>
-          </marker>
-          <marker id="arr-dashed" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L8,3 z" fill="#6f6f6f"/>
-          </marker>
-        </defs>
-
-        <!-- ── Arrows (solid) ── -->
-        <line x1="122" y1="80" x2="188" y2="80" stroke="#8a3ffc" stroke-width="1.5" marker-end="url(#arr)"/>
-        <line x1="312" y1="80" x2="378" y2="80" stroke="#8a3ffc" stroke-width="1.5" marker-end="url(#arr)"/>
-        <line x1="502" y1="80" x2="568" y2="80" stroke="#8a3ffc" stroke-width="1.5" marker-end="url(#arr)"/>
-        <line x1="692" y1="80" x2="758" y2="80" stroke="#8a3ffc" stroke-width="1.5" marker-end="url(#arr)"/>
-        <!-- Dashed arrow to StreamSets (downstream, not in scope) -->
-        <line x1="882" y1="80" x2="905" y2="80" stroke="#6f6f6f" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr-dashed)"/>
-
-        <!-- ══ Node 1: VM Generadora ══ -->
-        <rect x="2" y="50" width="120" height="60" rx="4" fill="#0f3460" stroke="#4589ff" stroke-width="1.5"/>
-        <!-- server icon -->
-        <rect x="14" y="63" width="22" height="16" rx="2" fill="none" stroke="#4589ff" stroke-width="1.2"/>
-        <line x1="14" y1="68" x2="36" y2="68" stroke="#4589ff" stroke-width="1"/>
-        <circle cx="32" cy="65.5" r="1.5" fill="#4589ff"/>
-        <text x="62" y="68" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#a8c7fa" text-anchor="middle" font-weight="600">PRODUCER</text>
-        <text x="62" y="80" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#78a9ff" text-anchor="middle">VM</text>
-        <text x="62" y="91" font-family="IBM Plex Mono,monospace" font-size="7" fill="#78a9ff" text-anchor="middle">Generadora</text>
-        <text x="62" y="101" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4589ff" text-anchor="middle">dirty-generator</text>
-
-        <!-- ══ Node 2: TransaccionesSucias-0 ══ -->
-        <rect x="190" y="50" width="122" height="60" rx="4" fill="#1c0f30" stroke="#8a3ffc" stroke-width="1.5"/>
-        <!-- topic icon (stacked lines) -->
-        <rect x="202" y="63" width="20" height="3" rx="1" fill="#8a3ffc"/>
-        <rect x="202" y="69" width="20" height="3" rx="1" fill="#8a3ffc"/>
-        <rect x="202" y="75" width="20" height="3" rx="1" fill="#8a3ffc"/>
-        <text x="262" y="68" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#d4b8ff" text-anchor="middle" font-weight="600">TOPIC</text>
-        <text x="262" y="80" font-family="IBM Plex Mono,monospace" font-size="7" fill="#be95ff" text-anchor="middle">Transacciones</text>
-        <text x="262" y="91" font-family="IBM Plex Mono,monospace" font-size="7" fill="#be95ff" text-anchor="middle">Sucias-0</text>
-        <text x="262" y="101" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#8a3ffc" text-anchor="middle">datos crudos</text>
-
-        <!-- ══ Node 3: Flink Statement ══ -->
-        <rect x="380" y="50" width="122" height="60" rx="4" fill="#001f3f" stroke="#00b4d8" stroke-width="1.5"/>
-        <!-- flink icon: circle with refresh arrows -->
-        <circle cx="400" cy="79" r="10" fill="none" stroke="#00b4d8" stroke-width="1.5"/>
-        <path d="M394,74 A7,7,0,0,1,406,74" fill="none" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M406,84 A7,7,0,0,1,394,84" fill="none" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round"/>
-        <polygon points="394,71 394,76 398,73" fill="#00b4d8"/>
-        <polygon points="406,87 406,82 402,85" fill="#00b4d8"/>
-        <text x="452" y="68" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#90e0ef" text-anchor="middle" font-weight="600">FLINK</text>
-        <text x="452" y="80" font-family="IBM Plex Mono,monospace" font-size="7" fill="#caf0f8" text-anchor="middle">workshop-clean-</text>
-        <text x="452" y="91" font-family="IBM Plex Mono,monospace" font-size="7" fill="#caf0f8" text-anchor="middle">transactions-0</text>
-        <text x="452" y="101" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#00b4d8" text-anchor="middle">RUNNING</text>
-
-        <!-- ══ Node 4: TransaccionesEnriquecidas-0 ══ -->
-        <rect x="570" y="50" width="122" height="60" rx="4" fill="#1c0f30" stroke="#8a3ffc" stroke-width="1.5"/>
-        <rect x="582" y="63" width="20" height="3" rx="1" fill="#8a3ffc"/>
-        <rect x="582" y="69" width="20" height="3" rx="1" fill="#8a3ffc"/>
-        <rect x="582" y="75" width="20" height="3" rx="1" fill="#8a3ffc"/>
-        <text x="642" y="68" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#d4b8ff" text-anchor="middle" font-weight="600">TOPIC</text>
-        <text x="642" y="80" font-family="IBM Plex Mono,monospace" font-size="7" fill="#be95ff" text-anchor="middle">Transacciones</text>
-        <text x="642" y="91" font-family="IBM Plex Mono,monospace" font-size="7" fill="#be95ff" text-anchor="middle">Enriquecidas-0</text>
-        <text x="642" y="101" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#8a3ffc" text-anchor="middle">datos limpios</text>
-
-        <!-- ══ Node 5: Consumer Group ══ -->
-        <rect x="760" y="50" width="122" height="60" rx="4" fill="#0d2b1f" stroke="#42be65" stroke-width="1.5"/>
-        <!-- consumer icon: diamond -->
-        <polygon points="780,79 786,73 792,79 786,85" fill="none" stroke="#42be65" stroke-width="1.5"/>
-        <text x="832" y="68" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#a7f3d0" text-anchor="middle" font-weight="600">CONSUMER</text>
-        <text x="832" y="80" font-family="IBM Plex Mono,monospace" font-size="7" fill="#6ee7b7" text-anchor="middle">fraud-demo-0</text>
-        <text x="832" y="91" font-family="IBM Plex Mono,monospace" font-size="7" fill="#6ee7b7" text-anchor="middle">consumer group</text>
-        <text x="832" y="101" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#42be65" text-anchor="middle">→ StreamSets</text>
-
-        <!-- ── Step labels under arrows ── -->
-        <text x="155" y="98" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#8a3ffc" text-anchor="middle">publica</text>
-        <text x="345" y="98" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#8a3ffc" text-anchor="middle">consume</text>
-        <text x="535" y="98" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#8a3ffc" text-anchor="middle">produce</text>
-        <text x="725" y="98" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#8a3ffc" text-anchor="middle">lee</text>
-      </svg>
-      <figcaption class="lab-figure__caption">
-        Linaje completo: la <strong>VM generadora</strong> publica transacciones con defectos en <code>TransaccionesSucias-0</code> → <strong>Flink</strong> (<code>workshop-clean-transactions-0</code>) las normaliza y produce en <code>TransaccionesEnriquecidas-0</code> → el <strong>consumer group</strong> <code>fraud-demo-0</code> las consume. En la práctica, <strong>StreamSets</strong> lee ese consumer group para calcular la tasa de fraude.
-      </figcaption>
-    </figure>
-
-    <style>
-      .lab-lineage-svg{width:100%;height:auto;background:#0a0a12;border-radius:6px;border:1px solid #2a1a4a;display:block;padding:1rem 0;}
-      .lab-figure--lineage{margin:1rem 0 0;}
-    </style>
-  </section>
-
-  <!-- ══════════════════════════════════════════════════════════
-       CONFIGURACIÓN PREVIA — PASO A PASO (TOGGLE)
-       ══════════════════════════════════════════════════════════ -->
-  <section class="lab-section">
-    <h2 class="cds--productive-heading-04">¿Cómo se configuró todo esto?</h2>
-    <p class="cds--body-01">Todo lo que ves en el linaje ya estaba funcionando antes de que llegaras al workshop. Cada bloque de abajo corresponde a un paso que IBM ejecutó en ese orden exacto — si cambiás el orden, algo se rompe. Seguí la secuencia para entender por qué.</p>
-
-    <details class="cf-setup-accordion">
-      <summary class="cf-setup-accordion__trigger">
-        <span class="cf-setup-accordion__icon" aria-hidden="true">▶</span>
-        <span class="cf-setup-accordion__title">Ver configuración paso a paso</span>
-        <span class="cf-setup-accordion__meta">A · B · C · D · E — en orden de dependencia</span>
-      </summary>
-      <div class="cf-setup-accordion__body">
-
-        <!-- ══ BLOQUE A: Clúster ══════════════════════════════ -->
-        <div class="cf-setup-block">
-          <h3 class="cf-setup-block__title">
-            <span class="cf-setup-block__num">A</span>
-            Clúster BeeTech — el contenedor de todo
-          </h3>
-
-          <!-- mini-linaje: clúster como base -->
-          <div class="cf-setup-linaje">
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--active">Clúster BeeTech</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">Tópicos</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">Schema</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">Flink</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">ACLs</span>
-          </div>
-
-          <p class="cds--body-01" style="margin-top:.875rem;">El primer paso es tener un clúster activo. Sin él no existe ningún tópico, ningún schema y ningún statement de Flink. IBM creó el clúster <strong>BeeTech</strong> en AWS us-east-1 antes del workshop.</p>
-
-          <div class="lab-table-wrap" style="margin-top:.875rem;">
-            <table class="lab-table">
-              <thead><tr><th>Parámetro</th><th>Valor</th><th>Qué significa</th></tr></thead>
-              <tbody>
-                <tr><td>Nombre</td><td><code>BeeTech</code></td><td>Identificador del clúster en Confluent Cloud</td></tr>
-                <tr><td>Tipo</td><td>Standard</td><td>Multi-zona, Tiered Storage, escalamiento elástico</td></tr>
-                <tr><td>Cloud / Región</td><td>AWS us-east-1</td><td>Proveedor y región donde corren los brokers</td></tr>
-                <tr><td>Bootstrap server</td><td><em>Entregado por correo</em></td><td>URL que usan los clientes para conectarse</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <figure class="lab-figure" style="margin-top:1rem;">
-            <img
-              src="./assets/images/labs/confluent/cluster.png"
-              alt="Vista general del clúster BeeTech en Confluent Cloud"
-              class="lab-figure__img"
-              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
-            />
-            <div class="carbon-image-placeholder" hidden>
-              <span class="carbon-image-placeholder__label">cluster.png</span>
-              <code class="carbon-image-placeholder__path">Confluent Cloud → BeeTech → Overview</code>
-            </div>
-            <figcaption class="lab-figure__caption">Vista general del clúster BeeTech: estado, particiones y métricas de throughput.</figcaption>
-          </figure>
-        </div>
-
-        <!-- ══ BLOQUE B: Tópicos ══════════════════════════════ -->
-        <div class="cf-setup-block">
-          <h3 class="cf-setup-block__title">
-            <span class="cf-setup-block__num">B</span>
-            Tópicos — los dos extremos del pipeline de limpieza
-          </h3>
-
-          <!-- mini-linaje: tópicos -->
-          <div class="cf-setup-linaje">
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Clúster BeeTech</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--active">Tópicos</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">Schema</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">Flink</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">ACLs</span>
-          </div>
-
-          <p class="cds--body-01" style="margin-top:.875rem;">Flink necesita que <strong>ambos</strong> tópicos existan antes de poder crear el statement. Si <code>TransaccionesEnriquecidas-0</code> no existiera al momento de ejecutar el <code>INSERT INTO</code>, Flink fallaría con un error de tabla no encontrada. Por eso los tópicos se crean primero.</p>
-
-          <div class="callout" data-tone="info" style="margin-top:.875rem;">
-            <p class="callout__title">Dependencia crítica con Flink</p>
-            <p>El statement <code>workshop-clean-transactions-0</code> hace <code>INSERT INTO `TransaccionesEnriquecidas-0`</code>. Ese tópico destino <strong>debe existir antes</strong> de que el statement se registre. Si no existe, Flink lanza un error de tabla no encontrada y no puede arrancar.</p>
-          </div>
-
-          <!-- B-1: Tópico de entrada -->
-          <h4 class="cds--productive-heading-02" style="margin-top:1.25rem;margin-bottom:.5rem;">
-            <span class="cf-setup-topic-badge cf-setup-topic-badge--in">ENTRADA</span>
-            <code>TransaccionesSucias-0</code> — tópico de la VM generadora
-          </h4>
-          <p class="cds--body-01">Este tópico lo creó IBM y lo alimenta el generador de la VM. Llegan transacciones con defectos de formato controlados que el Schema Registry ya acepta como válidos (ver Bloque C).</p>
-          <div class="lab-table-wrap" style="margin-top:.625rem;">
-            <table class="lab-table">
-              <thead><tr><th>Parámetro</th><th>Valor</th></tr></thead>
-              <tbody>
-                <tr><td>Nombre</td><td><code>TransaccionesSucias-0</code></td></tr>
-                <tr><td>Particiones</td><td>3</td></tr>
-                <tr><td>Replication factor</td><td>3</td></tr>
-                <tr><td>Retention</td><td>7 días</td></tr>
-                <tr><td>Productor</td><td>VM generadora (<code>workshop-dirty-generator</code>)</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <figure class="lab-figure" style="margin-top:.875rem;">
-            <img
-              src="./assets/images/labs/confluent/topicos.png"
-              alt="Lista de tópicos del clúster BeeTech incluyendo TransaccionesSucias-0"
-              class="lab-figure__img"
-              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
-            />
-            <div class="carbon-image-placeholder" hidden>
-              <span class="carbon-image-placeholder__label">topicos.png</span>
-              <code class="carbon-image-placeholder__path">Confluent Cloud → BeeTech → Topics</code>
-            </div>
-            <figcaption class="lab-figure__caption">Lista de tópicos del clúster. <code>TransaccionesSucias-0</code> ya tiene mensajes del generador.</figcaption>
-          </figure>
-
-          <!-- B-2: Tópico de salida -->
-          <h4 class="cds--productive-heading-02" style="margin-top:1.5rem;margin-bottom:.5rem;">
-            <span class="cf-setup-topic-badge cf-setup-topic-badge--out">SALIDA</span>
-            <code>TransaccionesEnriquecidas-0</code> — tópico destino de Flink
-          </h4>
-          <p class="cds--body-01">Este es el tópico al que Flink escribe los datos ya limpios. <strong>Debe crearse antes del statement de Flink</strong> — es el destino del <code>INSERT INTO</code> del SQL. Una vez que Flink corre, solo IBM escribe aquí; los participantes solo tienen permiso de lectura.</p>
-          <ol class="cf-setup-steps" style="margin-top:.75rem;">
-            <li class="cf-setup-steps__item">
-              <span class="cf-setup-steps__num">1</span>
-              <span class="cf-setup-steps__text">Navegá a <strong>BeeTech → Topics → + Add topic</strong>, ingresá <code>TransaccionesEnriquecidas-0</code> y hacé clic en <strong>Create with defaults</strong>.</span>
-            </li>
-            <li class="cf-setup-steps__item">
-              <span class="cf-setup-steps__num">2</span>
-              <span class="cf-setup-steps__text">Configurá: <strong>Partitions = 3</strong>, <strong>Replication factor = 3</strong>, <strong>Cleanup policy = delete</strong>, <strong>Retention = 7 días</strong>.</span>
-            </li>
-            <li class="cf-setup-steps__item">
-              <span class="cf-setup-steps__num">3</span>
-              <span class="cf-setup-steps__text">Hacé clic en <strong>Save &amp; create</strong>. El tópico queda vacío — Flink lo llenará en el siguiente bloque.</span>
-            </li>
-          </ol>
-          <figure class="lab-figure" style="margin-top:.875rem;">
-            <img
-              src="./assets/images/labs/confluent/transaccionesevaluadas.png"
-              alt="Creación del tópico TransaccionesEnriquecidas-0 en Confluent Cloud"
-              class="lab-figure__img"
-              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
-            />
-            <div class="carbon-image-placeholder" hidden>
-              <span class="carbon-image-placeholder__label">transaccionesevaluadas.png</span>
-              <code class="carbon-image-placeholder__path">Confluent Cloud → Topics → Create → TransaccionesEnriquecidas-0</code>
-            </div>
-            <figcaption class="lab-figure__caption">Tópico <code>TransaccionesEnriquecidas-0</code> creado y vacío. Flink lo usará como destino del pipeline de limpieza.</figcaption>
-          </figure>
-
-          <div class="callout" data-tone="tip" style="margin-top:.875rem;">
-            <p class="callout__title">¿Y el tópico de cada participante?</p>
-            <p>Cada participante también tiene su propio tópico <code>TransaccionesEvaluadas-NN</code> (con su número de participante). Ese tópico es la salida del pipeline de StreamSets de cada uno — se crea con los mismos parámetros que <code>TransaccionesEnriquecidas-0</code>.</p>
-          </div>
-        </div>
-
-        <!-- ══ BLOQUE C: Schema Registry ═════════════════════ -->
-        <div class="cf-setup-block">
-          <h3 class="cf-setup-block__title">
-            <span class="cf-setup-block__num">C</span>
-            Schema Registry — contrato sobre los datos sucios
-          </h3>
-
-          <!-- mini-linaje: schema -->
-          <div class="cf-setup-linaje">
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Clúster BeeTech</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Tópicos</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--active">Schema</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">Flink</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">ACLs</span>
-          </div>
-
-          <p class="cds--body-01" style="margin-top:.875rem;">Con los tópicos ya creados, IBM registró el schema <code>DirtyTransactionValue</code> sobre <code>TransaccionesSucias-0</code>. Este contrato le dice al Schema Registry qué estructura deben tener los mensajes que produce la VM. Si el productor intentara romper ese contrato, el registro lo rechazaría.</p>
-
-          <div class="cf-setup-sr-concept" style="margin-top:.875rem;">
-            <div class="cf-setup-sr-concept__col cf-setup-sr-concept__col--bad">
-              <p class="cf-setup-sr-concept__label">Sin Schema Registry</p>
-              <ul>
-                <li>Productor cambia un campo → Flink falla en silencio</li>
-                <li>No hay historial de versiones del schema</li>
-                <li>Bytes sin contexto: Flink no sabe qué estructura esperar</li>
-              </ul>
-            </div>
-            <div class="cf-setup-sr-concept__col cf-setup-sr-concept__col--good">
-              <p class="cf-setup-sr-concept__label">Con Schema Registry</p>
-              <ul>
-                <li>Cambios incompatibles rechazados antes de llegar a Flink</li>
-                <li>Historial de versiones con evolución controlada</li>
-                <li>Mensajes Avro con ID de schema embebido — Flink los deserializa automáticamente</li>
-              </ul>
-            </div>
-          </div>
-
-          <h4 class="cds--productive-heading-01" style="margin-top:1.25rem;margin-bottom:.625rem;">Campos del schema <code>DirtyTransactionValue</code></h4>
-          <div class="lab-table-wrap">
-            <table class="lab-table">
-              <thead><tr><th>Campo</th><th>Tipo Avro</th><th>Descripción</th><th>Defecto típico</th><th>Req.</th></tr></thead>
-              <tbody>
-                <tr><td><code>source_event_id</code></td><td>string</td><td>ID inmutable del origen</td><td>—</td><td class="lab-table__yes">Sí</td></tr>
-                <tr><td><code>transaction_id_raw</code></td><td>["null","string"]</td><td>ID de transacción crudo</td><td>Espacios, minúsculas</td><td class="lab-table__no">No</td></tr>
-                <tr><td><code>amount_raw</code></td><td>["null","string"]</td><td>Monto como texto</td><td><code>"$1.234,56 USD"</code></td><td class="lab-table__no">No</td></tr>
-                <tr><td><code>currency_raw</code></td><td>["null","string"]</td><td>Moneda como texto</td><td><code>"  usd  "</code></td><td class="lab-table__no">No</td></tr>
-                <tr><td><code>customer_email_raw</code></td><td>["null","string"]</td><td>Email del cliente</td><td><code>"  USER@DOMAIN.COM  "</code></td><td class="lab-table__no">No</td></tr>
-                <tr><td><code>customer_country_raw</code></td><td>["null","string"]</td><td>País del cliente</td><td>Nombre en lugar de código ISO</td><td class="lab-table__no">No</td></tr>
-                <tr><td><code>account_status_raw</code></td><td>["null","string"]</td><td>Estado de cuenta</td><td><code>"ACTIVO"</code>, <code>"enabled"</code></td><td class="lab-table__no">No</td></tr>
-                <tr><td><code>event_time_raw</code></td><td>["null","string"]</td><td>Tiempo ISO 8601</td><td><code>"2024-01-15t10:30:00z"</code></td><td class="lab-table__no">No</td></tr>
-                <tr><td><code>source_system</code></td><td>string</td><td>Sistema productor</td><td>default: <code>workshop-dirty-generator</code></td><td class="lab-table__yes">Sí</td></tr>
-                <tr><td><code>source_sequence</code></td><td>long</td><td>Secuencia monotónica</td><td>—</td><td class="lab-table__yes">Sí</td></tr>
-                <tr><td><code>ingestion_time</code></td><td>string</td><td>Timestamp de publicación</td><td>—</td><td class="lab-table__yes">Sí</td></tr>
-                <tr><td><code>quality_hints</code></td><td>array&lt;string&gt;</td><td>Etiquetas de defectos inyectados</td><td>default: <code>[]</code></td><td class="lab-table__yes">Sí</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Simulador de compatibilidad -->
-          <h4 class="cds--productive-heading-01" style="margin-top:1.25rem;margin-bottom:.5rem;">Simulador de compatibilidad de schema</h4>
-          <p class="cds--body-01" style="margin-bottom:.75rem;">El modo <strong>BACKWARD</strong> está configurado. Los consumidores nuevos (como Flink) pueden leer mensajes del productor anterior. Probá cómo cambia la validación según el modo:</p>
-
-          <div class="ce-schema-sim ce-schema-sim--embedded">
-            <div class="ce-schema-sim__controls">
-              <label class="ce-schema-sim__label" for="compat-mode-2">Modo de compatibilidad</label>
-              <select class="ce-schema-sim__select" id="compat-mode-2">
-                <option value="BACKWARD">BACKWARD — consumidor nuevo lee datos del productor anterior</option>
-                <option value="FORWARD">FORWARD — consumidor anterior lee datos del productor nuevo</option>
-                <option value="FULL">FULL — compatibilidad bidireccional</option>
-                <option value="NONE">NONE — sin validación</option>
-              </select>
-              <div class="ce-schema-sim__mode-desc" id="mode-desc-2"></div>
-            </div>
-            <div class="ce-schema-sim__editors">
-              <div class="ce-schema-sim__editor-col">
-                <label class="ce-schema-sim__editor-label">Schema v1 (en producción)</label>
-                <textarea class="ce-schema-sim__textarea" id="schema-v1-2" spellcheck="false">{
-  "type": "record",
-  "name": "DirtyTransaction",
-  "fields": [
-    { "name": "source_event_id", "type": "string" },
-    { "name": "amount_raw", "type": ["null","string"], "default": null },
-    { "name": "currency_raw", "type": ["null","string"], "default": null }
-  ]
-}</textarea>
-              </div>
-              <div class="ce-schema-sim__editor-col">
-                <label class="ce-schema-sim__editor-label">Schema v2 (versión propuesta)</label>
-                <textarea class="ce-schema-sim__textarea" id="schema-v2-2" spellcheck="false">{
-  "type": "record",
-  "name": "DirtyTransaction",
-  "fields": [
-    { "name": "source_event_id", "type": "string" },
-    { "name": "amount_raw", "type": ["null","string"], "default": null },
-    { "name": "currency_raw", "type": ["null","string"], "default": null },
-    { "name": "customer_country_raw", "type": ["null","string"], "default": null }
-  ]
-}</textarea>
-              </div>
-            </div>
-            <button class="ce-schema-sim__btn" id="validate-btn-2" type="button">Validar compatibilidad →</button>
-            <div class="ce-schema-sim__result" id="schema-result-2" hidden role="alert" aria-live="polite">
-              <div class="ce-schema-sim__result-icon" id="result-icon-2" aria-hidden="true"></div>
-              <div class="ce-schema-sim__result-body">
-                <p class="ce-schema-sim__result-title" id="result-title-2"></p>
-                <p class="ce-schema-sim__result-detail" id="result-detail-2"></p>
-              </div>
-            </div>
-            <div class="ce-schema-rules"><p class="ce-schema-rules__title">Reglas del modo seleccionado</p><div id="rules-content-2"></div></div>
-          </div>
-
-          <figure class="lab-figure" style="margin-top:1.25rem;">
-            <img
-              src="./assets/images/labs/confluent/schemaregestry.png"
-              alt="Schema Registry en Confluent Cloud mostrando el schema DirtyTransactionValue"
-              class="lab-figure__img"
-              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
-            />
-            <div class="carbon-image-placeholder" hidden>
-              <span class="carbon-image-placeholder__label">schemaregestry.png</span>
-              <code class="carbon-image-placeholder__path">Confluent Cloud → Schema Registry → TransaccionesSucias-0-value</code>
-            </div>
-            <figcaption class="lab-figure__caption">Schema Registry mostrando el contrato <code>DirtyTransactionValue</code> registrado para <code>TransaccionesSucias-0</code>.</figcaption>
-          </figure>
-        </div>
-
-        <!-- ══ BLOQUE D: Flink SQL ═════════════════════════════ -->
-        <div class="cf-setup-block">
-          <h3 class="cf-setup-block__title">
-            <span class="cf-setup-block__num">D</span>
-            Flink SQL — el puente de limpieza del linaje
-          </h3>
-
-          <!-- mini-linaje: flink activo, conecta ambos tópicos -->
-          <div class="cf-setup-linaje">
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Clúster BeeTech</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Tópicos</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Schema</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--active">Flink</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--pending">ACLs</span>
-          </div>
-
-          <!-- contexto narrativo -->
-          <div class="cf-setup-flink-context">
-            <div class="cf-setup-flink-context__flow">
-              <div class="cf-setup-flink-context__topic cf-setup-flink-context__topic--in">
-                <span class="cf-setup-flink-context__label">FROM</span>
-                <code>TransaccionesSucias-0</code>
-                <span class="cf-setup-flink-context__sub">datos crudos de la VM</span>
-              </div>
-              <div class="cf-setup-flink-context__processor">
-                <span class="cf-setup-flink-context__label">statement</span>
-                <strong>workshop-clean-transactions-0</strong>
-                <span class="cf-setup-flink-context__sub">BTRIM · UPPER · TRY_CAST · CASE</span>
-              </div>
-              <div class="cf-setup-flink-context__topic cf-setup-flink-context__topic--out">
-                <span class="cf-setup-flink-context__label">INSERT INTO</span>
-                <code>TransaccionesEnriquecidas-0</code>
-                <span class="cf-setup-flink-context__sub">datos limpios → consumer group</span>
-              </div>
-            </div>
-          </div>
-
-          <p class="cds--body-01" style="margin-top:.875rem;">Con el clúster, los <strong>dos tópicos</strong> y el schema en su lugar, IBM creó el statement continuo que conecta el linaje: lee los mensajes crudos de <code>TransaccionesSucias-0</code>, aplica las funciones de limpieza y escribe el resultado normalizado en <code>TransaccionesEnriquecidas-0</code>. Ese statement corre ininterrumpidamente en estado <strong>RUNNING</strong>.</p>
-
-          <div class="callout" data-tone="info" style="margin-top:.875rem;">
-            <p class="callout__title">Por qué Flink va después de los tópicos</p>
-            <p>Flink interpreta la cláusula <code>INSERT INTO `TransaccionesEnriquecidas-0`</code> como una tabla de destino. Si ese tópico no existiera al registrar el statement, Flink lanzaría <code>Table not found</code> y el pipeline no arrancaría. Los tópicos son siempre prerrequisito del statement.</p>
-          </div>
-
-          <h4 class="cds--productive-heading-01" style="margin-top:1.25rem;margin-bottom:.5rem;">Transformaciones aplicadas campo a campo</h4>
-          <div class="lab-table-wrap">
-            <table class="lab-table">
-              <thead><tr><th>Campo de entrada</th><th>Problema típico</th><th>Función Flink SQL</th><th>Campo de salida</th></tr></thead>
-              <tbody>
-                <tr><td><code>transaction_id_raw</code></td><td><code>"txn 00123 abc"</code></td><td><code>UPPER(REGEXP_REPLACE(BTRIM(…),'[^A-Za-z0-9]+','-'))</code></td><td><code>transaction_id</code> → <code>"TXN-00123-ABC"</code></td></tr>
-                <tr><td><code>amount_raw</code></td><td><code>"$1.234,56 USD"</code></td><td><code>TRY_CAST(REGEXP_REPLACE(…) AS DOUBLE)</code></td><td><code>amount</code> → <code>1234.56</code></td></tr>
-                <tr><td><code>currency_raw</code></td><td><code>"  usd  "</code></td><td><code>UPPER(BTRIM(…))</code></td><td><code>currency</code> → <code>"USD"</code></td></tr>
-                <tr><td><code>customer_email_raw</code></td><td><code>"  USER@DOMAIN.COM  "</code></td><td><code>LOWER(BTRIM(…))</code></td><td><code>customer_email</code> → <code>"user@domain.com"</code></td></tr>
-                <tr><td><code>event_time_raw</code></td><td><code>"2024-01-15t10:30:00z"</code></td><td><code>TO_TIMESTAMP(UPPER(BTRIM(…)))</code></td><td><code>event_time</code> → <code>2024-01-15T10:30:00Z</code></td></tr>
-                <tr><td><code>account_status_raw</code></td><td><code>"ACTIVO"</code> / <code>"enabled"</code></td><td><code>CASE UPPER(BTRIM(…)) WHEN … END</code></td><td><code>account_status</code> → <code>"ACTIVE"</code></td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h4 class="cds--productive-heading-01" style="margin-top:1.25rem;margin-bottom:.5rem;">Statement completo</h4>
-          <pre><code class="language-sql">INSERT INTO `TransaccionesEnriquecidas-0`
-SELECT
-  UPPER(REGEXP_REPLACE(BTRIM(transaction_id_raw), '[^A-Za-z0-9]+', '-'))   AS transaction_id,
-  TRY_CAST(
-    REPLACE(REGEXP_REPLACE(BTRIM(amount_raw), '[^0-9,.-]', ''), ',', '.')
-    AS DOUBLE)                                                              AS amount,
-  UPPER(BTRIM(currency_raw))                                               AS currency,
-  LOWER(BTRIM(customer_email_raw))                                         AS customer_email,
-  UPPER(BTRIM(customer_country_raw))                                       AS customer_country,
-  CASE UPPER(BTRIM(account_status_raw))
-    WHEN 'ACTIVE'   THEN 'ACTIVE'  WHEN 'ACTIVO'  THEN 'ACTIVE'
-    WHEN 'ENABLED'  THEN 'ACTIVE'  WHEN 'INACTIVE' THEN 'INACTIVE'
-    WHEN 'INACTIVO' THEN 'INACTIVE' WHEN 'DISABLED' THEN 'INACTIVE'
-    ELSE 'UNKNOWN'
-  END                                                                      AS account_status,
-  source_event_id, source_system, source_sequence, ingestion_time, quality_hints
-FROM `TransaccionesSucias-0`
-WHERE transaction_id_raw IS NOT NULL;</code></pre>
-
-          <figure class="lab-figure" style="margin-top:1rem;">
-            <img
-              src="./assets/images/labs/confluent/limpiezaflink.png"
-              alt="Statement de Flink SQL workshop-clean-transactions-0 en estado RUNNING"
-              class="lab-figure__img"
-              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
-            />
-            <div class="carbon-image-placeholder" hidden>
-              <span class="carbon-image-placeholder__label">limpiezaflink.png</span>
-              <code class="carbon-image-placeholder__path">Confluent Cloud → Flink → workshop-clean-transactions-0 → RUNNING</code>
-            </div>
-            <figcaption class="lab-figure__caption">Statement <code>workshop-clean-transactions-0</code> en estado RUNNING. Desde este momento, cada mensaje que llega a <code>TransaccionesSucias-0</code> se limpia y aparece en <code>TransaccionesEnriquecidas-0</code> en cuestión de segundos.</figcaption>
-          </figure>
-
-          <!-- mini-linaje post-Flink: resultado en el pipeline -->
-          <div class="callout" data-tone="tip" style="margin-top:1rem;">
-            <p class="callout__title">Lo que acabás de ver en el linaje</p>
-            <p>Con este statement activo, el linaje queda completo en el tramo de limpieza: <code>VM → TransaccionesSucias-0 → <strong>workshop-clean-transactions-0</strong> → TransaccionesEnriquecidas-0</code>. El consumer group <code>fraud-demo-0</code> y StreamSets leen desde ese último tópico.</p>
-          </div>
-        </div>
-
-        <!-- ══ BLOQUE E: API Key y ACLs ════════════════════════ -->
-        <div class="cf-setup-block cf-setup-block--last">
-          <h3 class="cf-setup-block__title">
-            <span class="cf-setup-block__num">E</span>
-            API Key y permisos ACL — quién lee y quién escribe
-          </h3>
-
-          <!-- mini-linaje: todo completo -->
-          <div class="cf-setup-linaje">
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Clúster BeeTech</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Tópicos</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Schema</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--done">Flink</span>
-            <span class="cf-setup-linaje__arrow">→</span>
-            <span class="cf-setup-linaje__node cf-setup-linaje__node--active">ACLs</span>
-          </div>
-
-          <p class="cds--body-01" style="margin-top:.875rem;">El último paso es asegurarse de que cada participante solo pueda interactuar con sus propios recursos. Cada API Key tiene ACLs que le permiten leer el tópico compartido de salida de Flink y escribir únicamente en su propio tópico.</p>
-
-          <div class="ce-acl-example" style="margin-top:.875rem;">
-            <div class="ce-acl-example__row">
-              <span class="ce-acl-example__principal">API Key participante</span>
-              <span class="ce-acl-example__arrow">→</span>
-              <span class="ce-acl-example__perm ce-acl-example__perm--read">READ</span>
-              <span class="ce-acl-example__resource">Topic: <code>TransaccionesEnriquecidas-0</code> <em>(salida de Flink)</em></span>
-            </div>
-            <div class="ce-acl-example__row">
-              <span class="ce-acl-example__principal">API Key participante</span>
-              <span class="ce-acl-example__arrow">→</span>
-              <span class="ce-acl-example__perm ce-acl-example__perm--write">WRITE</span>
-              <span class="ce-acl-example__resource">Topic: <code>TransaccionesEvaluadas-NN</code> <em>(tópico personal)</em></span>
-            </div>
-            <div class="ce-acl-example__row">
-              <span class="ce-acl-example__principal">API Key participante</span>
-              <span class="ce-acl-example__arrow">→</span>
-              <span class="ce-acl-example__perm ce-acl-example__perm--read">READ</span>
-              <span class="ce-acl-example__resource">Group: <code>streamsets-consumer-NN</code></span>
-            </div>
-          </div>
-
-          <h4 class="cds--productive-heading-01" style="margin-top:1.25rem;margin-bottom:.5rem;">Pasos para verificar los permisos</h4>
-          <ol class="cf-setup-steps">
-            <li class="cf-setup-steps__item">
-              <span class="cf-setup-steps__num">1</span>
-              <span class="cf-setup-steps__text">Navegá a <strong>BeeTech → Data Integration → API Keys</strong>. Localizá la key asignada a tu número de participante.</span>
-            </li>
-            <li class="cf-setup-steps__item">
-              <span class="cf-setup-steps__num">2</span>
-              <span class="cf-setup-steps__text">Hacé clic en tu API Key → pestaña <strong>ACLs</strong>: debe tener READ sobre <code>TransaccionesEnriquecidas-0</code> y WRITE sobre <code>TransaccionesEvaluadas-NN</code>.</span>
-            </li>
-          </ol>
-
-          <div class="cf-setup-img-row">
-            <figure class="lab-figure">
-              <img
-                src="./assets/images/labs/confluent/api.png"
-                alt="Lista de API Keys en Confluent Cloud"
-                class="lab-figure__img"
-                onerror="this.style.display='none';this.nextElementSibling.hidden=false"
-              />
-              <div class="carbon-image-placeholder" hidden>
-                <span class="carbon-image-placeholder__label">api.png</span>
-                <code class="carbon-image-placeholder__path">Confluent Cloud → BeeTech → API Keys</code>
-              </div>
-              <figcaption class="lab-figure__caption">Lista de API Keys del clúster.</figcaption>
-            </figure>
-            <figure class="lab-figure">
-              <img
-                src="./assets/images/labs/confluent/acls.png"
-                alt="ACLs configurados para la API Key del participante"
-                class="lab-figure__img"
-                onerror="this.style.display='none';this.nextElementSibling.hidden=false"
-              />
-              <div class="carbon-image-placeholder" hidden>
-                <span class="carbon-image-placeholder__label">acls.png</span>
-                <code class="carbon-image-placeholder__path">Confluent Cloud → API Key → ACLs tab</code>
-              </div>
-              <figcaption class="lab-figure__caption">ACLs: READ en tópico de Flink, WRITE en tópico personal.</figcaption>
-            </figure>
-          </div>
-        </div>
-
-      </div><!-- /cf-setup-accordion__body -->
-    </details>
-
-    <!-- ── Estilos para mini-linaje y contexto Flink ───────── -->
-    <style>
-      /* Mini-linaje de progreso dentro del acordeón */
-      .cf-setup-linaje{display:flex;align-items:center;gap:.375rem;flex-wrap:wrap;padding:.625rem .875rem;background:var(--cds-layer-01,#f4f4f4);border-left:3px solid #8a3ffc;margin-top:.875rem;border-radius:0 3px 3px 0}
-      .cf-setup-linaje__node{font-size:.6875rem;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;padding:.25rem .5rem;border-radius:2px;white-space:nowrap}
-      .cf-setup-linaje__node--pending{background:var(--cds-layer-01,#f4f4f4);color:var(--cds-text-disabled,#a8a8a8);border:1px solid var(--cds-border-subtle-01,#e0e0e0)}
-      .cf-setup-linaje__node--active{background:#f6f0ff;color:#6929c4;border:1px solid #8a3ffc;font-weight:700}
-      .cf-setup-linaje__node--done{background:#defbe6;color:#0e6027;border:1px solid #42be65}
-      .cf-setup-linaje__arrow{font-size:.75rem;color:var(--cds-text-helper,#6f6f6f);flex-shrink:0}
-      /* Dark mode */
-      .cds--g100 .cf-setup-linaje{background:var(--cds-layer-01,#262626);border-left-color:#a56eff}
-      .cds--g100 .cf-setup-linaje__node--pending{background:var(--cds-layer-02,#393939);color:var(--cds-text-disabled,#525252);border-color:var(--cds-border-subtle-01,#525252)}
-      .cds--g100 .cf-setup-linaje__node--active{background:#2d1f5e;color:#be95ff;border-color:#a56eff}
-      .cds--g100 .cf-setup-linaje__node--done{background:#022d0d;color:#42be65;border-color:#24a148}
-
-      /* Badges ENTRADA / SALIDA en encabezados de tópico */
-      .cf-setup-topic-badge{display:inline-block;font-size:.5625rem;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .375rem;border-radius:2px;margin-right:.375rem;vertical-align:middle}
-      .cf-setup-topic-badge--in{background:#fff1f1;color:#a2191f;border:1px solid #ffb3b8}
-      .cf-setup-topic-badge--out{background:#defbe6;color:#0e6027;border:1px solid #42be65}
-      .cds--g100 .cf-setup-topic-badge--in{background:#520408;color:#ffb3b8;border-color:#750e13}
-      .cds--g100 .cf-setup-topic-badge--out{background:#022d0d;color:#6fdc8c;border-color:#198038}
-
-      /* Diagrama de flujo Flink: FROM → statement → INSERT INTO */
-      .cf-setup-flink-context{margin-top:.875rem}
-      .cf-setup-flink-context__flow{display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:stretch}
-      @media(max-width:671px){.cf-setup-flink-context__flow{grid-template-columns:1fr;gap:.375rem}}
-      .cf-setup-flink-context__topic,.cf-setup-flink-context__processor{padding:.75rem 1rem;border-radius:4px;display:flex;flex-direction:column;gap:.25rem}
-      .cf-setup-flink-context__topic--in{background:#1c0f30;border:1px solid #8a3ffc}
-      .cf-setup-flink-context__topic--out{background:#0d2b1f;border:1px solid #42be65}
-      .cf-setup-flink-context__processor{background:#001f3f;border:1px solid #00b4d8;align-self:center;text-align:center}
-      .cf-setup-flink-context__label{font-size:.5625rem;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
-      .cf-setup-flink-context__topic--in .cf-setup-flink-context__label{color:#be95ff}
-      .cf-setup-flink-context__topic--out .cf-setup-flink-context__label{color:#6ee7b7}
-      .cf-setup-flink-context__processor .cf-setup-flink-context__label{color:#90e0ef}
-      .cf-setup-flink-context__topic--in code,.cf-setup-flink-context__topic--in strong{color:#d4b8ff;font-size:.8125rem}
-      .cf-setup-flink-context__topic--out code,.cf-setup-flink-context__topic--out strong{color:#a7f3d0;font-size:.8125rem}
-      .cf-setup-flink-context__processor code,.cf-setup-flink-context__processor strong{color:#caf0f8;font-size:.8125rem}
-      .cf-setup-flink-context__sub{font-size:.6875rem;opacity:.6;font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace}
-      .cf-setup-flink-context__topic--in .cf-setup-flink-context__sub{color:#be95ff}
-      .cf-setup-flink-context__topic--out .cf-setup-flink-context__sub{color:#6ee7b7}
-      .cf-setup-flink-context__processor .cf-setup-flink-context__sub{color:#90e0ef}
-    </style>
-  </section>
-
   <section class="lab-section">
     <h2 class="cds--productive-heading-04">Bloque 1 — Explorar el clúster</h2>
 
@@ -802,14 +176,13 @@ WHERE transaction_id_raw IS NOT NULL;</code></pre>
     </ol>
     <figure class="lab-figure lab-figure--screenshot">
       <img
-        src="./assets/images/labs/confluent/linaje.png"
-        alt="Stream Lineage en Confluent Cloud: VM generadora → TransaccionesSucias-0 → Flink workshop-clean-transactions-0 → TransaccionesEnriquecidas-0 → Consumer Group fraud-demo-0"
+        src="./assets/images/labs/fraud-detection/screenshots/confluent-lineage.png"
+        alt="Stream Lineage completo desde TransaccionesSucias-0 pasando por Flink hacia TransaccionesEnriquecidas-0"
         class="lab-figure__img"
+        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-lineage.png"
         loading="lazy"
       />
-      <figcaption class="lab-figure__caption">
-        Vista real del Stream Lineage en Confluent Cloud tras hacer clic en <strong>View full lineage</strong>: la VM generadora (<code>workshop-dirty-trans…</code>) publica en <code>TransaccionesSucias-0</code> → el statement Flink <code>workshop-clean-trans…</code> normaliza los datos → <code>TransaccionesEnrique…</code> → consumer group <code>fraud-demo-0</code>. En la práctica, StreamSets consume desde ese consumer group para calcular la tasa de fraude.
-      </figcaption>
+      <figcaption class="lab-figure__caption">Vista esperada tras <strong>View full lineage</strong> desde el tópico <code>TransaccionesEnriquecidas-0</code>: productor → tópico sucio → statement Flink → tópico enriquecido.</figcaption>
     </figure>
     <ul class="lab-checklist">
       <li>El statement está en ejecución.</li>
@@ -819,6 +192,353 @@ WHERE transaction_id_raw IS NOT NULL;</code></pre>
     </ul>
   </section>
 
+  <!-- ══════════════════════════════════════════════════════════
+       CONFIGURACIÓN PREVIA — PASO A PASO (TOGGLE)
+       ══════════════════════════════════════════════════════════ -->
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">¿Cómo se configuró todo esto?</h2>
+    <p class="cds--body-01">Los tópicos, schemas, el statement de Flink y los permisos ACL ya están listos cuando llegás al workshop. Si querés entender cómo se construyó esa infraestructura — o si en el futuro necesitás replicarla — expandí el paso a paso completo:</p>
+
+    <details class="cf-setup-accordion">
+      <summary class="cf-setup-accordion__trigger">
+        <span class="cf-setup-accordion__icon" aria-hidden="true">▶</span>
+        <span class="cf-setup-accordion__title">Ver configuración previa completa</span>
+        <span class="cf-setup-accordion__meta">Clúster · Tópicos · Schema Registry · Flink · API Keys &amp; ACLs</span>
+      </summary>
+      <div class="cf-setup-accordion__body">
+
+        <!-- ── Bloque A: Clúster ────────────────────────────── -->
+        <div class="cf-setup-block">
+          <h3 class="cf-setup-block__title">
+            <span class="cf-setup-block__num">A</span>
+            Clúster BeeTech
+          </h3>
+          <p class="cds--body-01">El clúster compartido <strong>BeeTech</strong> corre en AWS us-east-1 con tipo Standard — multi-zona, Tiered Storage y escalamiento elástico. IBM lo creó antes del workshop y es el contenedor de todos los recursos.</p>
+
+          <div class="lab-table-wrap" style="margin-top:.875rem;">
+            <table class="lab-table">
+              <thead><tr><th>Parámetro</th><th>Valor</th><th>Qué significa</th></tr></thead>
+              <tbody>
+                <tr><td>Nombre</td><td><code>BeeTech</code></td><td>Identificador del clúster en Confluent Cloud</td></tr>
+                <tr><td>Tipo</td><td>Standard</td><td>Multi-zona, Tiered Storage, escalamiento elástico</td></tr>
+                <tr><td>Cloud / Región</td><td>AWS us-east-1</td><td>Proveedor y región donde corren los brokers</td></tr>
+                <tr><td>Bootstrap server</td><td><em>Entregado por correo</em></td><td>URL que usan los clientes para conectarse</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <figure class="lab-figure" style="margin-top:1rem;">
+            <img
+              src="./assets/images/labs/confluent/cluster.png"
+              alt="Vista general del clúster BeeTech en Confluent Cloud"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+            <div class="carbon-image-placeholder" hidden>
+              <span class="carbon-image-placeholder__label">cluster.png</span>
+              <code class="carbon-image-placeholder__path">Confluent Cloud → BeeTech → Overview</code>
+            </div>
+            <figcaption class="lab-figure__caption">Vista general del clúster BeeTech: estado, particiones y métricas de throughput.</figcaption>
+          </figure>
+        </div>
+
+        <!-- ── Bloque B: Tópicos ────────────────────────────── -->
+        <div class="cf-setup-block">
+          <h3 class="cf-setup-block__title">
+            <span class="cf-setup-block__num">B</span>
+            Creación de tópicos
+          </h3>
+          <p class="cds--body-01">Se crearon dos tópicos principales. <code>TransaccionesSucias-0</code> lo gestiona IBM (tópico de entrada). Cada participante crea su propio tópico de salida <code>TransaccionesEvaluadas-NN</code>.</p>
+
+          <h4 class="cds--productive-heading-01" style="margin-top:1rem;margin-bottom:.5rem;">Pasos para crear un tópico</h4>
+          <ol class="cf-setup-steps">
+            <li class="cf-setup-steps__item">
+              <span class="cf-setup-steps__num">1</span>
+              <span class="cf-setup-steps__text">Navegá a <strong>BeeTech → Topics → + Add topic</strong>, ingresá el nombre <code>TransaccionesEvaluadas-NN</code> y hacé clic en <strong>Create with defaults</strong>.</span>
+            </li>
+            <li class="cf-setup-steps__item">
+              <span class="cf-setup-steps__num">2</span>
+              <span class="cf-setup-steps__text">En las opciones avanzadas configurá: <strong>Partitions = 3</strong>, <strong>Replication factor = 3</strong>, <strong>Cleanup policy = delete</strong>, <strong>Retention = 7 días</strong>.</span>
+            </li>
+            <li class="cf-setup-steps__item">
+              <span class="cf-setup-steps__num">3</span>
+              <span class="cf-setup-steps__text">Hacé clic en <strong>Save &amp; create</strong>. Verificá que el tópico aparezca en la lista con las 3 particiones.</span>
+            </li>
+          </ol>
+
+          <figure class="lab-figure" style="margin-top:.875rem;">
+            <img
+              src="./assets/images/labs/confluent/transaccionesevaluadas.png"
+              alt="Creación del tópico TransaccionesEvaluadas en Confluent Cloud"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+            <div class="carbon-image-placeholder" hidden>
+              <span class="carbon-image-placeholder__label">transaccionesevaluadas.png</span>
+              <code class="carbon-image-placeholder__path">Confluent Cloud → Topics → Create → TransaccionesEvaluadas-NN</code>
+            </div>
+            <figcaption class="lab-figure__caption">Tópico de salida personal creado con 3 particiones y 7 días de retención.</figcaption>
+          </figure>
+        </div>
+
+        <!-- ── Bloque C: Schema Registry ─────────────────────── -->
+        <div class="cf-setup-block">
+          <h3 class="cf-setup-block__title">
+            <span class="cf-setup-block__num">C</span>
+            Schema Registry — Data Contract
+          </h3>
+          <p class="cds--body-01">IBM registró el schema <code>DirtyTransactionValue</code> para el tópico <code>TransaccionesSucias-0</code>. Todos los campos de negocio llegan como texto nullable con defectos intencionales — el Schema Registry garantiza que el productor siempre respete este contrato.</p>
+
+          <div class="cf-setup-sr-concept">
+            <div class="cf-setup-sr-concept__col cf-setup-sr-concept__col--bad">
+              <p class="cf-setup-sr-concept__label">Sin Schema Registry</p>
+              <ul>
+                <li>Productor cambia un campo → consumidor se rompe en silencio</li>
+                <li>No hay historial de versiones del schema</li>
+                <li>Bytes sin contexto: el consumidor no sabe qué estructura esperar</li>
+              </ul>
+            </div>
+            <div class="cf-setup-sr-concept__col cf-setup-sr-concept__col--good">
+              <p class="cf-setup-sr-concept__label">Con Schema Registry</p>
+              <ul>
+                <li>Cambios incompatibles rechazados automáticamente</li>
+                <li>Historial de versiones con lineage</li>
+                <li>Mensajes Avro con ID de schema embebido</li>
+              </ul>
+            </div>
+          </div>
+
+          <h4 class="cds--productive-heading-01" style="margin-top:1.25rem;margin-bottom:.625rem;">Campos del schema <code>DirtyTransactionValue</code></h4>
+          <div class="lab-table-wrap">
+            <table class="lab-table">
+              <thead><tr><th>Campo</th><th>Tipo Avro</th><th>Descripción</th><th>Defecto típico</th><th>Req.</th></tr></thead>
+              <tbody>
+                <tr><td><code>source_event_id</code></td><td>string</td><td>ID inmutable del origen</td><td>—</td><td class="lab-table__yes">Sí</td></tr>
+                <tr><td><code>transaction_id_raw</code></td><td>["null","string"]</td><td>ID de transacción crudo</td><td>Espacios, minúsculas</td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>customer_id_raw</code></td><td>["null","string"]</td><td>ID de cliente crudo</td><td>Espacios, separadores mixtos</td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>card_id_raw</code></td><td>["null","string"]</td><td>ID de tarjeta crudo</td><td>Espacios, separadores</td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>amount_raw</code></td><td>["null","string"]</td><td>Monto como texto</td><td><code>"$1.234,56 USD"</code></td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>currency_raw</code></td><td>["null","string"]</td><td>Moneda como texto</td><td><code>"  usd  "</code></td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>location_raw</code></td><td>["null","string"]</td><td>Ubicación de pago</td><td>Casing inconsistente</td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>lat_raw</code></td><td>["null","string"]</td><td>Latitud como texto</td><td>Separador decimal variable</td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>lon_raw</code></td><td>["null","string"]</td><td>Longitud como texto</td><td>Separador decimal variable</td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>event_time_raw</code></td><td>["null","string"]</td><td>Tiempo ISO 8601</td><td><code>"2024-01-15t10:30:00z"</code></td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>customer_name_raw</code></td><td>["null","string"]</td><td>Nombre del cliente</td><td>Espacios duplicados, casing</td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>customer_email_raw</code></td><td>["null","string"]</td><td>Email del cliente</td><td><code>"  USER@DOMAIN.COM  "</code></td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>customer_country_raw</code></td><td>["null","string"]</td><td>País del cliente</td><td>Nombre en lugar de código ISO</td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>customer_risk_score_raw</code></td><td>["null","string"]</td><td>Score de riesgo</td><td><code>"75%"</code>, <code>"score:75"</code></td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>account_status_raw</code></td><td>["null","string"]</td><td>Estado de cuenta</td><td><code>"ACTIVO"</code>, <code>"enabled"</code></td><td class="lab-table__no">No</td></tr>
+                <tr><td><code>source_system</code></td><td>string</td><td>Sistema productor</td><td>default: <code>workshop-dirty-generator</code></td><td class="lab-table__yes">Sí</td></tr>
+                <tr><td><code>source_sequence</code></td><td>long</td><td>Secuencia monotónica</td><td>—</td><td class="lab-table__yes">Sí</td></tr>
+                <tr><td><code>ingestion_time</code></td><td>string</td><td>Timestamp de publicación</td><td>—</td><td class="lab-table__yes">Sí</td></tr>
+                <tr><td><code>quality_hints</code></td><td>array&lt;string&gt;</td><td>Etiquetas de defectos inyectados</td><td>default: <code>[]</code></td><td class="lab-table__yes">Sí</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Simulador de compatibilidad -->
+          <h4 class="cds--productive-heading-01" style="margin-top:1.25rem;margin-bottom:.5rem;">Simulador de compatibilidad de schema</h4>
+          <p class="cds--body-01" style="margin-bottom:.75rem;">El modo <strong>BACKWARD</strong> está configurado. Los consumidores nuevos pueden leer mensajes del productor anterior. Probá cómo cambia la validación según el modo:</p>
+
+          <div class="ce-schema-sim ce-schema-sim--embedded">
+            <div class="ce-schema-sim__controls">
+              <label class="ce-schema-sim__label" for="compat-mode-2">Modo de compatibilidad</label>
+              <select class="ce-schema-sim__select" id="compat-mode-2">
+                <option value="BACKWARD">BACKWARD — consumidor nuevo lee datos del productor anterior</option>
+                <option value="FORWARD">FORWARD — consumidor anterior lee datos del productor nuevo</option>
+                <option value="FULL">FULL — compatibilidad bidireccional</option>
+                <option value="NONE">NONE — sin validación</option>
+              </select>
+              <div class="ce-schema-sim__mode-desc" id="mode-desc-2"></div>
+            </div>
+            <div class="ce-schema-sim__editors">
+              <div class="ce-schema-sim__editor-col">
+                <label class="ce-schema-sim__editor-label">Schema v1 (en producción)</label>
+                <textarea class="ce-schema-sim__textarea" id="schema-v1-2" spellcheck="false">{
+  "type": "record",
+  "name": "DirtyTransaction",
+  "fields": [
+    { "name": "source_event_id", "type": "string" },
+    { "name": "amount_raw", "type": ["null","string"], "default": null },
+    { "name": "currency_raw", "type": ["null","string"], "default": null }
+  ]
+}</textarea>
+              </div>
+              <div class="ce-schema-sim__editor-col">
+                <label class="ce-schema-sim__editor-label">Schema v2 (versión propuesta)</label>
+                <textarea class="ce-schema-sim__textarea" id="schema-v2-2" spellcheck="false">{
+  "type": "record",
+  "name": "DirtyTransaction",
+  "fields": [
+    { "name": "source_event_id", "type": "string" },
+    { "name": "amount_raw", "type": ["null","string"], "default": null },
+    { "name": "currency_raw", "type": ["null","string"], "default": null },
+    { "name": "customer_country_raw", "type": ["null","string"], "default": null }
+  ]
+}</textarea>
+              </div>
+            </div>
+            <button class="ce-schema-sim__btn" id="validate-btn-2" type="button">Validar compatibilidad →</button>
+            <div class="ce-schema-sim__result" id="schema-result-2" hidden role="alert" aria-live="polite">
+              <div class="ce-schema-sim__result-icon" id="result-icon-2" aria-hidden="true"></div>
+              <div class="ce-schema-sim__result-body">
+                <p class="ce-schema-sim__result-title" id="result-title-2"></p>
+                <p class="ce-schema-sim__result-detail" id="result-detail-2"></p>
+              </div>
+            </div>
+            <div class="ce-schema-rules"><p class="ce-schema-rules__title">Reglas del modo seleccionado</p><div id="rules-content-2"></div></div>
+          </div>
+
+          <figure class="lab-figure" style="margin-top:1.25rem;">
+            <img
+              src="./assets/images/labs/confluent/schemaregestry.png"
+              alt="Schema Registry en Confluent Cloud mostrando el schema DirtyTransactionValue"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+            <div class="carbon-image-placeholder" hidden>
+              <span class="carbon-image-placeholder__label">schemaregestry.png</span>
+              <code class="carbon-image-placeholder__path">Confluent Cloud → Schema Registry → TransaccionesSucias-0-value</code>
+            </div>
+            <figcaption class="lab-figure__caption">Schema Registry mostrando el contrato <code>DirtyTransactionValue</code> registrado para <code>TransaccionesSucias-0</code>.</figcaption>
+          </figure>
+        </div>
+
+        <!-- ── Bloque D: Flink SQL ────────────────────────────── -->
+        <div class="cf-setup-block">
+          <h3 class="cf-setup-block__title">
+            <span class="cf-setup-block__num">D</span>
+            Flink SQL — statement de limpieza
+          </h3>
+          <p class="cds--body-01">IBM creó el statement continuo <code>workshop-clean-transactions-0</code> que corre en estado <strong>RUNNING</strong>. Lee de <code>TransaccionesSucias-0</code>, aplica las transformaciones y publica en <code>TransaccionesEnriquecidas-0</code>.</p>
+
+          <h4 class="cds--productive-heading-01" style="margin-top:1rem;margin-bottom:.5rem;">Tabla de transformaciones</h4>
+          <div class="lab-table-wrap">
+            <table class="lab-table">
+              <thead><tr><th>Campo origen</th><th>Problema típico</th><th>Función Flink SQL</th><th>Resultado limpio</th></tr></thead>
+              <tbody>
+                <tr><td><code>amount_raw</code></td><td><code>"$1.234,56 USD"</code></td><td><code>TRY_CAST(REGEXP_REPLACE(…) AS DOUBLE)</code></td><td><code>1234.56</code></td></tr>
+                <tr><td><code>currency_raw</code></td><td><code>"  usd  "</code></td><td><code>UPPER(BTRIM(…))</code></td><td><code>"USD"</code></td></tr>
+                <tr><td><code>transaction_id_raw</code></td><td><code>"txn 00123 abc"</code></td><td><code>UPPER(REGEXP_REPLACE(BTRIM(…),'[^A-Za-z0-9]+','-'))</code></td><td><code>"TXN-00123-ABC"</code></td></tr>
+                <tr><td><code>customer_email_raw</code></td><td><code>"  USER@DOMAIN.COM  "</code></td><td><code>LOWER(BTRIM(…))</code></td><td><code>"user@domain.com"</code></td></tr>
+                <tr><td><code>event_time_raw</code></td><td><code>"2024-01-15t10:30:00z"</code></td><td><code>TO_TIMESTAMP(UPPER(BTRIM(…)))</code></td><td><code>2024-01-15T10:30:00Z</code></td></tr>
+                <tr><td><code>account_status_raw</code></td><td><code>"ACTIVO"</code> / <code>"enabled"</code></td><td><code>CASE UPPER(BTRIM(…)) WHEN … END</code></td><td><code>"ACTIVE"</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <pre style="margin-top:1rem;"><code class="language-sql">INSERT INTO `TransaccionesEnriquecidas-0`
+SELECT
+  UPPER(REGEXP_REPLACE(BTRIM(transaction_id_raw), '[^A-Za-z0-9]+', '-'))   AS transaction_id,
+  TRY_CAST(
+    REPLACE(REGEXP_REPLACE(BTRIM(amount_raw), '[^0-9,.-]', ''), ',', '.')
+    AS DOUBLE)                                                              AS amount,
+  UPPER(BTRIM(currency_raw))                                               AS currency,
+  LOWER(BTRIM(customer_email_raw))                                         AS customer_email,
+  UPPER(BTRIM(customer_country_raw))                                       AS customer_country,
+  CASE UPPER(BTRIM(account_status_raw))
+    WHEN 'ACTIVE'   THEN 'ACTIVE'  WHEN 'ACTIVO'  THEN 'ACTIVE'
+    WHEN 'ENABLED'  THEN 'ACTIVE'  WHEN 'INACTIVE' THEN 'INACTIVE'
+    WHEN 'INACTIVO' THEN 'INACTIVE' WHEN 'DISABLED' THEN 'INACTIVE'
+    ELSE 'UNKNOWN'
+  END                                                                      AS account_status,
+  source_event_id,
+  source_system,
+  source_sequence,
+  ingestion_time,
+  quality_hints
+FROM `TransaccionesSucias-0`
+WHERE transaction_id_raw IS NOT NULL;</code></pre>
+
+          <figure class="lab-figure" style="margin-top:1rem;">
+            <img
+              src="./assets/images/labs/confluent/limpiezaflink.png"
+              alt="Statement de Flink SQL workshop-clean-transactions-0 en estado RUNNING"
+              class="lab-figure__img"
+              onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+            />
+            <div class="carbon-image-placeholder" hidden>
+              <span class="carbon-image-placeholder__label">limpiezaflink.png</span>
+              <code class="carbon-image-placeholder__path">Confluent Cloud → Flink → workshop-clean-transactions-0 → RUNNING</code>
+            </div>
+            <figcaption class="lab-figure__caption">Statement <code>workshop-clean-transactions-0</code> en estado RUNNING procesando el stream de transacciones sucias.</figcaption>
+          </figure>
+        </div>
+
+        <!-- ── Bloque E: API Key y ACLs ──────────────────────── -->
+        <div class="cf-setup-block cf-setup-block--last">
+          <h3 class="cf-setup-block__title">
+            <span class="cf-setup-block__num">E</span>
+            API Key y permisos ACL
+          </h3>
+          <p class="cds--body-01">Cada participante recibe una API Key con permisos ACL exactos sobre su tópico de salida. Esto garantiza que nadie pueda leer ni escribir en los tópicos de otros participantes.</p>
+
+          <div class="ce-acl-example" style="margin-top:.875rem;">
+            <div class="ce-acl-example__row">
+              <span class="ce-acl-example__principal">API Key: <code>ABCD1234…</code></span>
+              <span class="ce-acl-example__arrow">→</span>
+              <span class="ce-acl-example__perm ce-acl-example__perm--read">READ</span>
+              <span class="ce-acl-example__resource">Topic: <code>TransaccionesEnriquecidas-0</code></span>
+            </div>
+            <div class="ce-acl-example__row">
+              <span class="ce-acl-example__principal">API Key: <code>ABCD1234…</code></span>
+              <span class="ce-acl-example__arrow">→</span>
+              <span class="ce-acl-example__perm ce-acl-example__perm--write">WRITE</span>
+              <span class="ce-acl-example__resource">Topic: <code>TransaccionesEvaluadas-NN</code></span>
+            </div>
+            <div class="ce-acl-example__row">
+              <span class="ce-acl-example__principal">API Key: <code>ABCD1234…</code></span>
+              <span class="ce-acl-example__arrow">→</span>
+              <span class="ce-acl-example__perm ce-acl-example__perm--read">READ</span>
+              <span class="ce-acl-example__resource">Group: <code>streamsets-consumer-NN</code></span>
+            </div>
+          </div>
+
+          <h4 class="cds--productive-heading-01" style="margin-top:1.25rem;margin-bottom:.5rem;">Pasos para verificar los permisos</h4>
+          <ol class="cf-setup-steps">
+            <li class="cf-setup-steps__item">
+              <span class="cf-setup-steps__num">1</span>
+              <span class="cf-setup-steps__text">Navegá a <strong>BeeTech → Data Integration → API Keys</strong>. Localizá la key asignada a tu número de participante.</span>
+            </li>
+            <li class="cf-setup-steps__item">
+              <span class="cf-setup-steps__num">2</span>
+              <span class="cf-setup-steps__text">Hacé clic en tu API Key y verificá la pestaña <strong>ACLs</strong>: debe tener READ sobre <code>TransaccionesEnriquecidas-0</code> y WRITE sobre <code>TransaccionesEvaluadas-NN</code>.</span>
+            </li>
+          </ol>
+
+          <div class="cf-setup-img-row">
+            <figure class="lab-figure">
+              <img
+                src="./assets/images/labs/confluent/api.png"
+                alt="Lista de API Keys en Confluent Cloud"
+                class="lab-figure__img"
+                onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+              />
+              <div class="carbon-image-placeholder" hidden>
+                <span class="carbon-image-placeholder__label">api.png</span>
+                <code class="carbon-image-placeholder__path">Confluent Cloud → BeeTech → API Keys</code>
+              </div>
+              <figcaption class="lab-figure__caption">Lista de API Keys del clúster.</figcaption>
+            </figure>
+            <figure class="lab-figure">
+              <img
+                src="./assets/images/labs/confluent/acls.png"
+                alt="ACLs configurados para la API Key del participante"
+                class="lab-figure__img"
+                onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+              />
+              <div class="carbon-image-placeholder" hidden>
+                <span class="carbon-image-placeholder__label">acls.png</span>
+                <code class="carbon-image-placeholder__path">Confluent Cloud → API Key → ACLs tab</code>
+              </div>
+              <figcaption class="lab-figure__caption">ACLs: READ en entrada, WRITE en salida.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+      </div><!-- /cf-setup-accordion__body -->
+    </details>
+  </section>
 
   <section class="lab-section">
     <h2 class="cds--productive-heading-04">Problemas frecuentes</h2>

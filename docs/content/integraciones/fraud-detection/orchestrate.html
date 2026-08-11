@@ -3,7 +3,7 @@
     <div class="lab-banner__tags"></div>
     <h1 class="cds--productive-heading-05 lab-banner__title">Importación de <span data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</span></h1>
     <p class="lab-banner__summary">
-      Descarga tu paquete ZIP, importa tu toolkit y tu agente, y consulta los resultados enmascarados de <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>.
+      Descarga tu YAML, importa tu agente y consulta los resultados enmascarados de <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>. El toolkit MCP es compartido para todos. Las credenciales te llegarán por correo.
     </p>
   </header>
 
@@ -17,11 +17,11 @@
     <div class="lab-task-grid">
       <article class="lab-task-card">
         <h3 class="cds--productive-heading-03">Preparado por IBM</h3>
-        <p>Conexión <code>workshop_confluent</code> en Orchestrate, paquete ZIP <code data-template="fraud-workshop-{N}.zip">fraud-workshop-N.zip</code> y API key de la instancia TechZone.</p>
+        <p>Toolkit remoto <code>workshop_fraud_mcp</code> (MCP en la VM del workshop), <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code> para descargar desde Inicio y credenciales enviadas por correo.</p>
       </article>
       <article class="lab-task-card">
         <h3 class="cds--productive-heading-03">Tu tarea</h3>
-        <p>Activar la CLI, importar <code data-template="N{N}_fraud_mcp">N{N}_fraud_mcp</code> y <code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code>. Verificar que solo lee <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>.</p>
+        <p>Activar la CLI e importar <code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code>. Tu agente usa el toolkit compartido y siempre pasa <code data-template="topic_number=&quot;{N}&quot;">topic_number="{N}"</code> → <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>.</p>
       </article>
     </div>
     <div class="callout" data-tone="warning">
@@ -34,7 +34,7 @@
         <div class="lab-flow-diagram__track">
           <div class="lab-flow-diagram__node lab-flow-diagram__node--individual" title="N{N}_fraud_analyst"><span data-template="N{N}_fraud_analyst">Agente N</span></div>
           <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
-          <div class="lab-flow-diagram__node lab-flow-diagram__node--process" title="N{N}_fraud_mcp"><span data-template="N{N}_fraud_mcp">Toolkit N</span></div>
+          <div class="lab-flow-diagram__node lab-flow-diagram__node--process" title="workshop_fraud_mcp">Toolkit compartido</div>
           <span class="lab-flow-diagram__arrow" aria-hidden="true">→</span>
           <div class="lab-flow-diagram__node lab-flow-diagram__node--individual" title="TransaccionesEvaluadas-N"><span data-template="TransaccionesEvaluadas-{N}">Evaluadas-N</span></div>
         </div>
@@ -44,80 +44,81 @@
 
   <section class="lab-section">
     <h2 class="cds--productive-heading-04">Cómo encaja todo</h2>
-    <p>Tres capas distintas. El tópico <strong>no</strong> aparece en la pantalla de Conexiones de Orchestrate.</p>
+    <p>El MCP corre en la VM del workshop. Orchestrate se conecta a él mediante el toolkit <code>workshop_fraud_mcp</code>. Tu agente elige el tópico con <code>topic_number</code> en cada llamada.</p>
     <div class="lab-table-wrap">
       <table class="lab-table">
-        <thead><tr><th>Capa</th><th>Nombre (ej. N=3)</th><th>Qué hace</th><th>¿Quién lo prepara?</th></tr></thead>
+        <thead><tr><th>Capa</th><th>Nombre</th><th>Qué hace</th><th>¿Quién lo prepara?</th></tr></thead>
         <tbody>
           <tr>
-            <td><strong>Conexión</strong></td>
-            <td><code>workshop_confluent</code></td>
-            <td>Credenciales del clúster Confluent (bootstrap, API key, Schema Registry). <em>Sin tópico.</em></td>
-            <td>IBM (una sola vez)</td>
+            <td><strong>MCP (servidor)</strong></td>
+            <td>VM workshop <code>:8101/sse</code></td>
+            <td>Lee Kafka/Schema Registry. Recibe <code>topic_number</code> en cada tool.</td>
+            <td>IBM (uno para todos)</td>
           </tr>
           <tr>
             <td><strong>Toolkit</strong></td>
-            <td><code data-template="N{N}_fraud_mcp">N{N}_fraud_mcp</code></td>
-            <td>Cuatro tools MCP. Reciben <code>topic_number</code> como parámetro al ejecutarse.</td>
-            <td>Tú (importas desde el ZIP)</td>
+            <td><code>workshop_fraud_mcp</code></td>
+            <td>Registro remoto en Orchestrate. Expone las cuatro tools MCP.</td>
+            <td>IBM (una sola vez)</td>
           </tr>
           <tr>
             <td><strong>Agente</strong></td>
             <td><code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code></td>
-            <td>Siempre llama las tools con <code data-template="topic_number=&quot;{N}&quot;">topic_number="{N}"</code> → <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>.</td>
-            <td>Tú (importas desde el ZIP)</td>
+            <td>Siempre llama las tools con <code data-template="topic_number=&quot;{N}&quot;">topic_number="{N}"</code>.</td>
+            <td>Tú (importas desde el YAML)</td>
+          </tr>
+          <tr>
+            <td><strong>Credenciales</strong></td>
+            <td><code>Orchestrate API Key</code></td>
+            <td>Autentica tu sesión de CLI frente a la instancia TechZone.</td>
+            <td>IBM (enviadas por correo)</td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="callout" data-tone="tip">
       <p class="callout__title">Flujo al hacer una pregunta</p>
-      <p>Chat → agente <code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code> → tool <code>get_fraud_summary(topic_number="<span data-template="{N}">N</span>")</code> → MCP usa <code>workshop_confluent</code> para autenticarse en Kafka → lee <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>.</p>
+      <p>Chat → <code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code> → <code>get_fraud_summary(topic_number="<span data-template="{N}">N</span>")</code> → toolkit <code>workshop_fraud_mcp</code> → MCP en la VM → <code data-template="TransaccionesEvaluadas-{N}">TransaccionesEvaluadas-N</code>.</p>
     </div>
   </section>
 
   <section class="lab-section">
-    <h2 class="cds--productive-heading-04">Bloque 0 — Descargar tu paquete</h2>
+    <h2 class="cds--productive-heading-04">Bloque 0 — Obtener tu YAML</h2>
     <ol class="cds--list--ordered">
-      <li class="cds--list__item">Confirma tu número N en <a href="#/lab/fraud-detection/overview">Inicio</a>.</li>
-      <li class="cds--list__item" data-zip-download-host>
-        Descarga tu paquete con el botón de abajo. El archivo corresponde a tu número N seleccionado.
-      </li>
-      <li class="cds--list__item">Descomprime y abre una terminal <strong>dentro de la carpeta</strong> (deben verse <code data-template="toolkit-spec-{N}.yaml">toolkit-spec-N.yaml</code>, <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code> y la carpeta <code>tools/</code>).</li>
+      <li class="cds--list__item">Confirma tu número N en <a href="#/lab/fraud-detection/overview">Inicio</a> y selecciónalo en el selector.</li>
+      <li class="cds--list__item">Descarga <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code> desde la sección de descarga de Inicio.</li>
+      <li class="cds--list__item">Localiza el correo de IBM con tus credenciales — necesitarás la <strong>Orchestrate API Key</strong> en el paso de activación.</li>
     </ol>
+    <div class="callout" data-tone="info">
+      <p class="callout__title">Solo el YAML — sin ZIP</p>
+      <p>El archivo descargado es únicamente la spec del agente. Las credenciales y la URL de la instancia te llegan por correo. No hay nada que descomprimir.</p>
+    </div>
+    <div class="callout" data-tone="info">
+      <p class="callout__title">No importes toolkit</p>
+      <p>El toolkit <code>workshop_fraud_mcp</code> ya está registrado en Orchestrate por IBM. Tu YAML solo referencia sus tools.</p>
+    </div>
   </section>
 
   <section class="lab-section">
     <h2 class="cds--productive-heading-04">Bloque 1 — Preparar la CLI</h2>
 
     <h3 class="cds--productive-heading-03">Paso 1 — Ambiente virtual</h3>
-    <p>Desde la carpeta descomprimida del ZIP:</p>
+    <p>Abre una terminal en la carpeta donde descargaste el YAML:</p>
     <pre><code>python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install ibm-watsonx-orchestrate
-pip install -r tools/requirements.txt
 orchestrate --version</code></pre>
-    <p>En Windows PowerShell, activa el ambiente con <code>.venv\Scripts\Activate.ps1</code>.</p>
-    <figure class="lab-figure lab-figure--screenshot">
-      <img
-        src="./assets/images/labs/fraud-detection/screenshots/orchestrate-cli-version.png"
-        alt="Salida de orchestrate --version sin errores"
-        class="lab-figure__img"
-        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/orchestrate-cli-version.png"
-        loading="lazy"
-      />
-      <figcaption class="lab-figure__caption">El comando debe mostrar la versión instalada sin errores.</figcaption>
-    </figure>
+    <p>En Windows PowerShell, activa el ambiente con <code>.venv\Scripts\Activate.ps1</code>. Confirma con <code>orchestrate --version</code> — debe mostrar la versión sin errores.</p>
 
     <h3 class="cds--productive-heading-03">Paso 2 — Activar instancia TechZone</h3>
-    <p>La conexión <code>workshop_confluent</code> ya existe en Orchestrate. Solo necesitas activar la CLI con la URL y la API key de la instancia.</p>
+    <p>Usa la <strong>Orchestrate API Key</strong> y la URL que IBM te envió por correo.</p>
     <pre><code>orchestrate env add \
   --name workshop \
-  --url &lt;URL_INSTANCIA_ORCHESTRATE&gt;
+  --url https://api.ca-tor.watson-orchestrate.cloud.ibm.com/instances/c3385561-1fc9-40d5-a072-01acb6137494
 
 orchestrate env activate workshop \
-  --api-key &lt;API_KEY_ORCHESTRATE&gt;</code></pre>
+  --api-key &lt;Orchestrate API Key&gt;</code></pre>
     <p>Si el ambiente <code>workshop</code> ya existe, ejecuta únicamente <code>env activate</code>.</p>
     <div class="callout" data-tone="warning">
       <p class="callout__title">No guardes el secreto</p>
@@ -126,44 +127,26 @@ orchestrate env activate workshop \
   </section>
 
   <section class="lab-section">
-    <h2 class="cds--productive-heading-04">Bloque 2 — Importar toolkit y agente</h2>
+    <h2 class="cds--productive-heading-04">Bloque 2 — Importar tu agente</h2>
 
     <div class="callout" data-tone="info">
       <p class="callout__title">Resumen del bloque</p>
       <ol class="cds--list--ordered">
-        <li class="cds--list__item">Importa tu toolkit con <code>--app-id workshop_confluent</code> (conexión ya creada por IBM).</li>
-        <li class="cds--list__item">Importa tu agente (sin <code>--app-id</code>).</li>
-        <li class="cds--list__item">Tu agente fija <code data-template="topic_number=&quot;{N}&quot;">topic_number="{N}"</code> en cada llamada — el tópico no va en Conexiones.</li>
+        <li class="cds--list__item">Confirma que <code>workshop_fraud_mcp</code> aparece en <code>orchestrate toolkits list</code> (IBM lo registró antes del lab).</li>
+        <li class="cds--list__item">Importa <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code>.</li>
+        <li class="cds--list__item">Tu agente fija <code data-template="topic_number=&quot;{N}&quot;">topic_number="{N}"</code> en cada llamada.</li>
       </ol>
     </div>
 
-    <h3 class="cds--productive-heading-03">Paso 3 — Toolkit MCP</h3>
-    <pre><code data-template="orchestrate toolkits import \
-  --file toolkit-spec-{N}.yaml \
-  --app-id workshop_confluent
+    <h3 class="cds--productive-heading-03">Paso 3 — Verificar toolkit compartido</h3>
+    <pre><code>orchestrate toolkits list</code></pre>
+    <p>Debe aparecer <code>workshop_fraud_mcp</code> con las tools <code>get_fraud_summary</code>, <code>get_suspicious_transactions</code>, <code>get_transaction_detail</code> y <code>get_customer_activity</code>. Si no está, avisa al facilitador.</p>
 
-orchestrate toolkits list">orchestrate toolkits import \
-  --file toolkit-spec-N.yaml \
-  --app-id workshop_confluent
-
-orchestrate toolkits list</code></pre>
-    <p>En la lista debe aparecer <code data-template="N{N}_fraud_mcp">N{N}_fraud_mcp</code> con las cuatro tools.</p>
-    <figure class="lab-figure lab-figure--screenshot">
-      <img
-        src="./assets/images/labs/fraud-detection/screenshots/orchestrate-toolkit-list.png"
-        alt="Lista de toolkits con N{N}_fraud_mcp visible"
-        class="lab-figure__img"
-        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/orchestrate-toolkit-list.png"
-        loading="lazy"
-      />
-      <figcaption class="lab-figure__caption">Tu toolkit lleva tu número (N3_fraud_mcp…). La conexión <code>workshop_confluent</code> es la misma para todos.</figcaption>
-    </figure>
-
-    <h3 class="cds--productive-heading-03">Paso 4 — Agente</h3>
+    <h3 class="cds--productive-heading-03">Paso 4 — Importar agente</h3>
     <pre><code data-template="orchestrate agents import --file agent-spec-{N}.yaml
 orchestrate agents list">orchestrate agents import --file agent-spec-N.yaml
 orchestrate agents list</code></pre>
-    <p>Confirma que aparece <code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code>.</p>
+    <p>Confirma que aparece <code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code> con las cuatro tools de <code>workshop_fraud_mcp</code>.</p>
     <details class="lab-details">
       <summary>Tools del agente</summary>
       <div class="lab-details__body">
@@ -189,7 +172,7 @@ orchestrate agents list</code></pre>
     <ol class="cds--list--ordered">
       <li class="cds--list__item">Abre la instancia de watsonx Orchestrate en el navegador.</li>
       <li class="cds--list__item">Busca <code data-template="N{N}_fraud_analyst">N{N}_fraud_analyst</code>.</li>
-      <li class="cds--list__item">Comprueba que las cuatro tools estén asociadas.</li>
+      <li class="cds--list__item">Comprueba que las cuatro tools de <code>workshop_fraud_mcp</code> estén asociadas.</li>
       <li class="cds--list__item">Activa o despliega el agente y abre su chat de prueba.</li>
     </ol>
 
@@ -198,19 +181,19 @@ orchestrate agents list</code></pre>
     <div class="lab-task-grid">
       <article class="lab-task-card" data-copy-prompt="Dame un resumen de las transacciones evaluadas y los casos de mayor riesgo.">
         <h3 class="cds--productive-heading-03">Resumen</h3>
-        <p>“Dame un resumen de las transacciones evaluadas y los casos de mayor riesgo.”</p>
+        <p>"Dame un resumen de las transacciones evaluadas y los casos de mayor riesgo."</p>
       </article>
       <article class="lab-task-card" data-copy-prompt="Muéstrame las transacciones sospechosas y fraudulentas ordenadas por score.">
         <h3 class="cds--productive-heading-03">Alertas</h3>
-        <p>“Muéstrame las transacciones sospechosas y fraudulentas ordenadas por score.”</p>
+        <p>"Muéstrame las transacciones sospechosas y fraudulentas ordenadas por score."</p>
       </article>
       <article class="lab-task-card" data-copy-prompt="Explícame por qué la transacción con mayor riesgo fue clasificada de esa forma.">
         <h3 class="cds--productive-heading-03">Explicación</h3>
-        <p>“Explícame por qué la transacción con mayor riesgo fue clasificada de esa forma.”</p>
+        <p>"Explícame por qué la transacción con mayor riesgo fue clasificada de esa forma."</p>
       </article>
       <article class="lab-task-card" data-copy-prompt="Resume la actividad reciente del cliente con más alertas.">
         <h3 class="cds--productive-heading-03">Cliente</h3>
-        <p>“Resume la actividad reciente del cliente con más alertas.”</p>
+        <p>"Resume la actividad reciente del cliente con más alertas."</p>
       </article>
     </div>
     <figure class="lab-figure lab-figure--screenshot">
@@ -254,12 +237,14 @@ orchestrate agents list</code></pre>
       <table class="lab-table">
         <thead><tr><th>Problema</th><th>Acción</th></tr></thead>
         <tbody>
-          <tr><td>La CLI no reconoce <code>orchestrate</code></td><td>Activa <code>.venv</code> y repite la instalación dentro del ambiente.</td></tr>
-          <tr><td>Error al activar el ambiente</td><td>Confirma que utilizas la URL completa de la instancia y su API key de Orchestrate.</td></tr>
-          <tr><td>Toolkit sin tools</td><td>Reimporta <code data-template="toolkit-spec-{N}.yaml">toolkit-spec-N.yaml</code> con <code>--app-id workshop_confluent</code>.</td></tr>
+          <tr><td>La CLI no reconoce <code>orchestrate</code></td><td>Activa <code>.venv</code> e instala <code>ibm-watsonx-orchestrate</code>.</td></tr>
+          <tr><td>Error al activar el ambiente</td><td>Usa la URL completa y el valor de <strong>Orchestrate API Key</strong> del correo recibido.</td></tr>
+          <tr><td>No aparece <code>workshop_fraud_mcp</code></td><td>Avisa al facilitador — debe registrar el toolkit remoto antes del lab.</td></tr>
+          <tr><td>Agente sin tools</td><td>Reimporta <code data-template="agent-spec-{N}.yaml">agent-spec-N.yaml</code>. Verifica que el toolkit compartido existe.</td></tr>
           <tr><td>Agente sin datos</td><td>Comprueba que <code data-template="Pipeline_{N}">Pipeline_N</code> está activo y que el tópico tiene offsets recientes.</td></tr>
-          <tr><td>Decode errors</td><td>Corrige la serialización Avro del Kafka Producer y valida con mensajes nuevos.</td></tr>
+          <tr><td>Timeout al llamar tools</td><td>El MCP en la VM puede estar caído — avisa al facilitador.</td></tr>
           <tr><td>Datos de otro participante</td><td>Desactiva el agente y avisa al facilitador.</td></tr>
+          <tr><td>No encuentro el correo con credenciales</td><td>Revisa spam o pide reenvío al facilitador. No compartas tu API key con otros participantes.</td></tr>
         </tbody>
       </table>
     </div>

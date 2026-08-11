@@ -40,13 +40,13 @@ Ubicación: `docs/assets/images/labs/wxdi/stages/`
 
 Strips Consumer/Producer (`wxdi-consumer-*.png`, `wxdi-producer-strip-*.png`) — sustituidos por chips + `Pipeline_0` como referencia.
 
-## watsonx Orchestrate (4 capturas)
+## watsonx Orchestrate (2 capturas — UI)
 
-| Archivo | Estado |
-|---------|--------|
-| `orchestrate-cli-version.png` | pendiente |
-| `orchestrate-toolkit-list.png` | pendiente |
-| `orchestrate-agent-chat.png` | pendiente |
-| `orchestrate-masking-check.png` | pendiente |
+| Archivo | Uso | Estado |
+|---------|-----|--------|
+| `orchestrate-agent-chat.png` | Bloque 3 — agente respondiendo con datos del tópico | listo |
+| `orchestrate-masking-check.png` | Bloque 3 — respuesta sin PII en claro | listo |
+
+Sin capturas de terminal (`pip`, `env activate`, `toolkits list`): el bloque de código basta.
 
 **Progreso wxDI + Confluent:** 12 / 12 (completo)

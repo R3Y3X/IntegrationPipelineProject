@@ -1,26 +1,12 @@
 #!/usr/bin/env python3
-"""Generate per-participant toolkit + agent specs (N0…N30)."""
+"""Generate per-participant agent specs (N0…N30). Toolkit MCP es compartido."""
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-TOOLKIT_TEMPLATE = """\
-spec_version: v1
-kind: mcp
-name: N{n}_fraud_mcp
-description: >-
-  Toolkit MCP del participante N{n}. Mismo código para todos; el agente fija
-  topic_number="{n}" en cada llamada a las tools.
-command: python workshop_mcp_server.py
-package_root: ./tools
-tools:
-  - get_fraud_summary
-  - get_suspicious_transactions
-  - get_transaction_detail
-  - get_customer_activity
-"""
+from workshop_config import SHARED_TOOLKIT_NAME
 
 AGENT_TEMPLATE = """\
 spec_version: v1
@@ -29,7 +15,7 @@ name: N{n}_fraud_analyst
 title: "N{n} — Analista de fraude"
 description: >-
   Agente del participante N{n}. Consulta TransaccionesEvaluadas-{n} mediante
-  el toolkit N{n}_fraud_mcp.
+  el toolkit compartido {toolkit}.
 llm: groq/openai/gpt-oss-120b
 style: react
 instructions: |-
@@ -58,10 +44,10 @@ instructions: |-
     repitas en la respuesta.
 
 tools:
-  - N{n}_fraud_mcp:get_fraud_summary
-  - N{n}_fraud_mcp:get_suspicious_transactions
-  - N{n}_fraud_mcp:get_transaction_detail
-  - N{n}_fraud_mcp:get_customer_activity
+  - {toolkit}:get_fraud_summary
+  - {toolkit}:get_suspicious_transactions
+  - {toolkit}:get_transaction_detail
+  - {toolkit}:get_customer_activity
 
 starter_prompts:
   is_default_prompts: false
@@ -84,17 +70,18 @@ welcome_content:
 """
 
 
+def render_agent(n: int) -> str:
+    return AGENT_TEMPLATE.format(n=n, toolkit=SHARED_TOOLKIT_NAME)
+
+
 def write_specs(n: int, output_dir: Path) -> None:
-    toolkit_path = output_dir / f"toolkit-spec-{n}.yaml"
     agent_path = output_dir / f"agent-spec-{n}.yaml"
-    toolkit_path.write_text(TOOLKIT_TEMPLATE.format(n=n), encoding="utf-8")
-    agent_path.write_text(AGENT_TEMPLATE.format(n=n), encoding="utf-8")
-    print(f"✓ {toolkit_path.name}")
+    agent_path.write_text(render_agent(n), encoding="utf-8")
     print(f"✓ {agent_path.name}")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate toolkit + agent specs per N")
+    parser = argparse.ArgumentParser(description="Generate agent specs per N")
     parser.add_argument("--from", dest="from_n", type=int, default=0)
     parser.add_argument("--to", dest="to_n", type=int, default=30)
     parser.add_argument(
@@ -109,8 +96,8 @@ def main() -> None:
     for n in range(args.from_n, args.to_n + 1):
         write_specs(n, args.out_dir)
 
-    print("\nImport por participante (ejemplo N=3):")
-    print("  orchestrate toolkits import --file toolkit-spec-3.yaml --app-id workshop_confluent")
+    print(f"\nToolkit compartido (IBM, una vez): {SHARED_TOOLKIT_NAME}")
+    print("Import por participante (ejemplo N=3):")
     print("  orchestrate agents import --file agent-spec-3.yaml")
 
 

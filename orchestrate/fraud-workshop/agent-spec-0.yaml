@@ -4,7 +4,7 @@ name: N0_fraud_analyst
 title: "N0 — Analista de fraude (referencia IBM)"
 description: >-
   Agente de referencia del workshop. Consulta TransaccionesEvaluadas-0 mediante
-  el toolkit N0_fraud_mcp.
+  el toolkit compartido workshop_fraud_mcp.
 llm: groq/openai/gpt-oss-120b
 style: react
 instructions: |-
@@ -33,10 +33,10 @@ instructions: |-
     repitas en la respuesta.
 
 tools:
-  - N0_fraud_mcp:get_fraud_summary
-  - N0_fraud_mcp:get_suspicious_transactions
-  - N0_fraud_mcp:get_transaction_detail
-  - N0_fraud_mcp:get_customer_activity
+  - workshop_fraud_mcp:get_fraud_summary
+  - workshop_fraud_mcp:get_suspicious_transactions
+  - workshop_fraud_mcp:get_transaction_detail
+  - workshop_fraud_mcp:get_customer_activity
 
 starter_prompts:
   is_default_prompts: false

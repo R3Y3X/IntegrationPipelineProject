@@ -1,33 +1,55 @@
 # Fraud Workshop — Orchestrate
 
-## Modelo recomendado
+## Modelo: un MCP, un toolkit, muchos agentes
 
-Cada participante importa **su toolkit** y **su agente**. IBM prepara **una sola** conexión Confluent (`workshop_confluent`).
+IBM registra **un** toolkit remoto que apunta al MCP en la VM del workshop. Cada participante importa **solo su agente**; el agente fija `topic_number="N"` en cada llamada.
 
 ```
-Participante 3:
-  toolkit-spec-3.yaml  →  N3_fraud_mcp   (--app-id workshop_confluent)
-  agent-spec-3.yaml    →  N3_fraud_analyst  (siempre topic_number="3")
+VM workshop-mcp :8101/sse  (credenciales Confluent adentro)
+        ↑
+workshop_fraud_mcp  (toolkit remoto en Orchestrate — IBM lo registra una vez)
+        ↑
+N3_fraud_analyst  →  topic_number="3"  →  TransaccionesEvaluadas-3
 ```
 
-- Mismo código Python para todos.
-- Nombres distintos en la UI (`N3_fraud_mcp`, `N7_fraud_mcp`…).
-- El tópico lo fija el **agente** en las instructions, no un app ID por persona.
-- El `--app-id` solo conecta el MCP a las credenciales del clúster (bootstrap, API keys).
+## Facilitador — antes del workshop
 
-## Generar specs
+1. Verificar contenedor `workshop-mcp` en la VM (`docker ps`, puerto 8101).
+2. Registrar toolkit compartido (una vez por instancia Orchestrate):
 
 ```bash
-python generate_specs.py --from 3 --to 3 --out ./specs
+cd orchestrate/fraud-workshop
+orchestrate env activate workshop --api-key <ORCHESTRATE_API_KEY>
+./register_shared_toolkit.sh
 ```
 
-## Paquetes participante (ZIP)
-
-Genera `fraud-workshop-1.zip` … `fraud-workshop-30.zip` en `packages/`:
+3. Generar paquetes participante:
 
 ```bash
 python build_participant_packages.py
-python build_participant_packages.py --from 3 --to 3 --keep-folders
 ```
 
-Cada ZIP incluye `toolkit-spec-N.yaml`, `agent-spec-N.yaml`, `tools/` y `README.md`.
+Cada ZIP incluye `agent-spec-N.yaml`, `credenciales.txt` y `README.md`.
+
+## Participante
+
+```bash
+orchestrate env activate workshop --api-key <Orchestrate API Key>
+orchestrate agents import --file agent-spec-3.yaml
+```
+
+No importa toolkit ni carpeta `tools/`.
+
+## Credenciales en cada paquete
+
+1. Copiá `credentials.template.txt` → `credentials.master.txt`.
+2. Completá los valores `<COMPLETAR>`.
+3. Regenerá los paquetes: `python build_participant_packages.py`
+
+```
+Orchestrate API Key=...
+
+Schema Registry Basic Auth=...
+```
+
+`credentials.master.txt` no se commitea.

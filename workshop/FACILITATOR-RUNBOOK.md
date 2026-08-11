@@ -10,9 +10,10 @@ Este documento contiene tareas compartidas que no deben ejecutar los participant
 - Verificar que el engine de StreamSets aparece online en watsonx.data integration.
 - Abrir `Pipeline_0` y validar que la configuración de referencia pasa sin errores. El script del Evaluador debe coincidir con `workshop/streamsets/fraud-evaluator.js`.
 - Comprobar que `fraud_customer_gps_0…30` están creadas y precargadas.
-- Crear la conexión de aplicación `workshop_confluent` en Orchestrate (credenciales Confluent del clúster).
-- Generar paquetes ZIP: `python orchestrate/fraud-workshop/build_participant_packages.py` → `orchestrate/fraud-workshop/packages/fraud-workshop-1.zip` … `30.zip`.
-- Probar `N0_fraud_mcp` + `N0_fraud_analyst` con `toolkits import ... --app-id workshop_confluent`.
+- Verificar que el contenedor `workshop-mcp` está en ejecución en la VM (`http://150.239.165.252:8101/sse`).
+- Registrar el toolkit remoto compartido `workshop_fraud_mcp`: `./orchestrate/fraud-workshop/register_shared_toolkit.sh`.
+- Generar paquetes ZIP: `python orchestrate/fraud-workshop/build_participant_packages.py` → `fraud-workshop-1.zip` … `30.zip` (solo agente + credenciales).
+- Probar `N0_fraud_analyst` contra el toolkit `workshop_fraud_mcp` ya registrado.
 - Preparar la asignación de números y credenciales (Orchestrate API key; Confluent para wxDI si aplica).
 
 ## Iniciar el generador
@@ -47,8 +48,7 @@ Validar en Confluent:
 - `Pipeline_0` consume `TransaccionesEnriquecidas-0`.
 - `TransaccionesEvaluadas-0` recibe Avro decodificable.
 - `fraud_customer_gps_0` se actualiza mediante `UPDATE`.
-- `N0_fraud_mcp` expone cuatro tools (tópico 0 fijado en la conexión).
-- `N0_fraud_analyst` consulta únicamente `TransaccionesEvaluadas-0`.
+- `N0_fraud_analyst` consulta únicamente `TransaccionesEvaluadas-0` vía toolkit `workshop_fraud_mcp`.
 - Las respuestas no repiten PII original.
 
 ## Cierre
