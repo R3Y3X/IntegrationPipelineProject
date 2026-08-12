@@ -36,160 +36,15 @@
         </div>
       </div>
     </div>
-  </section>
-
-  <section class="lab-section">
-    <h2 class="cds--productive-heading-04">Bloque 1 — Explorar el clúster</h2>
-
-    <h3 class="cds--productive-heading-03">Paso 1 — Abrir el clúster compartido</h3>
-    <ol class="cds--list--ordered">
-      <li class="cds--list__item">Inicia sesión en Confluent Cloud con la cuenta entregada.</li>
-      <li class="cds--list__item">Abre el ambiente <strong>Integration_Pipeline_Project</strong>.</li>
-      <li class="cds--list__item">Selecciona el clúster <strong>BeeTech</strong>.</li>
-      <li class="cds--list__item">Entra en <strong>Topics</strong>.</li>
-    </ol>
-    <figure class="lab-figure lab-figure--screenshot">
+    <figure class="lab-figure lab-figure--screenshot" style="margin-top:1.25rem;">
       <img
-        src="./assets/images/labs/fraud-detection/screenshots/confluent-topics-beetech.png"
-        alt="Vista de Topics en el clúster BeeTech de Confluent Cloud"
+        src="./assets/images/labs/confluent/linaje.png"
+        alt="Stream Lineage completo del workshop: TransaccionesSucias-0 → Flink → TransaccionesEnriquecidas-0"
         class="lab-figure__img"
-        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-topics-beetech.png"
         loading="lazy"
       />
-      <figcaption class="lab-figure__caption">Vista esperada: lista de tópicos del clúster BeeTech.</figcaption>
+      <figcaption class="lab-figure__caption">Lineage real del workshop: el dato viaja desde <code>TransaccionesSucias-0</code>, es transformado por el statement Flink <code>workshop-clean-transactions-0</code> y llega limpio a <code>TransaccionesEnriquecidas-0</code>.</figcaption>
     </figure>
-    <div class="callout" data-tone="warning">
-      <p class="callout__title">Solo lectura</p>
-      <p>No crees tópicos, API keys, schemas ni ACLs. Los recursos del workshop ya están preparados y son compartidos.</p>
-    </div>
-
-    <h3 class="cds--productive-heading-03">Paso 2 — Inspeccionar las transacciones sucias</h3>
-    <ol class="cds--list--ordered">
-      <li class="cds--list__item">Abre <code>TransaccionesSucias-0</code>.</li>
-      <li class="cds--list__item">En <strong>Messages</strong>, selecciona <strong>Consume latest</strong>.</li>
-      <li class="cds--list__item">Abre un mensaje reciente y localiza <code>source_event_id</code>, los campos terminados en <code>_raw</code> y <code>quality_hints</code>.</li>
-      <li class="cds--list__item">Anota un <code>transaction_id_raw</code> para compararlo después.</li>
-    </ol>
-    <figure class="lab-figure lab-figure--screenshot">
-      <img
-        src="./assets/images/labs/fraud-detection/screenshots/confluent-messages-dirty.png"
-        alt="Mensaje de TransaccionesSucias-0 con campos _raw y quality_hints"
-        class="lab-figure__img"
-        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-messages-dirty.png"
-        loading="lazy"
-      />
-      <figcaption class="lab-figure__caption">Busca anomalías recuperables: espacios, minúsculas, etiquetas en montos, decimales con coma o nombres de país en lugar del código.</figcaption>
-    </figure>
-    <div class="callout" data-tone="tip">
-      <p class="callout__title">Resultado esperado</p>
-      <p>Ves mensajes nuevos y cada evento describe sus inconsistencias mediante <code>quality_hints</code>.</p>
-    </div>
-  </section>
-
-  <section class="lab-section">
-    <h2 class="cds--productive-heading-04">Bloque 2 — Contrato y Flink</h2>
-
-    <h3 class="cds--productive-heading-03">Paso 3 — Revisar el Data Contract de entrada</h3>
-    <ol class="cds--list--ordered">
-      <li class="cds--list__item">Dentro del tópico, abre <strong>Data contract</strong>.</li>
-      <li class="cds--list__item">Confirma el subject <code>TransaccionesSucias-0-value</code>.</li>
-      <li class="cds--list__item">Comprueba que los campos de negocio llegan como texto nullable para admitir anomalías controladas.</li>
-      <li class="cds--list__item">Verifica la presencia de campos de trazabilidad como <code>source_sequence</code> e <code>ingestion_time</code>.</li>
-    </ol>
-    <figure class="lab-figure lab-figure--screenshot">
-      <img
-        src="./assets/images/labs/fraud-detection/screenshots/confluent-data-contract-in.png"
-        alt="Data Contract del tópico TransaccionesSucias-0"
-        class="lab-figure__img"
-        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-data-contract-in.png"
-        loading="lazy"
-      />
-      <figcaption class="lab-figure__caption">El contrato acepta inconsistencias de formato; Flink se encarga de convertirlas antes del pipeline de fraude.</figcaption>
-    </figure>
-
-    <h3 class="cds--productive-heading-03">Paso 4 — Observar el statement de Flink</h3>
-    <ol class="cds--list--ordered">
-      <li class="cds--list__item">Abre <strong>Flink</strong> desde la navegación del ambiente.</li>
-      <li class="cds--list__item">Localiza <code>workshop-clean-transactions-0</code>.</li>
-      <li class="cds--list__item">Confirma que el estado sea <strong>RUNNING</strong>.</li>
-      <li class="cds--list__item">Revisa cómo el SQL usa <code>TRIM</code>, normalización de casing y <code>TRY_CAST</code>.</li>
-    </ol>
-    <figure class="lab-figure lab-figure--screenshot">
-      <img
-        src="./assets/images/labs/fraud-detection/screenshots/confluent-flink-statement.png"
-        alt="Statement workshop-clean-transactions-0 en estado RUNNING"
-        class="lab-figure__img"
-        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-flink-statement.png"
-        loading="lazy"
-      />
-      <figcaption class="lab-figure__caption">El statement limpia y normaliza. No hace join con <code>Clientes</code> ni deduplicación.</figcaption>
-    </figure>
-    <pre><code>INSERT INTO `TransaccionesEnriquecidas-0`
-SELECT
-  UPPER(REGEXP_REPLACE(BTRIM(transaction_id_raw), '[^A-Za-z0-9]+', '-')) AS transaction_id,
-  TRY_CAST(REPLACE(REGEXP_REPLACE(BTRIM(amount_raw), '[^0-9,.-]', ''), ',', '.') AS DOUBLE) AS amount,
-  LOWER(BTRIM(customer_email_raw)) AS customer_email
-FROM `TransaccionesSucias-0`
-WHERE transaction_id_raw IS NOT NULL;</code></pre>
-  </section>
-
-  <section class="lab-section">
-    <h2 class="cds--productive-heading-04">Bloque 3 — Validar la salida</h2>
-
-    <h3 class="cds--productive-heading-03">Paso 5 — Comparar la salida enriquecida</h3>
-    <ol class="cds--list--ordered">
-      <li class="cds--list__item">Regresa a <strong>Topics</strong> y abre <code>TransaccionesEnriquecidas-0</code>.</li>
-      <li class="cds--list__item">Consume los mensajes más recientes.</li>
-      <li class="cds--list__item">Busca la transacción anotada o compara registros cercanos por timestamp.</li>
-      <li class="cds--list__item">Confirma las conversiones de la tabla.</li>
-    </ol>
-    <div class="callout" data-tone="tip">
-      <p class="callout__title">Antes vs después</p>
-      <p><code>amount_raw</code> → <code>amount</code> (double) · <code>customer_email_raw</code> → <code>customer_email</code> (minúsculas) · <code>currency_raw</code> → <code>currency</code> (código en mayúsculas)</p>
-    </div>
-    <details class="lab-details">
-      <summary>Ver tabla completa de transformaciones</summary>
-      <div class="lab-details__body">
-        <div class="lab-table-wrap">
-          <table class="lab-table">
-            <thead><tr><th>Entrada sucia</th><th>Salida normalizada</th><th>Validación</th></tr></thead>
-            <tbody>
-              <tr><td><code>amount_raw</code></td><td><code>amount</code></td><td>Tipo double</td></tr>
-              <tr><td><code>currency_raw</code></td><td><code>currency</code></td><td>Código en mayúsculas</td></tr>
-              <tr><td><code>customer_email_raw</code></td><td><code>customer_email</code></td><td>Sin espacios y en minúsculas</td></tr>
-              <tr><td><code>customer_country_raw</code></td><td><code>customer_country</code></td><td>Código normalizado</td></tr>
-              <tr><td><code>account_status_raw</code></td><td><code>account_status</code></td><td><code>ACTIVE</code> o <code>BLOCKED</code></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </details>
-
-    <h3 class="cds--productive-heading-03">Paso 6 — Validar contrato y lineage</h3>
-    <ol class="cds--list--ordered">
-      <li class="cds--list__item">Abre el Data Contract de <code>TransaccionesEnriquecidas-0</code>.</li>
-      <li class="cds--list__item">Confirma que monto, coordenadas y riesgo sean numéricos.</li>
-      <li class="cds--list__item">Regresa a <strong>Topics</strong> y abre <code>TransaccionesEnriquecidas-0</code>.</li>
-      <li class="cds--list__item">En la pestaña <strong>Overview</strong>, baja hasta la sección <strong>Stream Lineage</strong> y haz clic en <strong>View full lineage</strong>.</li>
-      <li class="cds--list__item">Comprueba el recorrido <code>TransaccionesSucias-0 → workshop-clean-transactions-0 (Flink) → TransaccionesEnriquecidas-0</code>. Si no ves nodos, amplía la ventana de tiempo a <strong>Last 10 minutes</strong> o <strong>Last 24 hours</strong> y confirma que hay mensajes recientes en los tópicos.</li>
-      <li class="cds--list__item">Actualiza Messages y verifica que el offset continúa avanzando.</li>
-    </ol>
-    <figure class="lab-figure lab-figure--screenshot">
-      <img
-        src="./assets/images/labs/fraud-detection/screenshots/confluent-lineage.png"
-        alt="Stream Lineage completo desde TransaccionesSucias-0 pasando por Flink hacia TransaccionesEnriquecidas-0"
-        class="lab-figure__img"
-        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-lineage.png"
-        loading="lazy"
-      />
-      <figcaption class="lab-figure__caption">Vista esperada tras <strong>View full lineage</strong> desde el tópico <code>TransaccionesEnriquecidas-0</code>: productor → tópico sucio → statement Flink → tópico enriquecido.</figcaption>
-    </figure>
-    <ul class="lab-checklist">
-      <li>El statement está en ejecución.</li>
-      <li>La salida cumple el contrato estricto.</li>
-      <li>El lineage muestra la limpieza compartida.</li>
-      <li>Hay datos recientes listos para los pipelines individuales.</li>
-    </ul>
   </section>
 
   <!-- ══════════════════════════════════════════════════════════
@@ -538,6 +393,160 @@ WHERE transaction_id_raw IS NOT NULL;</code></pre>
 
       </div><!-- /cf-setup-accordion__body -->
     </details>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Bloque 1 — Explorar el clúster</h2>
+
+    <h3 class="cds--productive-heading-03">Paso 1 — Abrir el clúster compartido</h3>
+    <ol class="cds--list--ordered">
+      <li class="cds--list__item">Inicia sesión en Confluent Cloud con la cuenta entregada.</li>
+      <li class="cds--list__item">Abre el ambiente <strong>Integration_Pipeline_Project</strong>.</li>
+      <li class="cds--list__item">Selecciona el clúster <strong>BeeTech</strong>.</li>
+      <li class="cds--list__item">Entra en <strong>Topics</strong>.</li>
+    </ol>
+    <figure class="lab-figure lab-figure--screenshot">
+      <img
+        src="./assets/images/labs/fraud-detection/screenshots/confluent-topics-beetech.png"
+        alt="Vista de Topics en el clúster BeeTech de Confluent Cloud"
+        class="lab-figure__img"
+        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-topics-beetech.png"
+        loading="lazy"
+      />
+      <figcaption class="lab-figure__caption">Vista esperada: lista de tópicos del clúster BeeTech.</figcaption>
+    </figure>
+    <div class="callout" data-tone="warning">
+      <p class="callout__title">Solo lectura</p>
+      <p>No crees tópicos, API keys, schemas ni ACLs. Los recursos del workshop ya están preparados y son compartidos.</p>
+    </div>
+
+    <h3 class="cds--productive-heading-03">Paso 2 — Inspeccionar las transacciones sucias</h3>
+    <ol class="cds--list--ordered">
+      <li class="cds--list__item">Abre <code>TransaccionesSucias-0</code>.</li>
+      <li class="cds--list__item">En <strong>Messages</strong>, selecciona <strong>Consume latest</strong>.</li>
+      <li class="cds--list__item">Abre un mensaje reciente y localiza <code>source_event_id</code>, los campos terminados en <code>_raw</code> y <code>quality_hints</code>.</li>
+      <li class="cds--list__item">Anota un <code>transaction_id_raw</code> para compararlo después.</li>
+    </ol>
+    <figure class="lab-figure lab-figure--screenshot">
+      <img
+        src="./assets/images/labs/fraud-detection/screenshots/confluent-messages-dirty.png"
+        alt="Mensaje de TransaccionesSucias-0 con campos _raw y quality_hints"
+        class="lab-figure__img"
+        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-messages-dirty.png"
+        loading="lazy"
+      />
+      <figcaption class="lab-figure__caption">Busca anomalías recuperables: espacios, minúsculas, etiquetas en montos, decimales con coma o nombres de país en lugar del código.</figcaption>
+    </figure>
+    <div class="callout" data-tone="tip">
+      <p class="callout__title">Resultado esperado</p>
+      <p>Ves mensajes nuevos y cada evento describe sus inconsistencias mediante <code>quality_hints</code>.</p>
+    </div>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Bloque 2 — Contrato y Flink</h2>
+
+    <h3 class="cds--productive-heading-03">Paso 3 — Revisar el Data Contract de entrada</h3>
+    <ol class="cds--list--ordered">
+      <li class="cds--list__item">Dentro del tópico, abre <strong>Data contract</strong>.</li>
+      <li class="cds--list__item">Confirma el subject <code>TransaccionesSucias-0-value</code>.</li>
+      <li class="cds--list__item">Comprueba que los campos de negocio llegan como texto nullable para admitir anomalías controladas.</li>
+      <li class="cds--list__item">Verifica la presencia de campos de trazabilidad como <code>source_sequence</code> e <code>ingestion_time</code>.</li>
+    </ol>
+    <figure class="lab-figure lab-figure--screenshot">
+      <img
+        src="./assets/images/labs/fraud-detection/screenshots/confluent-data-contract-in.png"
+        alt="Data Contract del tópico TransaccionesSucias-0"
+        class="lab-figure__img"
+        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-data-contract-in.png"
+        loading="lazy"
+      />
+      <figcaption class="lab-figure__caption">El contrato acepta inconsistencias de formato; Flink se encarga de convertirlas antes del pipeline de fraude.</figcaption>
+    </figure>
+
+    <h3 class="cds--productive-heading-03">Paso 4 — Observar el statement de Flink</h3>
+    <ol class="cds--list--ordered">
+      <li class="cds--list__item">Abre <strong>Flink</strong> desde la navegación del ambiente.</li>
+      <li class="cds--list__item">Localiza <code>workshop-clean-transactions-0</code>.</li>
+      <li class="cds--list__item">Confirma que el estado sea <strong>RUNNING</strong>.</li>
+      <li class="cds--list__item">Revisa cómo el SQL usa <code>TRIM</code>, normalización de casing y <code>TRY_CAST</code>.</li>
+    </ol>
+    <figure class="lab-figure lab-figure--screenshot">
+      <img
+        src="./assets/images/labs/fraud-detection/screenshots/confluent-flink-statement.png"
+        alt="Statement workshop-clean-transactions-0 en estado RUNNING"
+        class="lab-figure__img"
+        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-flink-statement.png"
+        loading="lazy"
+      />
+      <figcaption class="lab-figure__caption">El statement limpia y normaliza. No hace join con <code>Clientes</code> ni deduplicación.</figcaption>
+    </figure>
+    <pre><code>INSERT INTO `TransaccionesEnriquecidas-0`
+SELECT
+  UPPER(REGEXP_REPLACE(BTRIM(transaction_id_raw), '[^A-Za-z0-9]+', '-')) AS transaction_id,
+  TRY_CAST(REPLACE(REGEXP_REPLACE(BTRIM(amount_raw), '[^0-9,.-]', ''), ',', '.') AS DOUBLE) AS amount,
+  LOWER(BTRIM(customer_email_raw)) AS customer_email
+FROM `TransaccionesSucias-0`
+WHERE transaction_id_raw IS NOT NULL;</code></pre>
+  </section>
+
+  <section class="lab-section">
+    <h2 class="cds--productive-heading-04">Bloque 3 — Validar la salida</h2>
+
+    <h3 class="cds--productive-heading-03">Paso 5 — Comparar la salida enriquecida</h3>
+    <ol class="cds--list--ordered">
+      <li class="cds--list__item">Regresa a <strong>Topics</strong> y abre <code>TransaccionesEnriquecidas-0</code>.</li>
+      <li class="cds--list__item">Consume los mensajes más recientes.</li>
+      <li class="cds--list__item">Busca la transacción anotada o compara registros cercanos por timestamp.</li>
+      <li class="cds--list__item">Confirma las conversiones de la tabla.</li>
+    </ol>
+    <div class="callout" data-tone="tip">
+      <p class="callout__title">Antes vs después</p>
+      <p><code>amount_raw</code> → <code>amount</code> (double) · <code>customer_email_raw</code> → <code>customer_email</code> (minúsculas) · <code>currency_raw</code> → <code>currency</code> (código en mayúsculas)</p>
+    </div>
+    <details class="lab-details">
+      <summary>Ver tabla completa de transformaciones</summary>
+      <div class="lab-details__body">
+        <div class="lab-table-wrap">
+          <table class="lab-table">
+            <thead><tr><th>Entrada sucia</th><th>Salida normalizada</th><th>Validación</th></tr></thead>
+            <tbody>
+              <tr><td><code>amount_raw</code></td><td><code>amount</code></td><td>Tipo double</td></tr>
+              <tr><td><code>currency_raw</code></td><td><code>currency</code></td><td>Código en mayúsculas</td></tr>
+              <tr><td><code>customer_email_raw</code></td><td><code>customer_email</code></td><td>Sin espacios y en minúsculas</td></tr>
+              <tr><td><code>customer_country_raw</code></td><td><code>customer_country</code></td><td>Código normalizado</td></tr>
+              <tr><td><code>account_status_raw</code></td><td><code>account_status</code></td><td><code>ACTIVE</code> o <code>BLOCKED</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <h3 class="cds--productive-heading-03">Paso 6 — Validar contrato y lineage</h3>
+    <ol class="cds--list--ordered">
+      <li class="cds--list__item">Abre el Data Contract de <code>TransaccionesEnriquecidas-0</code>.</li>
+      <li class="cds--list__item">Confirma que monto, coordenadas y riesgo sean numéricos.</li>
+      <li class="cds--list__item">Regresa a <strong>Topics</strong> y abre <code>TransaccionesEnriquecidas-0</code>.</li>
+      <li class="cds--list__item">En la pestaña <strong>Overview</strong>, baja hasta la sección <strong>Stream Lineage</strong> y haz clic en <strong>View full lineage</strong>.</li>
+      <li class="cds--list__item">Comprueba el recorrido <code>TransaccionesSucias-0 → workshop-clean-transactions-0 (Flink) → TransaccionesEnriquecidas-0</code>. Si no ves nodos, amplía la ventana de tiempo a <strong>Last 10 minutes</strong> o <strong>Last 24 hours</strong> y confirma que hay mensajes recientes en los tópicos.</li>
+      <li class="cds--list__item">Actualiza Messages y verifica que el offset continúa avanzando.</li>
+    </ol>
+    <figure class="lab-figure lab-figure--screenshot">
+      <img
+        src="./assets/images/labs/confluent/linaje.png"
+        alt="Stream Lineage completo desde TransaccionesSucias-0 pasando por Flink hacia TransaccionesEnriquecidas-0"
+        class="lab-figure__img"
+        data-placeholder-path="./assets/images/labs/fraud-detection/screenshots/confluent-lineage.png"
+        loading="lazy"
+      />
+      <figcaption class="lab-figure__caption">Vista esperada tras <strong>View full lineage</strong> desde el tópico <code>TransaccionesEnriquecidas-0</code>: productor → tópico sucio → statement Flink → tópico enriquecido.</figcaption>
+    </figure>
+    <ul class="lab-checklist">
+      <li>El statement está en ejecución.</li>
+      <li>La salida cumple el contrato estricto.</li>
+      <li>El lineage muestra la limpieza compartida.</li>
+      <li>Hay datos recientes listos para los pipelines individuales.</li>
+    </ul>
   </section>
 
   <section class="lab-section">
